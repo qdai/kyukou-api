@@ -1,6 +1,6 @@
 {
   "name": "kyukou",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "homepage": "http://kyukou-kyudai.rhcloud.com/",
   "scripts": {
     "start": "node ./bin/www",
@@ -17,9 +17,9 @@
     "twit": "~1.1.15",
     "mysql": "~2.3.0",
     "request": "~2.36.0",
-    "async": "~0.9.0",
     "sequelize": "~1.7.5",
-    "cheerio": "~0.16.0"
+    "cheerio": "~0.16.0",
+    "iconv": "~2.1.0"
   },
   "description": "Alert information about cancellation of a lecture.",
   "main": "./bin/www",

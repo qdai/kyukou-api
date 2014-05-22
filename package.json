@@ -1,0 +1,32 @@
+{
+  "name": "kyukou",
+  "version": "0.0.2",
+  "homepage": "http://kyukou-kyudai.rhcloud.com/",
+  "scripts": {
+    "start": "node ./bin/www",
+    "prepublish": "#./bin/init_db.js"
+  },
+  "dependencies": {
+    "express": "~4.2.0",
+    "static-favicon": "~1.0.0",
+    "morgan": "~1.0.0",
+    "cookie-parser": "~1.0.1",
+    "body-parser": "~1.0.0",
+    "debug": "~0.7.4",
+    "hjs": "~0.0.6",
+    "twit": "~1.1.15",
+    "mysql": "~2.3.0",
+    "request": "~2.36.0",
+    "async": "~0.9.0",
+    "sequelize": "~1.7.5",
+    "cheerio": "~0.16.0"
+  },
+  "description": "Alert information about cancellation of a lecture.",
+  "main": "./bin/www",
+  "devDependencies": {},
+  "keywords": [
+    "kyukou"
+  ],
+  "author": "Qdai",
+  "license": "MIT"
+}

@@ -1,15 +1,16 @@
 #!/usr/bin/env node
 
-var Sequelize = require("sequelize")
+var Sequelize = require("sequelize");
 var config = require('../secret/config');
 
 // connect to db
 var sequelize = new Sequelize(config.db_database, config.db_user, config.db_password, {
-  host: config.db_host
+  host: config.db_host,
+  port: config.db_port
 });
 
 // create  table
-sequelize.define('main_data', {
+sequelize.define('events', {
   about: Sequelize.STRING,
   pubdate: Sequelize.DATE,
   date: Sequelize.DATE,
@@ -23,6 +24,7 @@ sequelize.define('main_data', {
   teacher: Sequelize.STRING,
   campus: Sequelize.STRING,
   room: Sequelize.STRING,
+  tweet: Sequelize.BOOLEAN
 });
 
 // sync

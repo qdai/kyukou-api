@@ -9,11 +9,12 @@ var config = require('../secret/config');
 
 // connect to db
 var sequelize = new Sequelize(config.db_database, config.db_user, config.db_password, {
-  host: config.db_host
+  host: config.db_host,
+  port: config.db_port
 });
 
 // defione main_data
-var mainData = sequelize.define('main_data', {
+var Events = sequelize.define('events', {
   about: Sequelize.STRING,
   pubdate: Sequelize.DATE,
   date: Sequelize.DATE,
@@ -27,24 +28,32 @@ var mainData = sequelize.define('main_data', {
   teacher: Sequelize.STRING,
   campus: Sequelize.STRING,
   room: Sequelize.STRING,
+  tweet: Sequelize.BOOLEAN
 });
 
 // delete expired data
-mainData.findAll({ where: ['date > ?', new Date().toString()] } ).success(function (datas) {
-  console.log(datas.length);
-  for (var i = 0; i < datas.length; i++) {
-    datas[i].destroy().success(function () {
-      console.log('destroy: success');
-    }).error(function (err) {
-      console.log('error on destroy: ' + err);
-    });
+Events.findAll().success(function (events) {
+  var dateYesterday = new Date();
+  dateYesterday.setDate(dateYesterday.getDate() - 1);
+  console.log(dateYesterday);
+  for (var i = 0; i < events.length; i++) {
+    console.log(events[i].date);
+    if (new Date(events[i].date) < dateYesterday) {
+      events[i].destroy().success(function () {
+        console.log('destroy: success');
+      }).error(function (err) {
+        console.log('error on destroy: ' + err);
+      });
+    } else {
+      console.log('not expired');
+    }
   }
 }).error(function (err) {
   console.log('error on findAll: ' + err);
 });
 
 // education
-request({ url: 'http://www.sci.kyushu-u.ac.jp/home/cancel/cancel.php' }, function(err, res, body) {
+request({ url: 'http://www.education.kyushu-u.ac.jp/topics/student_index' }, function(err, res, body) {
   if (err || res.statusCode !== 200) {
     console.log('error on education: ' + err.stack);
     return;
@@ -73,11 +82,11 @@ request({ url: 'http://www.sci.kyushu-u.ac.jp/home/cancel/cancel.php' }, functio
       data.tmp.splice(9, 0, null);
     }
     data.about = data.tmp[1];
-    data.date = new Date(new Date().getFullYear(), parseInt(data.tmp[2]) - 1, parseInt(data.tmp[3]), 9, 0);
+    data.date = new Date(new Date().getFullYear(), parseInt(data.tmp[2]) - 1, parseInt(data.tmp[3]), - (new Date().getTimezoneOffset() / 60), 0);
     // check Day for next year
-    var w = ['日','月','火','水','木','金','土'];
-    if (w[data.date.getDay()] !== data.tmp[4]) {
-      data.date = new Date(new Date().getFullYear() + 1, parseInt(data.tmp[2]) - 1, parseInt(data.tmp[3]), 9, 0);
+    if (['日','月','火','水','木','金','土'][data.date.getDay() + 1] !== data.tmp[4]) {
+      console.log(data.date.getDay() + ':' + data.tmp[4]);
+      data.date = data.date.setFullYear(data.date.getFullYear() + 1);
     }
     if (data.date < new Date()) { return; }
     data.period = data.tmp[5];
@@ -87,13 +96,15 @@ request({ url: 'http://www.sci.kyushu-u.ac.jp/home/cancel/cancel.php' }, functio
     data.room = data.tmp[9];
     delete data.tmp;
     data.department = '教育';
-    data.pubdate = $(this).find('.date').text().replace(/\//g, '-');
+    data.tweet = false;
+    data.pubdate = new Date($(this).find('.date').text().replace(/\//g, '-'));
+    data.pubdate.setHours(data.pubdate.getHours() - (new Date().getTimezoneOffset() / 60));
     data.link = 'http://' + res.request.host + ($(this).find('a').attr('href') || res.request.path);
     // findOrCreate on db dep_edu table
-    mainData.findOrCreate({ text: data.text }, data).success(function (datas, created) {
+    Events.findOrCreate({ text: data.text }, data).success(function (dataWrp, created) {
       console.log('created: ' + created);
     }).error(function (err) {
-      console.log('error: ' + err);
+      console.log('error on create: ' + err);
     });
   });
 });
@@ -123,11 +134,10 @@ request({ url: 'http://www.econ.kyushu-u.ac.jp/student/kyuukou.php' }, function(
     } else {
       return;
     }
-    data.date = new Date(new Date().getFullYear(), parseInt(data.tmp[1]) - 1, parseInt(data.tmp[2]), 9, 0);
+    data.date = new Date(new Date().getFullYear(), parseInt(data.tmp[1]) - 1, parseInt(data.tmp[2]), - (new Date().getTimezoneOffset() / 60), 0);
     // check Day for next year
-    var w = ['日','月','火','水','木','金','土'];
-    if (w[data.date.getDay()] !== data.tmp[3]) {
-      data.date = new Date(new Date().getFullYear() + 1, parseInt(data.tmp[1]) - 1, parseInt(data.tmp[2]), 9, 0);
+    if (['日','月','火','水','木','金','土'][data.date.getDay() + 1] !== data.tmp[3]) {
+      data.date = data.date.setFullYear(data.date.getFullYear() + 1);
     }
     if (data.date < new Date()) { return; }
     data.period = (/：/.test(data.tmp[4]))? 7 : data.tmp[4];
@@ -137,13 +147,15 @@ request({ url: 'http://www.econ.kyushu-u.ac.jp/student/kyuukou.php' }, function(
     data.room = data.tmp[8];
     delete data.tmp;
     data.department = '経済';
-    data.pubdate = $(this).find('td[align="left"] + td[align="center"]').text();
+    data.tweet = false;
+    data.pubdate = new Date($(this).find('td[align="left"] + td[align="center"]').text());
+    data.pubdate.setHours(data.pubdate.getHours() - (new Date().getTimezoneOffset() / 60));
     data.link = 'http://' + res.request.host + ($(this).find('a').attr('href') || res.request.path);
     // findOrCreate on db dep_edu table
-    mainData.findOrCreate({ text: data.text }, data).success(function (datas, created) {
+    Events.findOrCreate({ text: data.text }, data).success(function (dataWrp, created) {
       console.log('created: ' + created);
     }).error(function (err) {
-      console.log('error: ' + err);
+      console.log('error on create: ' + err);
     });
   });
 });
@@ -167,6 +179,8 @@ request({
     data.date = $(this).find('[nowrap]').text().replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
       return String.fromCharCode(s.charCodeAt(0) - 65248);
     }, '').replace(/(^\s+)|(\s+$)/g, '').replace(/年|月/g, '-').replace(/日.*/, '');
+    data.date = new Date(data.date);
+    data.date.setHours(data.date.getHours() - (new Date().getTimezoneOffset() / 60));
     data.about = $(this).find(':nth-child(2)').text().replace(/\s*/g, '');
     data.subject = $(this).find(':nth-child(3)').text().replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
       return String.fromCharCode(s.charCodeAt(0) - 65248);
@@ -175,6 +189,8 @@ request({
     data.pubdate = $(this).find(':nth-child(6)').text().replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
       return String.fromCharCode(s.charCodeAt(0) - 65248);
     }, '').replace(/年|月/g, '-').replace(/日.*[\(|（]|分.*/g, ' ').replace(/時/g, ':').replace(/(^\s+)|(\s+$)/g, '');
+    data.pubdate = new Date(data.pubdate);
+    data.pubdate.setHours(data.pubdate.getHours() - (new Date().getTimezoneOffset() / 60));
     data.text = data.date + ';' + data.about + ';' + data.subject + ';' + data.teacher + ';' + data.pubdate;
     data.tmp = data.subject.match(/.*曜(\d*)限\s*(.*)/);
     data.period = data.tmp[1];
@@ -182,12 +198,13 @@ request({
     delete data.tmp;
     data.campus = null;
     data.department = '文';
+    data.tweet = false;
     data.link = 'http://' + res.request.host + res.request.path;
     // findOrCreate on db dep_edu table
-    mainData.findOrCreate({ text: data.text }, data).success(function (datas, created) {
+    Events.findOrCreate({ text: data.text }, data).success(function (dataWrp, created) {
       console.log('created: ' + created);
     }).error(function (err) {
-      console.log('error: ' + err);
+      console.log('error on create: ' + err);
     });
   });
 });
@@ -212,6 +229,8 @@ request({
     data.date = $(this).find(':nth-child(2)').text().replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
       return String.fromCharCode(s.charCodeAt(0) - 65248);
     }, '').replace(/(^\s+)|(\s+$)/g, '').replace(/年|月/g, '-').replace(/日.*/, '');
+    data.date = new Date(data.date);
+    data.date.setHours(data.date.getHours() - (new Date().getTimezoneOffset() / 60));
     data.about = $(this).find(':nth-child(6)').text().replace(/\s*/g, '');
     if (data.about !== '補講') {
       data.about = '休講';
@@ -223,18 +242,21 @@ request({
     data.pubdate = $(this).find(':nth-child(5)').text().replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
       return String.fromCharCode(s.charCodeAt(0) - 65248);
     }, '').replace(/年|月/g, '-').replace(/日\s*|分.*/g, ' ').replace(/時/g, ':').replace(/(^\s+)|(\s+$)/g, '');
+    data.pubdate = new Date(data.pubdate);
+    data.pubdate.setHours(data.pubdate.getHours() - (new Date().getTimezoneOffset() / 60));
     data.text = data.date + ';' + data.about + ';' + data.subject + ';' + data.teacher + ';' + data.pubdate;
     data.period = $(this).find(':nth-child(2)').text().replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
       return String.fromCharCode(s.charCodeAt(0) - 65248);
     }, '').replace(/・/g, '').replace(/.*曜|限.*/g, '');
     data.campus = null;
     data.department = '法';
+    data.tweet = false;
     data.link = 'http://' + res.request.host + res.request.path;
     // findOrCreate on db dep_edu table
-    mainData.findOrCreate({ text: data.text }, data).success(function (datas, created) {
+    Events.findOrCreate({ text: data.text }, data).success(function (dataWrp, created) {
       console.log('created: ' + created);
     }).error(function (err) {
-      console.log('error: ' + err);
+      console.log('error on create: ' + err);
     });
   });
 });
@@ -265,10 +287,10 @@ request({
     data.text = datas[i];
     data.tmp = data.text.match(/(\S*) ]]\s*(\d*)月\s*(\d*)日.*（(.)）\s*(\d*)時限\s*学科：(\S*)\s*学年：(\S*)\s*科目：(.*)\n\s*（担当：(.*)）/);
     data.about = data.tmp[1];
-    data.date = new Date(new Date().getFullYear(), parseInt(data.tmp[2]) - 1, parseInt(data.tmp[3]), 9, 0);
+    data.date = new Date(new Date().getFullYear(), parseInt(data.tmp[2]) - 1, parseInt(data.tmp[3]), - (new Date().getTimezoneOffset() / 60), 0);
     // check Day for next year
-    if (['日','月','火','水','木','金','土'][data.date.getDay()] !== data.tmp[4]) {
-      data.date = new Date(new Date().getFullYear() + 1, parseInt(data.tmp[2]) - 1, parseInt(data.tmp[3]), 9, 0);
+    if (['日','月','火','水','木','金','土'][data.date.getDay() + 1] !== data.tmp[4]) {
+      data.date = data.date.setFullYear(data.date.getFullYear() + 1);
     }
     //if (data.date < new Date()) { return; }
     data.period = data.tmp[5];
@@ -278,12 +300,13 @@ request({
     data.teacher = data.tmp[9].replace(/\s/g, '');
     delete data.tmp;
     data.department = '理';
+    data.tweet = false;
     data.link = 'http://www.sci.kyushu-u.ac.jp/index.php?type=0&sel1=11&sel2=0';
     // findOrCreate on db dep_edu table
-    mainData.findOrCreate({ text: data.text }, data).success(function (datas, created) {
+    Events.findOrCreate({ text: data.text }, data).success(function (dataWrp, created) {
       console.log('created: ' + created);
     }).error(function (err) {
-      console.log('error: ' + err);
+      console.log('error on create: ' + err);
     });
   }
 });

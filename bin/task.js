@@ -35,27 +35,30 @@ var Events = sequelize.define('events', {
 Events.findAll().success(function (events) {
   var dateYesterday = new Date();
   dateYesterday.setDate(dateYesterday.getDate() - 1);
-  console.log(dateYesterday);
+  console.log('yesterday: ' + dateYesterday);
   for (var i = 0; i < events.length; i++) {
-    console.log(events[i].date);
-    if (new Date(events[i].date) < dateYesterday) {
+    if (new Date(events[i].date).getTime() < dateYesterday.getTime()) {
+      console.log('date: ' + events[i].date);
       events[i].destroy().success(function () {
         console.log('destroy: success');
       }).error(function (err) {
-        console.log('error on destroy: ' + err);
+        console.log('error: destroy expired data')
+        console.log('message: ' + err);
       });
     } else {
-      console.log('not expired');
+      console.log('message: not expired');
     }
   }
 }).error(function (err) {
-  console.log('error on findAll: ' + err);
+  console.log('error: find expired data');
+  console.log('message: ' + err);
 });
 
 // education
 request({ url: 'http://www.education.kyushu-u.ac.jp/topics/student_index' }, function(err, res, body) {
   if (err || res.statusCode !== 200) {
-    console.log('error on education: ' + err.stack);
+    console.log('error: get event from education');
+    console.log('message: ' + err.stack);
     return;
   }
   var $ = cheerio.load(body);
@@ -82,13 +85,18 @@ request({ url: 'http://www.education.kyushu-u.ac.jp/topics/student_index' }, fun
       data.tmp.splice(9, 0, null);
     }
     data.about = data.tmp[1];
-    data.date = new Date(new Date().getFullYear(), parseInt(data.tmp[2]) - 1, parseInt(data.tmp[3]), - (new Date().getTimezoneOffset() / 60), 0);
+    data.date = new Date(new Date().getFullYear(), parseInt(data.tmp[2]) - 1, parseInt(data.tmp[3]), 0, 0);
     // check Day for next year
-    if (['日','月','火','水','木','金','土'][data.date.getDay() + 1] !== data.tmp[4]) {
-      console.log(data.date.getDay() + ':' + data.tmp[4]);
+    data.tmpDate = data.date;
+    //data.tmpDate.setHours(data.tmpDate.getHours() + new Date().getTimezoneOffset() / 60);
+    if (['日', '月', '火', '水', '木', '金', '土', '日'][data.tmpDate.getDay()] !== data.tmp[4]) {
+      console.log('warn: next year event (maybe)');
       data.date = data.date.setFullYear(data.date.getFullYear() + 1);
     }
-    if (data.date < new Date()) { return; }
+    delete data.tmpDate;
+    data.today = new Date();
+    if (data.date.getTime() < new Date(data.today.getFullYear(), data.today.getMonth(), data.today.getDate() - 1, 0, 0)) { return; }
+    delete data.today;
     data.period = data.tmp[5];
     data.campus = data.tmp[6];
     data.subject = data.tmp[7];
@@ -98,13 +106,14 @@ request({ url: 'http://www.education.kyushu-u.ac.jp/topics/student_index' }, fun
     data.department = '教育';
     data.tweet = false;
     data.pubdate = new Date($(this).find('.date').text().replace(/\//g, '-'));
-    data.pubdate.setHours(data.pubdate.getHours() - (new Date().getTimezoneOffset() / 60));
+    //data.pubdate.setHours(data.pubdate.getHours() + new Date().getTimezoneOffset() / 60);
     data.link = 'http://' + res.request.host + ($(this).find('a').attr('href') || res.request.path);
-    // findOrCreate on db dep_edu table
+    // insert to db
     Events.findOrCreate({ text: data.text }, data).success(function (dataWrp, created) {
-      console.log('created: ' + created);
+      console.log('message: created == ' + created);
     }).error(function (err) {
-      console.log('error on create: ' + err);
+      console.log('error: insert event');
+      console.log('message: ' + err);
     });
   });
 });
@@ -112,7 +121,8 @@ request({ url: 'http://www.education.kyushu-u.ac.jp/topics/student_index' }, fun
 // economics
 request({ url: 'http://www.econ.kyushu-u.ac.jp/student/kyuukou.php' }, function(err, res, body) {
   if (err || res.statusCode !== 200) {
-    console.log('error on economics: ' + err.stack);
+    console.log('error: get event from economics');
+    console.log('message: ' + err.stack);
     return;
   }
   var $ = cheerio.load(body);
@@ -134,12 +144,18 @@ request({ url: 'http://www.econ.kyushu-u.ac.jp/student/kyuukou.php' }, function(
     } else {
       return;
     }
-    data.date = new Date(new Date().getFullYear(), parseInt(data.tmp[1]) - 1, parseInt(data.tmp[2]), - (new Date().getTimezoneOffset() / 60), 0);
+    data.date = new Date(new Date().getFullYear(), parseInt(data.tmp[1]) - 1, parseInt(data.tmp[2]), 0, 0);
     // check Day for next year
-    if (['日','月','火','水','木','金','土'][data.date.getDay() + 1] !== data.tmp[3]) {
+    data.tmpDate = data.date;
+    //data.tmpDate.setHours(data.tmpDate.getHours() + new Date().getTimezoneOffset() / 60);
+    if (['日', '月', '火', '水', '木', '金', '土', '日'][data.tmpDate.getDay()] !== data.tmp[3]) {
+      console.log('warn: next year event (maybe)');
       data.date = data.date.setFullYear(data.date.getFullYear() + 1);
     }
-    if (data.date < new Date()) { return; }
+    delete data.tmpDate;
+    data.today = new Date();
+    if (data.date.getTime() < new Date(data.today.getFullYear(), data.today.getMonth(), data.today.getDate() - 1, 0, 0)) { return; }
+    delete data.today;
     data.period = (/：/.test(data.tmp[4]))? 7 : data.tmp[4];
     data.campus = null;
     data.subject = data.tmp[6];
@@ -149,13 +165,14 @@ request({ url: 'http://www.econ.kyushu-u.ac.jp/student/kyuukou.php' }, function(
     data.department = '経済';
     data.tweet = false;
     data.pubdate = new Date($(this).find('td[align="left"] + td[align="center"]').text());
-    data.pubdate.setHours(data.pubdate.getHours() - (new Date().getTimezoneOffset() / 60));
+    //data.pubdate.setHours(data.pubdate.getHours() + new Date().getTimezoneOffset() / 60);
     data.link = 'http://' + res.request.host + ($(this).find('a').attr('href') || res.request.path);
-    // findOrCreate on db dep_edu table
+    // insert to db
     Events.findOrCreate({ text: data.text }, data).success(function (dataWrp, created) {
-      console.log('created: ' + created);
+      console.log('message: created == ' + created);
     }).error(function (err) {
-      console.log('error on create: ' + err);
+      console.log('error: insert event');
+      console.log('message: ' + err);
     });
   });
 });
@@ -166,7 +183,8 @@ request({
   encoding: null
 }, function(err, res, body) {
   if (err || res.statusCode !== 200) {
-    console.log('error on literature: ' + err.stack);
+    console.log('error: get event from literature');
+    console.log('message: ' + err.stack);
     return;
   }
   // fix encoding
@@ -180,7 +198,10 @@ request({
       return String.fromCharCode(s.charCodeAt(0) - 65248);
     }, '').replace(/(^\s+)|(\s+$)/g, '').replace(/年|月/g, '-').replace(/日.*/, '');
     data.date = new Date(data.date);
-    data.date.setHours(data.date.getHours() - (new Date().getTimezoneOffset() / 60));
+    //data.date.setHours(data.date.getHours() + new Date().getTimezoneOffset() / 60);
+    data.today = new Date();
+    if (data.date.getTime() < new Date(data.today.getFullYear(), data.today.getMonth(), data.today.getDate() - 1, 0, 0)) { return; }
+    delete data.today;
     data.about = $(this).find(':nth-child(2)').text().replace(/\s*/g, '');
     data.subject = $(this).find(':nth-child(3)').text().replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
       return String.fromCharCode(s.charCodeAt(0) - 65248);
@@ -190,7 +211,7 @@ request({
       return String.fromCharCode(s.charCodeAt(0) - 65248);
     }, '').replace(/年|月/g, '-').replace(/日.*[\(|（]|分.*/g, ' ').replace(/時/g, ':').replace(/(^\s+)|(\s+$)/g, '');
     data.pubdate = new Date(data.pubdate);
-    data.pubdate.setHours(data.pubdate.getHours() - (new Date().getTimezoneOffset() / 60));
+    //data.pubdate.setHours(data.pubdate.getHours() + new Date().getTimezoneOffset() / 60);
     data.text = data.date + ';' + data.about + ';' + data.subject + ';' + data.teacher + ';' + data.pubdate;
     data.tmp = data.subject.match(/.*曜(\d*)限\s*(.*)/);
     data.period = data.tmp[1];
@@ -200,11 +221,12 @@ request({
     data.department = '文';
     data.tweet = false;
     data.link = 'http://' + res.request.host + res.request.path;
-    // findOrCreate on db dep_edu table
+    // insert to db
     Events.findOrCreate({ text: data.text }, data).success(function (dataWrp, created) {
-      console.log('created: ' + created);
+      console.log('message: created == ' + created);
     }).error(function (err) {
-      console.log('error on create: ' + err);
+      console.log('error: insert event');
+      console.log('message: ' + err);
     });
   });
 });
@@ -215,7 +237,8 @@ request({
   encoding: null
 }, function(err, res, body) {
   if (err || res.statusCode !== 200) {
-    console.log('error on law: ' + err.stack);
+    console.log('error: get event from law');
+    console.log('message: ' + err.stack);
     return;
   }
   // fix encoding
@@ -230,7 +253,10 @@ request({
       return String.fromCharCode(s.charCodeAt(0) - 65248);
     }, '').replace(/(^\s+)|(\s+$)/g, '').replace(/年|月/g, '-').replace(/日.*/, '');
     data.date = new Date(data.date);
-    data.date.setHours(data.date.getHours() - (new Date().getTimezoneOffset() / 60));
+    //data.date.setHours(data.date.getHours() + new Date().getTimezoneOffset() / 60);
+    data.today = new Date();
+    if (data.date.getTime() < new Date(data.today.getFullYear(), data.today.getMonth(), data.today.getDate() - 1, 0, 0)) { return; }
+    delete data.today;
     data.about = $(this).find(':nth-child(6)').text().replace(/\s*/g, '');
     if (data.about !== '補講') {
       data.about = '休講';
@@ -243,7 +269,7 @@ request({
       return String.fromCharCode(s.charCodeAt(0) - 65248);
     }, '').replace(/年|月/g, '-').replace(/日\s*|分.*/g, ' ').replace(/時/g, ':').replace(/(^\s+)|(\s+$)/g, '');
     data.pubdate = new Date(data.pubdate);
-    data.pubdate.setHours(data.pubdate.getHours() - (new Date().getTimezoneOffset() / 60));
+    //data.pubdate.setHours(data.pubdate.getHours() + new Date().getTimezoneOffset() / 60);
     data.text = data.date + ';' + data.about + ';' + data.subject + ';' + data.teacher + ';' + data.pubdate;
     data.period = $(this).find(':nth-child(2)').text().replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
       return String.fromCharCode(s.charCodeAt(0) - 65248);
@@ -252,11 +278,12 @@ request({
     data.department = '法';
     data.tweet = false;
     data.link = 'http://' + res.request.host + res.request.path;
-    // findOrCreate on db dep_edu table
+    // insert to db
     Events.findOrCreate({ text: data.text }, data).success(function (dataWrp, created) {
-      console.log('created: ' + created);
+      console.log('message: created == ' + created);
     }).error(function (err) {
-      console.log('error on create: ' + err);
+      console.log('error: insert event');
+      console.log('message: ' + err);
     });
   });
 });
@@ -267,7 +294,8 @@ request({
   encoding: null
 }, function(err, res, body) {
   if (err || res.statusCode !== 200) {
-    console.log('error on law: ' + err.stack);
+    console.log('error: get event from science');
+    console.log('message: ' + err.stack);
     return;
   }
   // fix encoding
@@ -287,12 +315,18 @@ request({
     data.text = datas[i];
     data.tmp = data.text.match(/(\S*) ]]\s*(\d*)月\s*(\d*)日.*（(.)）\s*(\d*)時限\s*学科：(\S*)\s*学年：(\S*)\s*科目：(.*)\n\s*（担当：(.*)）/);
     data.about = data.tmp[1];
-    data.date = new Date(new Date().getFullYear(), parseInt(data.tmp[2]) - 1, parseInt(data.tmp[3]), - (new Date().getTimezoneOffset() / 60), 0);
+    data.date = new Date(new Date().getFullYear(), parseInt(data.tmp[2]) - 1, parseInt(data.tmp[3]), 0, 0);
     // check Day for next year
-    if (['日','月','火','水','木','金','土'][data.date.getDay() + 1] !== data.tmp[4]) {
+    data.tmpDate = data.date;
+    //data.tmpDate.setHours(data.tmpDate.getHours() + new Date().getTimezoneOffset() / 60);
+    if (['日', '月', '火', '水', '木', '金', '土', '日'][data.tmpDate.getDay()] !== data.tmp[4]) {
+      console.log('warn: next year event (maybe)');
       data.date = data.date.setFullYear(data.date.getFullYear() + 1);
     }
-    //if (data.date < new Date()) { return; }
+    delete data.tmpDate;
+    data.today = new Date();
+    if (data.date.getTime() < new Date(data.today.getFullYear(), data.today.getMonth(), data.today.getDate() - 1, 0, 0)) { return; }
+    delete data.today;
     data.period = data.tmp[5];
     data.course = data.tmp[6];
     data.grade = data.tmp[7].replace('学年', '');
@@ -302,11 +336,12 @@ request({
     data.department = '理';
     data.tweet = false;
     data.link = 'http://www.sci.kyushu-u.ac.jp/index.php?type=0&sel1=11&sel2=0';
-    // findOrCreate on db dep_edu table
+    // insert to db
     Events.findOrCreate({ text: data.text }, data).success(function (dataWrp, created) {
-      console.log('created: ' + created);
+      console.log('message: created == ' + created);
     }).error(function (err) {
-      console.log('error on create: ' + err);
+      console.log('error: insert event');
+      console.log('message: ' + err);
     });
   }
 });

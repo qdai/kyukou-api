@@ -43,23 +43,31 @@ Events.findAndCountAll({
   limit: 16
 }).success(function (events) {
   for (var i = 0; i < events.rows.length; i++) {
+    events.rows[i].date.setHours(events.rows[i].date.getHours() - new Date().getTimezoneOffset() / 60);
     var text = '新規：【' + events.rows[i].about + '】' + (events.rows[i].date.getMonth() + 1) + '月' + events.rows[i].date.getDate() +
                '日（' + ['日','月','火','水','木','金','土'][events.rows[i].date.getDay()] + '）\n' +
                events.rows[i].department + '学部' + events.rows[i].period + '時限「' + events.rows[i].subject + '」';
     twit.post('statuses/update', { status: text }, function(err, data, response) {
+      if (err) {
+        console.log('error: twitter post');
+        console.log('message: ' + err);
+        break;
+      }
       try {
         console.log('twitter post id: ' + data['id_str']);
       } catch (err) {
-        console.log('error: twitter post failed');
+        console.log('error: parse twitter returns');
+        console.log('data: ' + data);
       }
     });
     events.rows[i].updateAttributes({
       tweet: true
     }).success(function() {
-      console.log('database update: success');
+      console.log('message: database update success');
     });
   }
-  console.log('tweeted: ' + events.rows.length + '/' + events.count);
+  console.log('message: tweeted(' + events.rows.length + '/' + events.count + ')');
 }).error(function (err) {
-  console.log('error on tweet find: ' + err);
+  console.log('error: find not tweeted event');
+  console.log('message: ' + err);
 });

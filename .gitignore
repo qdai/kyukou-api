@@ -2,3 +2,5 @@
 *~
 secret/config.js
 node_modules/
+public/*.html
+Gruntfile.js

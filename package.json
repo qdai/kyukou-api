@@ -1,6 +1,6 @@
 {
   "name": "kyukou",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "homepage": "http://kyukou-kyudai.rhcloud.com/",
   "scripts": {
     "start": "node ./bin/www"
@@ -18,7 +18,8 @@
     "request": "~2.36.0",
     "sequelize": "~1.7.5",
     "static-favicon": "~1.0.0",
-    "twit": "~1.1.15"
+    "twit": "~1.1.15",
+    "async": "~0.9.0"
   },
   "description": "Alert information about cancellation of a lecture.",
   "main": "./bin/www",
@@ -30,6 +31,6 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Qdai/kyukou.git"
+    "url": "https://github.com/Qdai/kyukou.git/"
   }
 }

@@ -40,22 +40,28 @@ var dateNow = new Date();
 // tweet tomorrow event
 Events.findAll({
   where: {
-    date: new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate() + 1, - (new Date().getTimezoneOffset() / 60)) // dateTomorrow
+    date: new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate() + 1, - new Date().getTimezoneOffset() / 60, 0)
   }
 }).success(function (datas) {
   for (var i = 0; i < datas.length; i++) {
+    datas[i].date.setHours(datas[i].date.getHours() - new Date().getTimezoneOffset() / 60);
     var text = '【' + datas[i].about + '】明日' + (datas[i].date.getMonth() + 1) + '月' +　datas[i].date.getDate() +
-               '日（' + ['日','月','火','水','木','金','土'][datas[i].date.getDay() + 1] + '）\n' +
+               '日（' + ['日','月','火','水','木','金','土'][datas[i].date.getDay()] + '）\n' +
                datas[i].department + '学部' + datas[i].period + '時限「' + datas[i].subject + '」';
-    //console.log(text);
     twit.post('statuses/update', { status: text }, function(err, data, response) {
+      if (err) {
+        console.log('error: twitter post');
+        console.log('message: ' + err);
+        return;
+      }
       try {
         console.log('twitter post id: ' + data['id_str']);
       } catch (err) {
-        console.log('error: twitter post failed');
+        console.log('error: parse twitter returns');
       }
     });
   }
 }).error(function (err) {
-  console.log('error on findAll: ' + err);
+  console.log('error: find tomorrow\'s event');
+  console.log('message: ' + err);
 });

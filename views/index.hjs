@@ -7,9 +7,28 @@
     <!--[if lt IE 9]><script src="lib/html5shiv/html5shiv-printshiv.js"></script><![endif]-->
     <meta name="author" content="{{author}}" />
     <meta name="viewport" content="width=device-width">
-    <script src="lib/jquery/jquery.js" defer></script>
-    <script src="lib/bootstrap/js/bootstrap.js" defer></script>
-    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css" />
+    <script type="text/javascript">
+      WebFontConfig = {
+        google: { families: ['Open+Sans:400,700:latin'] }
+      };
+      (function () {
+        var wf = document.createElement('script');
+        wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+          '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+        wf.type = 'text/javascript';
+        wf.async = 'true';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(wf, s);
+      })();
+    </script>
+    <script src="lib/jquery/jquery.min.js" defer></script>
+    <script src="lib/jquery.quicksearch/jquery.quicksearch.min.js" defer></script>
+    <script src="lib/bootstrap/js/bootstrap.min.js" defer></script>
+    <script src="lib/moment/moment.min.js" defer></script>
+    <script src="lib/bootstrap-sortable/js/bootstrap-sortable.js" defer></script>
+    <script src="js/main.js" defer></script>
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="lib/bootstrap-sortable/css/bootstrap-sortable.css" />
     <link rel="stylesheet" href="css/main.css" />
     <link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico" />
     <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="favicon.ico" />
@@ -19,17 +38,79 @@
       <header>
         <h1 class="page-header"><!--<span class="glyphicon icon-site-logo"></span>-->{{title}}</h1>
       </header>
-      <main role="main">
-        <div>
+      <main id="main" role="main">
+        <section>
+          <h2><a data-toggle="collapse" data-target="#search-collapse"><span class="glyphicon glyphicon-chevron-right"></span>検索</a> <small id="matches"></small></h2>
+          <div id="search-collapse" class="collapse">
+            <p class="input-group input-group-lg">
+              <label class="input-group-addon" for="search-text">Filter:</label>
+              <input type="text" class="form-control" id="search-text" />
+            </p>
+{{#columns}}
+            <dl>
+              <dt class="">種別</dt>
+              <dd class="btn-group">
+{{#about}}
+                <label class="btn btn-default btn-lg active">
+                  <input type="checkbox">{{.}}
+                </label>
+{{/about}}
+              </dd>
+              <dt class="">学部</dt>
+              <dd class="btn-group">
+{{#department}}
+                <label class="btn btn-default btn-lg active">
+                  <input type="checkbox">{{.}}
+                </label>
+{{/department}}
+              </dd>
+            </dl>
+{{/columns}}
+          </div>
+        </section>
+        <table id="events" class="table table-bordered table-hover sortable">
+          <thead>
+            <tr>
+              <th>種別</th>
+              <th data-defaultsort="asc">日付</th>
+              <th>時限</th>
+              <th>学部</th>
+              <th>学年</th>
+              <th>授業科目名</th>
+              <th>担当教員</th>
+              <!--<th>掲示日</th>-->
+            </tr>
+          </thead>
+          <tbody>
 {{#events}}
-          <article>
-            <h2><small><time datetime="{{datetime}}">{{dateformatted}}</time></small>{{about}}{{subject}}</h2>
-            <p>【{{about}}】{{dateformatted}}:{{#department}}{{department}}{{/department}}{{#cource}}{{cource}}{{/cource}}{{#grade}}{{grade}}{{/grade}}{{subject}}{{#teacher}}{{teacher}}{{/teacher}}</p>
-          </article>
-{{/events}}        </div>
+            <tr>
+              <td>{{about}}</td>
+              <td data-value="{{datetime}}"><time datetime="{{datetime}}">{{dateformatted}}</time></td>
+              <td>{{period}}</td>
+              <td>{{department}}{{#course}}{{course}}{{/course}}</td>
+              <td>{{grade}}</td>
+              <td>{{subject}}</td>
+              <td>{{teacher}}</td>
+              <!--<td>{{pubdate}}</td>-->
+            </tr>
+{{/events}}
+{{^events}}
+            <tr>
+              <td>N/A</td>
+              <td>N/A</td>
+              <td>N/A</td>
+              <td>N/A</td>
+              <td>N/A</td>
+              <td>N/A</td>
+              <td>N/A</td>
+              <!--<td>N/A</td>-->
+            </tr>
+{{/events}}
+          </tbody>
+        </table>
       </main>
       <footer>
-        <p class="text-center"><a href="/">kyukou-kyudai</a> · by <a target="_blank" href="https://github.com/{{author}}">@{{author}}</a> · Twitter: <a target="_blank" href="https://twitter.com/kyukou_kyudai">@kyukou_kyudai</a> · <a target="_blank" href="https://github.com/{{author}}/kyukou">Source on GitHub</a></p>
+        <p class="text-center"><a class="lead" href="/">{{name}}</a> <small>{{version}}</small> by <a target="_blank" href="https://github.com/{{author}}">@{{author}}</a> · Twitter: <a class="lead" target="_blank" href="https://twitter.com/kyukou_kyudai">@kyukou_kyudai</a> · <a target="_blank" href="https://github.com/{{author}}/kyukou">Source on GitHub</a></p>
       </footer>
     </div>
   </body>

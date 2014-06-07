@@ -2,5 +2,6 @@
 *~
 secret/config.js
 node_modules/
+bower_components/
 public/*.html
-Gruntfile.js
+public/lib/

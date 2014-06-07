@@ -8,9 +8,23 @@
     <meta name="author" content="{{author}}" />
     <meta name="viewport" content="width=device-width">
     <script src="js/log.js" async></script>
-    <script src="lib/jquery/jquery.js" defer></script>
-    <script src="lib/bootstrap/js/bootstrap.js" defer></script>
-    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css" />
+    <script type="text/javascript">
+      WebFontConfig = {
+        google: { families: ['Open+Sans:400,700:latin'] }
+      };
+      (function () {
+        var wf = document.createElement('script');
+        wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+          '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+        wf.type = 'text/javascript';
+        wf.async = 'true';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(wf, s);
+      })();
+    </script>
+    <script src="lib/jquery/jquery.min.js" defer></script>
+    <script src="lib/bootstrap/js/bootstrap.min.js" defer></script>
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" href="css/main.css" />
     <link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico" />
     <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="favicon.ico" />
@@ -33,7 +47,7 @@
         </section>
 {{/logs}}      </main>
       <footer>
-        <p class="text-center"><a href="/">kyukou-kyudai</a> · by <a target="_blank" href="https://github.com/{{author}}">@{{author}}</a> · Twitter: <a target="_blank" href="https://twitter.com/kyukou_kyudai">@kyukou_kyudai</a> · <a target="_blank" href="https://github.com/{{author}}/kyukou">Source on GitHub</a></p>
+        <p class="text-center"><a class="lead" href="/">{{name}}</a> <small>{{version}}</small> by <a target="_blank" href="https://github.com/{{author}}">@{{author}}</a> · Twitter: <a class="lead" target="_blank" href="https://twitter.com/kyukou_kyudai">@kyukou_kyudai</a> · <a target="_blank" href="https://github.com/{{author}}/kyukou">Source on GitHub</a></p>
       </footer>
     </div>
   </body>

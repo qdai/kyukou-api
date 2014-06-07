@@ -51,7 +51,7 @@ Events.findAndCountAll({
       if (err) {
         console.log('error: twitter post');
         console.log('message: ' + err);
-        break;
+        return;
       }
       try {
         console.log('twitter post id: ' + data['id_str']);

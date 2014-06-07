@@ -34,10 +34,10 @@ var Events = sequelize.define('events', {
 // delete expired data
 Events.findAll().success(function (events) {
   var dateYesterday = new Date();
-  dateYesterday.setDate(dateYesterday.getDate() - 1);
+  dateYesterday = new Date(dateYesterday.getFullYear(), dateYesterday.getMonth(), dateYesterday.getDate() - 1, - new Date().getTimezoneOffset() / 60, 0);
   console.log('yesterday: ' + dateYesterday);
   for (var i = 0; i < events.length; i++) {
-    if (new Date(events[i].date).getTime() < dateYesterday.getTime()) {
+    if (events[i].date.getTime() <= dateYesterday.getTime()) {
       console.log('date: ' + events[i].date);
       events[i].destroy().success(function () {
         console.log('destroy: success');
@@ -95,7 +95,7 @@ request({ url: 'http://www.education.kyushu-u.ac.jp/topics/student_index' }, fun
     }
     delete data.tmpDate;
     data.today = new Date();
-    if (data.date.getTime() < new Date(data.today.getFullYear(), data.today.getMonth(), data.today.getDate() - 1, 0, 0)) { return; }
+    if (data.date.getTime() < new Date(data.today.getFullYear(), data.today.getMonth(), data.today.getDate() - 1, - new Date().getTimezoneOffset() / 60, 0)) { return; }
     delete data.today;
     data.period = data.tmp[5];
     data.campus = data.tmp[6];
@@ -154,7 +154,7 @@ request({ url: 'http://www.econ.kyushu-u.ac.jp/student/kyuukou.php' }, function(
     }
     delete data.tmpDate;
     data.today = new Date();
-    if (data.date.getTime() < new Date(data.today.getFullYear(), data.today.getMonth(), data.today.getDate() - 1, 0, 0)) { return; }
+    if (data.date.getTime() < new Date(data.today.getFullYear(), data.today.getMonth(), data.today.getDate() - 1, - new Date().getTimezoneOffset() / 60, 0)) { return; }
     delete data.today;
     data.period = (/：/.test(data.tmp[4]))? 7 : data.tmp[4];
     data.campus = null;
@@ -200,7 +200,7 @@ request({
     data.date = new Date(data.date);
     //data.date.setHours(data.date.getHours() + new Date().getTimezoneOffset() / 60);
     data.today = new Date();
-    if (data.date.getTime() < new Date(data.today.getFullYear(), data.today.getMonth(), data.today.getDate() - 1, 0, 0)) { return; }
+    if (data.date.getTime() < new Date(data.today.getFullYear(), data.today.getMonth(), data.today.getDate() - 1, - new Date().getTimezoneOffset() / 60, 0)) { return; }
     delete data.today;
     data.about = $(this).find(':nth-child(2)').text().replace(/\s*/g, '');
     data.subject = $(this).find(':nth-child(3)').text().replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
@@ -255,7 +255,7 @@ request({
     data.date = new Date(data.date);
     //data.date.setHours(data.date.getHours() + new Date().getTimezoneOffset() / 60);
     data.today = new Date();
-    if (data.date.getTime() < new Date(data.today.getFullYear(), data.today.getMonth(), data.today.getDate() - 1, 0, 0)) { return; }
+    if (data.date.getTime() < new Date(data.today.getFullYear(), data.today.getMonth(), data.today.getDate() - 1, - new Date().getTimezoneOffset() / 60, 0)) { return; }
     delete data.today;
     data.about = $(this).find(':nth-child(6)').text().replace(/\s*/g, '');
     if (data.about !== '補講') {
@@ -325,7 +325,7 @@ request({
     }
     delete data.tmpDate;
     data.today = new Date();
-    if (data.date.getTime() < new Date(data.today.getFullYear(), data.today.getMonth(), data.today.getDate() - 1, 0, 0)) { return; }
+    if (data.date.getTime() < new Date(data.today.getFullYear(), data.today.getMonth(), data.today.getDate() - 1, - new Date().getTimezoneOffset() / 60, 0)) { return; }
     delete data.today;
     data.period = data.tmp[5];
     data.course = data.tmp[6];

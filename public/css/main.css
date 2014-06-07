@@ -1,15 +1,27 @@
-.glyphicon.icon-site-logo {
-  font-family: "MS PGothic";
+th, td {
+  min-width: 65px;
 }
 
-.icon-site-logo:before {
-  content: "●";
-  color: rgb(111, 26, 64);
-  //font-size: 200%;
+a {
+  cursor: pointer;
+}
+
+.container {
+  transition: all .2s ease;
+}
+
+#search-collapse [type="checkbox"] {
+  display: none;
+}
+
+body {
+  text-align: justify;
+  font-family: "Open Sans", Meiryo, sans-serif;
+  min-width: 640px;
 }
 
 body > .container > footer {
-  margin-top: 40px;
+  margin-top: 20px;
   margin-bottom: 40px;
   padding-top: 20px;
   border-top: 1px solid rgb(238, 238, 238);

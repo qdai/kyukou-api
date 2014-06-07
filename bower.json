@@ -9,16 +9,33 @@
   "dependencies": {
     "jquery": "~2.1.1",
     "bootstrap": "~3.1.1",
-    "html5shiv": "~3.7.2"
+    "html5shiv": "~3.7.2",
+    "moment": "~2.6.0",
+    "bootstrap-sortable": "~1.8.0",
+    "jquery.quicksearch": "git://github.com/DeuxHuitHuit/quicksearch.git#~2.0.4"
   },
   "exportsOverride": {
     "bootstrap": {
-      "js": "dist/js/bootstrap.js",
-      "css": "dist/css/bootstrap.css",
+      "js": "dist/js/bootstrap.min.js",
+      "css": "dist/css/bootstrap.min.css",
       "fonts": "dist/fonts/*.*"
     },
     "html5shiv": {
-      "/": "dist/html5shiv-printshiv.js"
+      "/": "dist/html5shiv-printshiv.min.js"
+    },
+    "moment": {
+      "/": "min/moment.min.js",
+      "lang": "lang/ja.js"
+    },
+    "bootstrap-sortable": {
+      "js": "Scripts/*.js",
+      "css": "Contents/*.css"
+    },
+    "jquery": {
+      "/": "dist/jquery.min.js"
+    },
+    "jquery.quicksearch": {
+      "/": "dist/jquery.quicksearch.min.js"
     }
   }
 }

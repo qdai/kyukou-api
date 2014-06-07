@@ -4,4 +4,4 @@ secret/config.js
 node_modules/
 bower_components/
 public/*.html
-public/lib/
+public/lib/*

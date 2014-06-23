@@ -1,3 +1,7 @@
+# IMPORTANT!
+
+This project is no longer maintained here, and moved to https://github.com/Qdai/kyukou.
+
 # [Kyukou Kyudai](http://kyukou-kyudai.rhcloud.com/) [![Dependency Status](https://david-dm.org/Qdai/kyukou.svg)](https://david-dm.org/Qdai/kyukou) [![devDependency Status](https://david-dm.org/Qdai/kyukou/dev-status.svg)](https://david-dm.org/Qdai/kyukou#info=devDependencies)
 
 Alert information about cancellation of a lecture.

@@ -1,11 +1,18 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" prefix="og: http://ogp.me/ns#">
   <head>
     <meta charset="utf-8" />
     <title>{{ title }}</title>
     <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><![endif]-->
     <!--[if lt IE 9]><script src="lib/html5shiv/html5shiv-printshiv.js"></script><![endif]-->
     <meta name="author" content="{{author}}" />
+    <meta name="description" content="{{description}}">
+    <meta name="keywords" content="{{keywords}}"/>
+    <meta property="og:title" content="{{title}}">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="{{description}}">
+    <meta property="og:url" content="{{url}}">
+    <meta property="og:site_name" content="{{title}}">
     <meta name="viewport" content="width=device-width">
     <script type="text/javascript">
       WebFontConfig = {
@@ -32,6 +39,7 @@
     <link rel="stylesheet" href="css/main.css" />
     <link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico" />
     <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="favicon.ico" />
+    <link rel="alternate" type="application/rss+xml" title="{{title}}" href="{{url}}/rss" />
   </head>
   <body>
     <div class="container">
@@ -110,7 +118,7 @@
         </table>
       </main>
       <footer>
-        <p class="text-center"><a class="lead" href="/">{{name}}</a> <small>{{version}}</small> by <a target="_blank" href="https://github.com/{{author}}">@{{author}}</a> · Twitter: <a class="lead" target="_blank" href="https://twitter.com/kyukou_kyudai">@kyukou_kyudai</a> · <a target="_blank" href="https://github.com/{{author}}/kyukou">Source on GitHub</a></p>
+        <p class="text-center"><a class="lead" href="/">{{name}}</a> <small>{{version}}</small> by <a target="_blank" href="https://github.com/{{author}}">@{{author}}</a> · <a class="lead" href="/rss">RSS</a> · Twitter: <a class="lead" target="_blank" href="https://twitter.com/kyukou_kyudai">@kyukou_kyudai</a> · <a target="_blank" href="https://github.com/{{author}}/kyukou">Source on GitHub</a></p>
       </footer>
     </div>
   </body>

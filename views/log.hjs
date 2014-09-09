@@ -47,7 +47,7 @@
         </section>
 {{/logs}}      </main>
       <footer>
-        <p class="text-center"><a class="lead" href="/">{{name}}</a> <small>{{version}}</small> by <a target="_blank" href="https://github.com/{{author}}">@{{author}}</a> · Twitter: <a class="lead" target="_blank" href="https://twitter.com/kyukou_kyudai">@kyukou_kyudai</a> · <a target="_blank" href="https://github.com/{{author}}/kyukou">Source on GitHub</a></p>
+        <p class="text-center"><a class="lead" href="/">{{name}}</a> <small>{{version}}</small> by <a target="_blank" href="https://github.com/{{author}}">@{{author}}</a> · <a class="lead" href="/rss">RSS</a> · Twitter: <a class="lead" target="_blank" href="https://twitter.com/kyukou_kyudai">@kyukou_kyudai</a> · <a target="_blank" href="https://github.com/{{author}}/kyukou">Source on GitHub</a></p>
       </footer>
     </div>
   </body>

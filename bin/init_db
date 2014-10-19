@@ -1,0 +1,47 @@
+#!/usr/bin/env node
+
+var async = require('async');
+var mongoose = require('mongoose');
+require('../models/tasklog')();
+var TaskLog = mongoose.model('Tasklog');
+
+var db = require('../lib/db');
+
+var tasklogs = [];
+tasklogs.push(new TaskLog({
+  name: 'task',
+  log: 'initialized',
+  elapsedTime: 0
+}));
+tasklogs.push(new TaskLog({
+  name: 'twit_new',
+  log: 'initialized',
+  elapsedTime: 0
+}));
+tasklogs.push(new TaskLog({
+  name: 'twit_tomorrow',
+  log: 'initialized',
+  elapsedTime: 0
+}));
+tasklogs.push(new TaskLog({
+  name: 'delete',
+  log: 'initialized',
+  elapsedTime: 0
+}));
+
+db.connect();
+async.each(tasklogs, function (tasklog, callback) {
+  tasklog.save(function (err, tasklog) {
+    if (err) {
+      return callback(err);
+    }
+    return callback();
+  });
+}, function (err) {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log('msg: db init success.')
+  }
+  return db.disconnect();
+});

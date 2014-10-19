@@ -1,17 +1,13 @@
+.nav li, .pagination, .carousel, .panel-title a {
+  cursor: pointer;
+}
+
 th, td {
   min-width: 65px;
 }
 
-a {
+a, tr[data-ng-click] {
   cursor: pointer;
-}
-
-.container {
-  transition: all .2s ease;
-}
-
-#search-collapse [type="checkbox"] {
-  display: none;
 }
 
 body {
@@ -20,9 +16,88 @@ body {
   min-width: 640px;
 }
 
-body > .container > footer {
+.container {
+  transition: all .2s ease;
+}
+
+.alert > :first-child, .panel-body > :first-child {
+  margin-top: 0;
+}
+
+.alert > :last-child, .panel-body > :last-child {
+  margin-bottom: 0;
+}
+
+h2 small.badge {
+  font-size: 65%;
+  font-weight: normal;
+}
+
+.btn-group [type="checkbox"] {
+  display: none;
+}
+
+body > .container {
+  position: relative;
+}
+
+#header-buttons {
+  position: absolute;
+  right: 15px;
+  top: 4px;
+}
+
+#header-buttons a {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  color: #fff;
+  font-size: 24px;
+  padding: 8px;
+  margin: 4px;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: border-radius .2s ease-in-out;
+}
+
+#header-buttons a:hover {
+  color: #fff;
+  border-radius: 20px;
+}
+
+#header-buttons .icon-twitter {
+  background-color: #55acee;
+}
+
+#header-buttons .icon-feed {
+  background-color: #f39700;
+}
+
+#header-buttons span {
+  display: none;
+}
+
+.page-footer {
   margin-top: 20px;
   margin-bottom: 40px;
   padding-top: 20px;
   border-top: 1px solid rgb(238, 238, 238);
+}
+
+.table-sortable thead th[data-ng-click] {
+  cursor: pointer;
+  position: relative;
+}
+
+.table-sortable thead th[data-ng-click]:hover {
+  background: #efefef;
+}
+
+.table-sortable thead th[data-ng-click] span.glyphicon {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  font-size: 12px;
+  margin-top: -5px;
+  color: #bfbfc1;
 }

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="<%site.lang%>" prefix="og: http://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8" />
+    <title><%title%> - <%site.name%></title>
+    <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><![endif]-->
+    <!--[if lt IE 9]><script src="lib/html5shiv/html5shiv-printshiv.js"></script><![endif]-->
+    <meta name="author" content="<%site.author%>" />
+    <meta name="description" content="<%site.description%>">
+    <meta name="keywords" content="<%site.keywords%>"/>
+    <meta property="og:title" content="<%site.name%>">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="<%site.description%>">
+    <meta property="og:url" content="<%site.url%>">
+    <meta property="og:site_name" content="<%site.name%>">
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="icon" type="image/vnd.microsoft.icon" href="/favicon.ico" />
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="/favicon.ico" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="page-header">
+        <h1><%title%> - <%site.name%></h1>
+      </header>
+      <main id="main" role="main">
+<%#apis%>
+        <section>
+          <h2><%title%></h2>
+          <p><%description%></p>
+          <h3>Resource URL</h3>
+          <p><%url%></p>
+          <h3>Parameter(s)</h3>
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+<%#parameters%>
+              <tr>
+                <td><%key%></td>
+                <td><%type%></td>
+                <td><%description%></td>
+              </tr>
+<%/parameters%>
+            </tbody>
+          </table>
+        </section>
+<%/apis%>
+      </main>
+      <footer class="page-footer">
+        <p class="text-center lead"><a target="_blank" href="https://twitter.com/<%site.twitter%>" title="Twitter: @<%site.twitter%>">Twitter</a> · <a href="/rss" title="RSS">RSS</a> · <a href="/status" title="Status">Status</a> · <a href="/api" title="API">API</a></p>
+        <p class="text-center"><a href="/" title="<%site.name%> <%site.version%>"><%site.name%></a> <small><%site.version%></small> by <a target="_blank" href="https://github.com/<%site.author%>" title="Github: @<%site.author%>">@<%site.author%></a> · Open Sourced on <a target="_blank" href="https://github.com/<%site.author%>/kyukou" title="<%site.author%>/kyukou">GitHub</a></p>
+      </footer>
+    </div>
+  </body>
+</html>

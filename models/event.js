@@ -1,0 +1,82 @@
+var mongoose = require('mongoose');
+var findOrCreate = require('mongoose-findorcreate');
+var Schema = mongoose.Schema;
+
+var event = {
+  raw: {
+    type: String,
+    required: true
+  },
+  about: {
+    type: String,
+    required: true
+  },
+  link: {
+    type: String,
+    required: true
+  },
+  eventDate: {
+    type: Date,
+    validate: function (value) {
+      return value.getTime() - Date.now() > 0
+    },
+    required: true
+  },
+  pubDate: {
+    type: Date,
+    default: new Date()
+  },
+  period: {
+    type: String,
+    /*validate: function (value) {
+      for (var i; i < value.length; i++) {
+        if (typeof value[i] !== 'number') {
+          return false;
+        }
+      }
+      return true;
+    },*/
+    required: true
+  },
+  department: {
+    type: String,
+    required: true
+  },
+  subject: {
+    type: String,
+    required: true
+  },
+  teacher: {
+    type: String
+  },
+  campus: {
+    type: String
+  },
+  room: {
+    type: String
+  },
+  note: {
+    type: String
+  },
+  hash: {
+    type: String,
+    required: true
+  },
+  // below auto
+  tweet:{
+    new: {
+      type: Boolean,
+      default: false
+    },
+    tomorrow: {
+      type: Boolean,
+      default: false
+    }
+  }
+};
+
+module.exports = function () {
+  var Event = new Schema(event);
+  Event.plugin(findOrCreate);
+  mongoose.model('Event', Event);
+};

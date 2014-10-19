@@ -1,0 +1,44 @@
+var config = {
+  server: {
+    port: process.env.OPENSHIFT_NODEJS_PORT || 3000,
+    ipaddress: process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1',
+    logDir: process.env.OPENSHIFT_NODEJS_LOG_DIR || './'
+  },
+  admin: {
+    name: '*',
+    hash: '*',
+    salt: '*'
+  },
+  secret: '*',
+  resource: {
+    education: 'http://www.education.kyushu-u.ac.jp/topics/student_index',
+    economics: 'http://www.econ.kyushu-u.ac.jp/student/kyuukou.php',
+    literature: 'http://www2.lit.kyushu-u.ac.jp/~syllabus/cgi-bin/class-schedule.cgi',
+    law: 'http://www.law.kyushu-u.ac.jp/kyukou/keiji.cgi',
+    science: 'http://www.sci.kyushu-u.ac.jp/home/cancel/cancel.php'
+  }
+};
+
+// db and twitter
+var db_database = 'kyukou'
+if (process.env.NODE_ENV === 'production') {
+  var db_user = '*';
+  var db_pass = '*';
+  config.mongoURI = 'mongodb://' + db_user + ':' + db_pass + '@' + process.env.OPENSHIFT_MONGODB_DB_HOST + ':' + process.env.OPENSHIFT_MONGODB_DB_PORT + '/' + db_database;
+  config.twitter = {
+    consumer_key: '*',
+    consumer_secret: '*',
+    access_token: '*',
+    access_token_secret: '*'
+  };
+} else {
+  config.mongoURI = 'mongodb://localhost/' + db_database;
+  config.twitter = {
+    consumer_key: '*',
+    consumer_secret: '*',
+    access_token: '*',
+    access_token_secret: '*'
+  }
+}
+
+module.exports = config;

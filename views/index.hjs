@@ -1,124 +1,152 @@
 <!DOCTYPE html>
-<html lang="ja" prefix="og: http://ogp.me/ns#">
+<html lang="<%site.lang%>" manifest="/kyukou.appcache" prefix="og: http://ogp.me/ns#"
+   data-ng-app="kyukouApp">
   <head>
     <meta charset="utf-8" />
-    <title>{{ title }}</title>
+    <title><%site.name%></title>
     <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><![endif]-->
     <!--[if lt IE 9]><script src="lib/html5shiv/html5shiv-printshiv.js"></script><![endif]-->
-    <meta name="author" content="{{author}}" />
-    <meta name="description" content="{{description}}">
-    <meta name="keywords" content="{{keywords}}"/>
-    <meta property="og:title" content="{{title}}">
+    <meta name="author" content="<%site.author%>" />
+    <meta name="description" content="<%site.description%>">
+    <meta name="keywords" content="<%site.keywords%>"/>
+    <meta property="og:title" content="<%site.name%>">
     <meta property="og:type" content="website">
-    <meta property="og:description" content="{{description}}">
-    <meta property="og:url" content="{{url}}">
-    <meta property="og:site_name" content="{{title}}">
-    <meta name="viewport" content="width=device-width">
-    <script type="text/javascript">
-      WebFontConfig = {
-        google: { families: ['Open+Sans:400,700:latin'] }
-      };
-      (function () {
-        var wf = document.createElement('script');
-        wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-          '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-        wf.type = 'text/javascript';
-        wf.async = 'true';
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(wf, s);
-      })();
+    <meta property="og:description" content="<%site.description%>">
+    <meta property="og:url" content="<%site.url%>">
+    <meta property="og:site_name" content="<%site.name%>">
+    <meta name="viewport" content="width=device-width" />
+    <script src="/lib/angular/angular.min.js" defer></script>
+    <script src="/lib/angular-bootstrap/ui-bootstrap.min.js" defer></script>
+    <script src="/js/app.js" defer></script>
+    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/icomoon/style.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="icon" type="image/vnd.microsoft.icon" href="/favicon.ico" />
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="/favicon.ico" />
+    <link rel="alternate" type="application/rss+xml" title="<%site.name%>" href="<%site.url%>/rss" />
+    <script type="text/ng-template" id="kyukou-loading">
+      <div class="alert" role="alert"
+         data-ng-class="{'alert-info': !loading.err, 'alert-danger': loading.err}">
+        <p class="lead"
+           data-ng-show="!loading.err">Now loading...<p>
+        <p class="lead"
+           data-ng-show="loading.err">Load error ({{loading.status}}). Please <a href="./">load again</a>.<p>
+      </div>
     </script>
-    <script src="lib/jquery/jquery.min.js" defer></script>
-    <script src="lib/jquery.quicksearch/jquery.quicksearch.min.js" defer></script>
-    <script src="lib/bootstrap/js/bootstrap.min.js" defer></script>
-    <script src="lib/moment/moment.min.js" defer></script>
-    <script src="lib/bootstrap-sortable/js/bootstrap-sortable.js" defer></script>
-    <script src="js/main.js" defer></script>
-    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="lib/bootstrap-sortable/css/bootstrap-sortable.css" />
-    <link rel="stylesheet" href="css/main.css" />
-    <link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico" />
-    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="favicon.ico" />
-    <link rel="alternate" type="application/rss+xml" title="{{title}}" href="{{url}}/rss" />
+    <script type="text/ng-template" id="kyukou-app">
+      <section>
+        <h2>
+          <a title="検索"
+             data-ng-click="isCollapsed = !isCollapsed">
+            <span class="glyphicon"
+               data-ng-class="{'glyphicon-chevron-down': !isCollapsed, 'glyphicon-chevron-right': isCollapsed}">
+            </span>検索</a> <small class="badge">{{filtered.length}}/{{events.length}}</small>
+        </h2>
+        <div class="collapse"
+           data-collapse="isCollapsed">
+          <p class="input-group input-group-lg">
+            <label class="input-group-addon" for="query-filter">Filter:</label>
+            <input type="text" id="query-filter" class="form-control"
+               data-ng-model="queryFilter" />
+          </p>
+          <dl>
+            <dt class="">種別</dt>
+            <dd class="btn-group">
+              <label class="btn btn-default btn-lg"
+                 data-ng-repeat="about in abouts"
+                 data-ng-class="{active: isSelectedAbout(about)}">
+                <input type="checkbox" value="{{about}}"
+                   data-ng-click="setSelectedAbouts()" />{{about}}
+              </label>
+            </dd>
+            <dt class="">学部</dt>
+            <dd class="btn-group">
+              <label class="btn btn-default btn-lg"
+                 data-ng-repeat="department in departments"
+                 data-ng-class="{active: isSelectedDepartment(department)}">
+                <input type="checkbox" value="{{department}}"
+                   data-ng-click="setSelectedDepartments()" />{{department}}
+              </label>
+            </dd>
+          </dl>
+        </div>
+      </section>
+      <table class="table table-bordered table-hover table-sortable">
+        <thead>
+          <tr>
+            <th
+               data-ng-click="setSorting('about')">種別<span class="glyphicon"
+                  data-ng-show="isSortedCol('about')"
+                  data-ng-class="{'glyphicon-chevron-down': !sort.desc, 'glyphicon-chevron-up': sort.desc}">
+              </span></th>
+            <th
+               data-ng-click="setSorting('datetime')">日付<span class="glyphicon"
+                  data-ng-show="isSortedCol('datetime')"
+                  data-ng-class="{'glyphicon-chevron-down': !sort.desc, 'glyphicon-chevron-up': sort.desc}">
+              </span></th>
+            <th
+               data-ng-click="setSorting('period')">時限<span class="glyphicon"
+                  data-ng-show="isSortedCol('period')"
+                  data-ng-class="{'glyphicon-chevron-down': !sort.desc, 'glyphicon-chevron-up': sort.desc}">
+              </span></th>
+            <th
+               data-ng-click="setSorting('department')">学部<span class="glyphicon"
+                  data-ng-show="isSortedCol('department')"
+                  data-ng-class="{'glyphicon-chevron-down': !sort.desc, 'glyphicon-chevron-up': sort.desc}">
+              </span></th>
+            <th
+               data-ng-click="setSorting('subject')">授業科目名<span class="glyphicon"
+                  data-ng-show="isSortedCol('subject')"
+                  data-ng-class="{'glyphicon-chevron-down': !sort.desc, 'glyphicon-chevron-up': sort.desc}">
+              </span></th>
+            <th
+               data-ng-click="setSorting('teacher')">担当教員<span class="glyphicon"
+                  data-ng-show="isSortedCol('teacher')"
+                  data-ng-class="{'glyphicon-chevron-down': !sort.desc, 'glyphicon-chevron-up': sort.desc}">
+              </span></th>
+            <th
+               data-ng-click="setSorting('note')">備考<span class="glyphicon"
+                  data-ng-show="isSortedCol('note')"
+                  data-ng-class="{'glyphicon-chevron-down': !sort.desc, 'glyphicon-chevron-up': sort.desc}">
+              </span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr title="{{event.raw}}"
+             data-ng-click="viewResource(event.link)"
+             data-ng-repeat="event in filtered = (events | aboutFilter:selectedAbouts | departmentFilter:selectedDepartments | filter:queryFilter | orderBy:sort.col:sort.desc)">
+            <td>{{event.about}}</td>
+            <td><time datetime="{{event.datetime}}">{{event.dateformatted}}</time></td>
+            <td>{{event.period}}</td>
+            <td>{{event.department}}</td>
+            <td>{{event.subject}}</td>
+            <td>{{event.teacher}}</td>
+            <td>{{event.note}} {{event.campus}} {{event.room}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </script>
   </head>
   <body>
     <div class="container">
-      <header>
-        <h1 class="page-header"><!--<span class="glyphicon icon-site-logo"></span>-->{{title}}</h1>
+      <header class="page-header clearfix">
+        <h1><%site.name%></h1>
+        <p><%site.description%></p>
+        <p id="header-buttons"><a class="icon-twitter" target="_blank" href="https://twitter.com/<%site.twitter%>" title="Twitter"><span>Twitter</span></a><a class="icon-feed" href="/rss" title="RSS"><span>RSS</span></a></p>
       </header>
-      <main id="main" role="main">
-        <section>
-          <h2><a data-toggle="collapse" data-target="#search-collapse"><span class="glyphicon glyphicon-chevron-right"></span>検索</a> <small id="matches"></small></h2>
-          <div id="search-collapse" class="collapse">
-            <p class="input-group input-group-lg">
-              <label class="input-group-addon" for="search-text">Filter:</label>
-              <input type="text" class="form-control" id="search-text" />
-            </p>
-{{#columns}}
-            <dl>
-              <dt class="">種別</dt>
-              <dd class="btn-group">
-{{#about}}
-                <label class="btn btn-default btn-lg active">
-                  <input type="checkbox">{{.}}
-                </label>
-{{/about}}
-              </dd>
-              <dt class="">学部</dt>
-              <dd class="btn-group">
-{{#department}}
-                <label class="btn btn-default btn-lg active">
-                  <input type="checkbox">{{.}}
-                </label>
-{{/department}}
-              </dd>
-            </dl>
-{{/columns}}
+      <main role="main"
+         data-ng-include="ctrlTmpl"
+         data-ng-controller="eventListCtrl">
+        <noscript>
+          <div class="alert alert-danger">
+            <h2><%site.name%>はJavaScriptを使用しています。</h2>
+            <p>お使いのブラウザのJavaScriptを有効にしてご利用ください。</p>
           </div>
-        </section>
-        <table id="events" class="table table-bordered table-hover sortable">
-          <thead>
-            <tr>
-              <th>種別</th>
-              <th data-defaultsort="asc">日付</th>
-              <th>時限</th>
-              <th>学部</th>
-              <th>学年</th>
-              <th>授業科目名</th>
-              <th>担当教員</th>
-              <!--<th>掲示日</th>-->
-            </tr>
-          </thead>
-          <tbody>
-{{#events}}
-            <tr>
-              <td>{{about}}</td>
-              <td data-value="{{datetime}}"><time datetime="{{datetime}}">{{dateformatted}}</time></td>
-              <td>{{period}}</td>
-              <td>{{department}}{{#course}}{{course}}{{/course}}</td>
-              <td>{{grade}}</td>
-              <td>{{subject}}</td>
-              <td>{{teacher}}</td>
-              <!--<td>{{pubdate}}</td>-->
-            </tr>
-{{/events}}
-{{^events}}
-            <tr>
-              <td>N/A</td>
-              <td>N/A</td>
-              <td>N/A</td>
-              <td>N/A</td>
-              <td>N/A</td>
-              <td>N/A</td>
-              <td>N/A</td>
-              <!--<td>N/A</td>-->
-            </tr>
-{{/events}}
-          </tbody>
-        </table>
+        </noscript>
       </main>
-      <footer>
-        <p class="text-center"><a class="lead" href="/">{{name}}</a> <small>{{version}}</small> by <a target="_blank" href="https://github.com/{{author}}">@{{author}}</a> · <a class="lead" href="/rss">RSS</a> · Twitter: <a class="lead" target="_blank" href="https://twitter.com/kyukou_kyudai">@kyukou_kyudai</a> · <a target="_blank" href="https://github.com/{{author}}/kyukou">Source on GitHub</a></p>
+      <footer class="page-footer">
+        <p class="text-center lead"><a target="_blank" href="https://twitter.com/<%site.twitter%>" title="Twitter: @<%site.twitter%>">Twitter</a> · <a href="/rss" title="RSS">RSS</a> · <a href="/status" title="Status">Status</a> · <a href="/api" title="API">API</a></p>
+        <p class="text-center"><a href="/" title="<%site.name%> <%site.version%>"><%site.name%></a> <small><%site.version%></small> by <a target="_blank" href="https://github.com/<%site.author%>" title="Github: @<%site.author%>">@<%site.author%></a> · Open Sourced on <a target="_blank" href="https://github.com/<%site.author%>/kyukou" title="<%site.author%>/kyukou">GitHub</a></p>
       </footer>
     </div>
   </body>

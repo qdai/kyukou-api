@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-//var debug = require('debug')('kyukou');
-var config = require('../secret/config.js');
+var debug = require('debug')('kyukou');
+var config = require('../settings/config');
 var app = require('../app');
 
-app.set('port', config.server_port);
-app.set('ipaddr', config.server_ipaddress);
+app.set('port', config.server.port);
+app.set('ipaddr', config.server.ipaddress);
 
 var server = app.listen(app.get('port'), app.get('ipaddr'), function() {
-  //debug('Express server listening on port ' + server.address().port);
+  debug('Express server listening on port ' + server.address().port);
 });

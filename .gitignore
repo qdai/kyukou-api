@@ -1,10 +1,12 @@
 *.*~
 *~
-secret/config.js
+settings/config.js
 node_modules/
 bower_components/
 public/*.html
 public/lib/*
 
-bin/manually/
+.openshift/
+
 old/
+public/test/

@@ -106,7 +106,7 @@ router.get('/', function(req, res) {
       {
         title: 'List',
         description: 'List all event(s).',
-        url: 'GET: http://kyukouv-kyudai.rhcloud.com/api/list.json',
+        url: 'GET: http://kyukou-kyudai.rhcloud.com/api/list.json',
         parameters: [
           {
             key: 'start_index (optional)',
@@ -128,7 +128,7 @@ router.get('/', function(req, res) {
       {
         title: 'Log',
         description: 'Show latest log.',
-        url: 'GET: http://kyukouv-kyudai.rhcloud.com/api/log/:about.json',
+        url: 'GET: http://kyukou-kyudai.rhcloud.com/api/log/:about.json',
         parameters: [
           {
             key: 'about (require)',

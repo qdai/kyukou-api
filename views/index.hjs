@@ -113,13 +113,12 @@
         </thead>
         <tbody>
           <tr title="{{event.raw}}"
-             data-ng-click="viewResource(event.link)"
              data-ng-repeat="event in filtered = (events | aboutFilter:selectedAbouts | departmentFilter:selectedDepartments | filter:queryFilter | orderBy:sort.col:sort.desc)">
             <td>{{event.about}}</td>
             <td><time datetime="{{event.datetime}}">{{event.dateformatted}}</time></td>
             <td>{{event.period}}</td>
             <td>{{event.department}}</td>
-            <td>{{event.subject}}</td>
+            <td><a target="_blank" href="{{event.link}}">{{event.subject}}</a></td>
             <td>{{event.teacher}}</td>
             <td>{{event.note}} {{event.campus}} {{event.room}}</td>
           </tr>

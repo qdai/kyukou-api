@@ -18,7 +18,7 @@ var event = {
   eventDate: {
     type: Date,
     validate: function (value) {
-      return value.getTime() - Date.now() > 0
+      return value.getTime() - Date.now() >= -64800000; // 18hours
     },
     required: true
   },

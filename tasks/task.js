@@ -153,6 +153,7 @@ async.parallel([
           return String.fromCharCode(s.charCodeAt(0) - 65248);
         }, '').replace(/(^\s+)|(\s+$)/g, '').replace(/年|月/g, '-').replace(/日.*/, '');
         data.eventDate = new Date(data.eventDate);
+        data.eventDate.setHours(data.eventDate.getHours() - 9);
         data.pubDate = $(this).find(':nth-child(5)').text().replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
           return String.fromCharCode(s.charCodeAt(0) - 65248);
         }, '').replace(/年|月/g, '-').replace(/日\s*|分.*/g, ' ').replace(/時/g, ':').replace(/(^\s+)|(\s+$)/g, '');

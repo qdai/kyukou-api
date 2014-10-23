@@ -1,5 +1,5 @@
 var kyukouApp = angular.module('kyukouApp', ['kyukouApp.filters', 'ui.bootstrap']);
-kyukouApp.controller('eventListCtrl', ['$scope', '$http', '$window', function ($scope, $http, $window) {
+kyukouApp.controller('eventListCtrl', ['$scope', '$http', function ($scope, $http) {
   $scope.isCollapsed = true;
 
   $scope.ctrlTmpl = 'kyukou-loading';
@@ -14,7 +14,7 @@ kyukouApp.controller('eventListCtrl', ['$scope', '$http', '$window', function ($
   // get events(, abouts, departments)
   $http.get('./api/list.json').success(function(data) {
     for (var i = 0; i < data.length; i++) {
-      data[i].raw = '別のタブで開く: ' + data[i].raw.replace(/\s+/g, ' ');
+      data[i].raw = data[i].raw.replace(/\s+/g, ' ');
       // datetime
       data[i].eventDate = new Date(data[i].eventDate);
       data[i].datetime = data[i].eventDate.toISOString();
@@ -45,10 +45,6 @@ kyukouApp.controller('eventListCtrl', ['$scope', '$http', '$window', function ($
       err: true
     }
   });
-
-  $scope.viewResource = function (url) {
-    $window.open(url);
-  }
 
   $scope.selectedAbouts = [];
   //$scope.selectedAbouts = $scope.abouts.concat();

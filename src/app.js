@@ -1,53 +1,58 @@
 var kyukouApp = angular.module('kyukouApp', ['kyukouApp.filters', 'ui.bootstrap']);
-kyukouApp.controller('eventListCtrl', ['$scope', '$http', function ($scope, $http) {
-  $scope.isCollapsed = true;
-
-  $scope.ctrlTmpl = 'kyukou-loading';
-  $scope.loading = {
-    err: false
-  };
-
-  $scope.events = [];
-  $scope.abouts = [];
-  $scope.departments = [];
-
-  // get events(, abouts, departments)
-  $http.get('./api/list.json').success(function(data) {
+kyukouApp.factory('eventList', ['$http', '$q', function ($http, $q) {
+  var deferred = $q.defer();
+  $q.all([
+    $http.get('//$$SITE_URL$$/api/1/events/list.json')
+  ]).then(function (results) {
+    var data = results[0].data;
+    var abouts = [];
+    var departments = [];
     for (var i = 0; i < data.length; i++) {
       data[i].raw = data[i].raw.replace(/\s+/g, ' ');
       // datetime
       data[i].eventDate = new Date(data[i].eventDate);
       data[i].datetime = data[i].eventDate.toISOString();
-      data[i].dateformatted = data[i].eventDate.getFullYear() + '年' + (data[i].eventDate.getMonth() + 1) + '月' + data[i].eventDate.getDate() + '日（' + ['日','月','火','水','木','金','土'][data[i].eventDate.getDay()] + ')';
-      // push to events
-      $scope.events.push(data[i]);
+      data[i].dateformatted = data[i].eventDate.getFullYear() + '年' + (data[i].eventDate.getMonth() + 1) + '月' + data[i].eventDate.getDate() + '日（' + ['日', '月', '火', '水', '木', '金', '土'][data[i].eventDate.getDay()] + ')';
       // push to abouts
-      if ($scope.abouts.indexOf(data[i].about) === -1) {
-        $scope.abouts.push(data[i].about);
+      if (abouts.indexOf(data[i].about) === -1) {
+        abouts.push(data[i].about);
       }
       //push to departments
-      if ($scope.departments.indexOf(data[i].department.match(/^\S*学部/)[0]) === -1) {
-        $scope.departments.push(data[i].department.match(/^\S*学部/)[0]);
+      if (departments.indexOf(data[i].department.match(/^\S*学部/)[0]) === -1) {
+        departments.push(data[i].department.match(/^\S*学部/)[0]);
       }
     }
-    $scope.abouts.sort();
-    $scope.departments.sort();
+    deferred.resolve({
+      events: data,
+      abouts: abouts.sort(),
+      departments: departments.sort()
+    });
+  }, function (error) {
+    deferred.reject(error);
+  });
+  return deferred.promise;
+}]);
+kyukouApp.controller('eventListCtrl', ['$scope', 'eventList', function ($scope, eventList) {
+  $scope.isCollapsed = true;
 
-    // show
+  $scope.ctrlTmpl = 'kyukou-loading';
+  $scope.error = null;
+
+  // load
+  eventList.then(function (data) {
+    $scope.events = data.events;
+    $scope.abouts = data.abouts;
+    $scope.departments = data.departments;
+
     $scope.ctrlTmpl = 'kyukou-app';
-    $scope.looading = {
-      err: false
+    $scope.error = null;
+  }, function (err) {
+    $scope.error = {
+      status: err.status
     };
-  }).error(function (err, status) {
-    console.error('load error: %s: %s', status, err);
-    $scope.loading = {
-      status: status,
-      err: true
-    }
   });
 
   $scope.selectedAbouts = [];
-  //$scope.selectedAbouts = $scope.abouts.concat();
   $scope.setSelectedAbouts = function () {
     var about = this.about;
     var index = $scope.selectedAbouts.indexOf(about);

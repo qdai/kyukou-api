@@ -1,0 +1,98 @@
+doctype html
+html(lang=site.lang, manifest='/kyukou.appcache', prefix='og: http://ogp.me/ns#', data-ng-app='kyukouApp')
+  head
+    meta(charset='utf-8')
+    title=page.title
+    <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><![endif]-->
+    meta(name='viewport', content='width=device-width')
+    meta(name='author', content=site.author)
+    meta(name='application-name', content=site.name)
+    meta(name='description', content=page.description)
+    meta(name='keywords', content=page.keywords)
+    meta(property='og:title', content=page.title)
+    meta(property='og:type', content='website')
+    meta(property='og:description', content=page.description)
+    meta(property='og:url', content='http://' + site.url)
+    meta(property='og:site_name', content=site.name)
+    link(rel='stylesheet', href='/lib/bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/icomoon/style.css')
+    link(rel='stylesheet', href='/css/main.css')
+    script(src='/lib/angular/angular.min.js', defer)
+    script(src='/lib/angular-bootstrap/ui-bootstrap.min.js', defer)
+    script(src='/js/app.js', defer)
+    link(rel='icon', type='image/vnd.microsoft.icon', href='/favicon.ico')
+    link(rel='shortcut icon', type='image/vnd.microsoft.icon', href='/favicon.ico')
+    link(rel='alternate' type='application/rss+xml' title=site.name href='http://' + site.url + '/rss')
+    script#kyukou-loading(type='text/ng-template')
+      div.alert(role='alert', data-ng-class='{\'alert-info\': !error, \'alert-danger\': error}')
+        p.lead(data-ng-show='!error') Now loading...
+        p.lead(data-ng-show='error') Load error ({{error.status}}). Please 
+          a(href='/') load again
+          | .
+    script#kyukou-app(type='text/ng-template')
+      section
+        h2
+          a(title='検索', data-ng-click='isCollapsed = !isCollapsed')
+            span.glyphicon(data-ng-class='{\'glyphicon-chevron-down\': !isCollapsed, \'glyphicon-chevron-right\': isCollapsed}')
+            | 検索
+          |  
+          small.badge {{filtered.length}}/{{events.length}}
+        div.collapse(data-collapse='isCollapsed')
+          p.input-group.input-group-lg
+            label.input-group-addon(for='query-filter') Filter:
+            input#query-filter.form-control(type='text', data-ng-model='queryFilter')
+          dl
+            dt 種別
+            dd.btn-group
+              label.btn.btn-default.btn-lg(data-ng-repeat='about in abouts', data-ng-class='{active: isSelectedAbout(about)}')
+                input(type='checkbox', value='{{about}}', data-ng-click='setSelectedAbouts()')
+                | {{about}}
+            dt 学部
+            dd.btn-group
+              label.btn.btn-default.btn-lg(data-ng-repeat='department in departments', data-ng-class='{active: isSelectedDepartment(department)}')
+                input(type='checkbox', value='{{department}}', data-ng-click='setSelectedDepartments()')
+                | {{department}}
+      table.table.table-bordered.table-hover.table-sortable
+        thead
+          tr
+            th(data-ng-click='setSorting(\'about\')') 種別
+              span.glyphicon(data-ng-show='isSortedCol(\'about\')', data-ng-class='{\'glyphicon-chevron-down\': !sort.desc, \'glyphicon-chevron-up\': sort.desc}')
+            th(data-ng-click='setSorting(\'datetime\')') 日付
+              span.glyphicon(data-ng-show='isSortedCol(\'datetime\')', data-ng-class='{\'glyphicon-chevron-down\': !sort.desc, \'glyphicon-chevron-up\': sort.desc}')
+            th(data-ng-click='setSorting(\'period\')') 時限
+              span.glyphicon(data-ng-show='isSortedCol(\'period\')', data-ng-class='{\'glyphicon-chevron-down\': !sort.desc, \'glyphicon-chevron-up\': sort.desc}')
+            th(data-ng-click='setSorting(\'department\')') 学部
+              span.glyphicon(data-ng-show='isSortedCol(\'department\')', data-ng-class='{\'glyphicon-chevron-down\': !sort.desc, \'glyphicon-chevron-up\': sort.desc}')
+            th(data-ng-click='setSorting(\'subject\')') 授業科目名
+              span.glyphicon(data-ng-show='isSortedCol(\'subject\')', data-ng-class='{\'glyphicon-chevron-down\': !sort.desc, \'glyphicon-chevron-up\': sort.desc}')
+            th(data-ng-click='setSorting(\'teacher\')') 担当教員
+              span.glyphicon(data-ng-show='isSortedCol(\'teacher\')', data-ng-class='{\'glyphicon-chevron-down\': !sort.desc, \'glyphicon-chevron-up\': sort.desc}')
+            th(data-ng-click='setSorting(\'note\')') 備考
+              span.glyphicon(data-ng-show='isSortedCol(\'note\')', data-ng-class='{\'glyphicon-chevron-down\': !sort.desc, \'glyphicon-chevron-up\': sort.desc}')
+        tbody
+          tr(title='{{event.raw}}', data-ng-repeat='event in filtered = (events | aboutFilter:selectedAbouts | departmentFilter:selectedDepartments | filter:queryFilter | orderBy:sort.col:sort.desc)')
+            td {{event.about}}
+            td
+              time(datetime='{{event.datetime}}') {{event.dateformatted}}
+            td {{event.period}}
+            td {{event.department}}
+            td
+              a(target='_blank', href='{{event.link}}') {{event.subject}}
+            td {{event.teacher}}
+            td {{event.note}} {{event.campus}} {{event.room}}
+  body
+    div.container
+      header.page-header.clearfix
+        h1=page.title
+        p=page.description
+        p#header-buttons
+          a.icon-twitter(target='_blank', href='//twitter.com/' + site.twitter, title='Twitter')
+            span Twitter
+          a.icon-feed(href='/rss', title='RSS')
+            span RSS
+      main(role='main', data-ng-include='ctrlTmpl', data-ng-controller='eventListCtrl')
+        noscript
+          div.alert.alert-danger
+            h2=site.name + 'はJavaScriptを使用しています。'
+            p お使いのブラウザのJavaScriptを有効にしてご利用ください。
+      include ./includes/footer.jade

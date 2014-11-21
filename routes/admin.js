@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var async = require('async');
 var pwd = require('pwd');
 var mongoose = require('mongoose');
 var Event = mongoose.model('Event');
@@ -13,7 +12,10 @@ router.get('/', function (req, res) {
     return res.redirect('/admin/login');
   }
   res.render('admin', {
-    site: site
+    site: site,
+    page: {
+      title: 'Admin - ' + site.name
+    }
   });
 });
 
@@ -22,7 +24,10 @@ router.get('/login', function (req, res) {
     return res.redirect('/admin');
   }
   res.render('login', {
-    site: site
+    site: site,
+    page: {
+      title: 'Login - ' + site.name
+    }
   });
 });
 
@@ -34,7 +39,7 @@ router.post('/login', function (req, res) {
   }
   pwd.hash(pass, config.admin.salt, function (err, hash) {
     if (err) {
-      return res.render('error', {
+      return res.status(500).render('error', {
         message: err.message,
         error: err
       });
@@ -53,75 +58,87 @@ router.get('/logout', function (req, res) {
 });
 
 router.get('/list.json', function (req, res) {
-  res.set('Content-Type', 'application/json');
   if (!req.session.loggedin) {
-    return res.send('{"error":{"message":"auth require"}}');
+    return res.status(400).json({
+      error: {
+        message: 'Authentication required'
+      }
+    });
   }
-  async.waterfall([
-    function (callback) {
-      Event.find(null, '-__v', {
-        sort: {
-          eventDate: 1,
-          period: 1
+  Event.find(null, '-__v', {
+    sort: {
+      eventDate: 1,
+      period: 1
+    }
+  }, function (err, events) {
+    if (err) {
+      return res.status(500).json({
+        error: {
+          message: err.message
         }
-      }, function (err, events) {
-        if (err) {
-          return callback(err, null);
-        }
-        return callback(null, events);
       });
     }
-  ], function (err, events) {
-    if (err) {
-      return res.send('{"error":{"message":"' + err.message + '"}}');
-    }
-    res.send(JSON.stringify(events));
+    res.json(events);
   });
 })
 
 router.post('/:adminmethod', function (req, res) {
-  res.set('Content-Type', 'application/json');
   if (!req.session.loggedin) {
-    return res.send('{"error":{"message":"auth require"}}');
+    return res.status(400).json({
+      error: {
+        message: 'Authentication required'
+      }
+    });
   }
   switch (String(req.params.adminmethod)) {
     case 'add':
-      var data = req.body; // TODO: validate
+      var data = req.body;
       data.eventDate = new Date(data.eventDate);
-      if (!data.pubDate) {
-        data.pubDat = new Date();
+      if (data.pubDate) {
+        data.pubDate = new Date(data.pubDate);
       }
       data.hash = require('crypto').createHash('sha256').update(data.raw.replace(/\s/g, '')).digest('hex');
-      async.waterfall([
-        function (callback) {
-          Event.findOrCreate({
-            hash: data.hash
-          }, data, function (err, event, created) {
-            if (err) {
-              return callback(err, null);
+      Event.findOrCreate({
+        hash: data.hash
+      }, data, function (err, event, created) {
+        if (err) {
+          return res.status(500).json({
+            error: {
+              message: err.message
             }
-            if (!created) {
-              return callback(new Error('not created'), null);
+          })
+        }
+        if (created) {
+          res.json({
+            success: {
+              message: event.hash + ' created'
             }
-            return callback(null, event);
+          })
+        } else {
+          res.status(400).json({
+            error: {
+              message: event.hash + ' already exist'
+            }
           });
         }
-      ], function (err, event) {
-        if (err) {
-          console.log(err)
-          return res.send('{"error":{"message":"' + err.message + '"}}');
-        }
-        res.send('{"success":{"message":"' + event.hash + ' created"}}');
       });
       break;
     case 'edit':
       var hash = req.body.hash;
       if (!/^[a-f0-9]{64}$/.test(hash)) {
-        return res.send('{"error":{"message":"invalid hash"}}');
+        return res.status(400).json({
+          error: {
+            message: 'Invalid hash ' + hash
+          }
+        });
       }
       var key = req.body.key;
       if (['about', 'link', 'eventDate', 'period', 'department', 'subject', 'teacher', 'campus', 'room', 'note', 'raw', 'tweet.new', 'tweet.tomorrow'].indexOf(key) === -1) {
-        return res.send('{"error":{"message":"invalid data key"}}');
+        return res.status(400).json({
+          error: {
+            message: 'Invalid key ' + key
+          }
+        });
       }
       var value = req.body.value;
       if (key === 'eventDate') {
@@ -129,55 +146,71 @@ router.post('/:adminmethod', function (req, res) {
       }
       var data = {};
       data[key] = value;
-      async.waterfall([
-        function (callback) {
-          Event.findOneAndUpdate({
-            hash: hash
-          }, {
-            $set: data
-          }, function (err, event) {
-            if (err) {
-              return callback(err, null);
+      Event.findOneAndUpdate({
+        hash: hash
+      }, {
+        $set: data
+      }, function (err, event) {
+        if (err) {
+          return res.status(500).json({
+            error: {
+              message: err.message
             }
-            return callback(null, event);
           });
         }
-      ], function (err, event) {
-        if (err) {
-          return res.send('{"error":{"message":"' + err.message + '"}}');
+        if (!event) {
+          return res.status(400).json({
+            error: {
+              message: hash + ' not found'
+            }
+          });
         }
-        if (!event){
-          return res.send('{"error":{"message":"not found"}}');
-        }
-        res.send('{"success":{"message":"' + event.hash + ' updated"}}');
+        res.json({
+          success: {
+            message: event.hash + ' updated'
+          }
+        });
       });
       break;
     case 'delete':
       var hash = req.body.hash;
       if (!/^[a-f0-9]{64}$/.test(hash)) {
-        return res.send('{"error":{"message":"invalid hash"}}');
+        return res.status(400).json({
+          error: {
+            message: 'Invalid hash ' + hash
+          }
+        });
       }
-      async.waterfall([
-        function (callback) {
-          Event.findOneAndRemove({ hash: hash }, function (err, event) {
-            if (err) {
-              return callback(err, null);
+      Event.findOneAndRemove({
+        hash: hash
+      }, function (err, event) {
+        if (err) {
+          return res.status(500).json({
+            error: {
+              message: err.message
             }
-            return callback(null, event);
           });
         }
-      ], function (err, event) {
-        if (err) {
-          return res.send('{"error":{"message":"' + err.message + '"}}');
+        if (!event) {
+          return res.status(400).json({
+            error: {
+              message: hash + ' not found'
+            }
+          });
         }
-        if (!event){
-          return res.send('{"error":{"message":"not found"}}');
-        }
-        res.send('{"success":{"message":"' + event.hash + ' deleted"}}');
+        res.json({
+          success: {
+            message: event.hash + ' deleted'
+          }
+        });
       });
       break;
     default:
-      res.send('{"error":{"message":"unknown method"}}');
+      return res.status(400).json({
+        error: {
+          message: 'Unknown method ' + String(req.params.adminmethod)
+        }
+      });
   }
 });
 

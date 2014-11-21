@@ -3,14 +3,18 @@ var router = express.Router();
 
 var site = require('../settings/site');
 
-/* GET home page. */
-router.get('/', function(req, res) {
+router.get('/', function (req, res) {
   res.render('index', {
-    site: site
+    site: site,
+    page: {
+      title: site.name,
+      description: site.description,
+      keywords: site.keywords
+    }
   });
 });
 
-router.get('/kyukou.appcache', function(req, res) {
+router.get('/kyukou.appcache', function (req, res) {
   res.set('Content-Type', 'text/cache-manifest; charset=UTF-8');
   //res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
   //res.set('Pragma', 'no-cache');

@@ -1,0 +1,17 @@
+footer.page-footer
+  p.text-center.lead
+    a(target='_blank', href='//twitter.com/' + site.twitter, title='Twitter: @' + site.twitter) Twitter
+    |  · 
+    a(href='/rss', title='RSS') RSS
+    |  · 
+    a(href='/status', title='Status') Status
+    |  · 
+    a(href='/api/1', title='API') API
+  p.text-center
+    a(href='/', title=site.name + ' ' + site.version)=site.name
+    |  
+    small=site.version
+    |  by 
+    a(target='_blank', href='//github.com/' + site.author, title='Github: @' + site.author)='@' + site.author
+    |  · Open Sourced on 
+    a(target='_blank', href='//github.com/' + site.author + '/kyukou', title=site.author + '/kyukou') GitHub

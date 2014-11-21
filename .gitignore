@@ -4,9 +4,11 @@ settings/config.js
 node_modules/
 bower_components/
 public/*.html
-public/lib/*
-
-.openshift/
+public/lib/
+public/js/
 
 old/
 public/test/
+task.log
+twit_new.log
+twit_tomorrow.log

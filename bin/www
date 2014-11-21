@@ -7,6 +7,6 @@ var app = require('../app');
 app.set('port', config.server.port);
 app.set('ipaddr', config.server.ipaddress);
 
-var server = app.listen(app.get('port'), app.get('ipaddr'), function() {
+var server = app.listen(app.get('port'), app.get('ipaddr'), function () {
   debug('Express server listening on port ' + server.address().port);
 });

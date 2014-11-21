@@ -1,0 +1,221 @@
+doctype html
+html(lang=site.lang, prefix='og: http://ogp.me/ns#')
+  head
+    meta(charset='utf-8')
+    title=page.title
+    <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><![endif]-->
+    meta(name='viewport', content='width=device-width')
+    meta(name='author', content=site.author)
+    meta(name='description', content=page.description)
+    meta(name='keywords', content=page.keywords)
+    meta(property='og:title', content=page.title)
+    meta(property='og:type', content='website')
+    meta(property='og:description', content=page.description)
+    meta(property='og:url', content='http://' + site.url + '/api/1')
+    meta(property='og:site_name', content=site.name)
+    link(rel='stylesheet', href='/lib/bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/css/main.css')
+  body
+    div.container
+      header.page-header
+        h1=page.title
+        p=page.description
+      div.row
+        nav.col-md-3(role='navigation')
+          h2.sr-only Table of Contents
+          ul.list-unstyled
+            li
+              h3 Events/
+              ul.nav.nav-pills.nav-stacked
+                li
+                  a(href='#events-list') list
+                li
+                  a(href='#events-yyyymmdd') :YYYY-:MM-:DD
+                li
+                  a(href='#events-search') search
+            li
+              h3 Logs/
+              ul.nav.nav-pills.nav-stacked
+                li
+                  a(href='#logs-about') :about
+            li
+              h3 Response Formats
+              ul.nav.nav-pills.nav-stacked
+                li
+                  a(href='#formats-events') events
+                li
+                  a(href='#formats-event') event
+                li
+                  a(href='#formats-log') log
+        main.col-md-9(role='main')
+          section#events-list
+            h2.page-header Get Events/list
+            p Returns a list of current sheduled events.
+            h3 Resource URL
+            code='https://' + site.url + '/api/1/events/list.json'
+            h3 Parameters
+            table.table.table-striped.table-hover
+              thead
+                tr
+                  th Key
+                  th Description
+              tbody
+                tr
+                  td start_index 
+                    span.text-muted (optional)
+                  td Starting index. Default value is 0.
+                tr
+                  td count 
+                    span.text-muted (optional)
+                  td List count. Returns all event if count is not specified.
+            h3 Example Request
+            p
+              a(target='_blank',href='https://' + site.url + '/api/1/events/list.json?start_index=0&count=1')='https://' + site.url + '/api/1/events/list.json?start_index=0&count=1'
+            h3 Response Format
+            p
+              a(href='#formats-events') events
+          section#events-yyyymmdd
+            h2.page-header Get Events/:YYYY-:MM-:DD
+            p Returns a list of YYYY-MM-DD's events.
+            h3 Resource URL
+            code='https://' + site.url + '/api/1/events/:YYYY-:MM-:DD.json'
+            h3 Parameters
+            table.table.table-striped.table-hover
+              thead
+                tr
+                  th Key
+                  th Description
+              tbody
+                tr
+                  td YYYY
+                    span.text-muted (required)
+                  td Year
+                tr
+                  td MM 
+                    span.text-muted (required)
+                  td Month
+                tr
+                  td DD 
+                    span.text-muted (required)
+                  td Date
+                tr
+                  td count
+                    span.text-muted (optional)
+                  td List count. Returns all event if count is not specified.
+            h3 Example Request
+            p
+              a(target='_blank',href='https://' + site.url + '/api/1/events/2015-01-01.json?count=1')='https://' + site.url + '/api/1/events/2015-01-01.json?count=1'
+            h3 Response Format
+            p
+              a(href='#formats-events') events
+          section#events-search
+            h2.page-header Get Events/search
+            p Returns a list of events matched search query.
+            h3 Resource URL
+            code='https://' + site.url + '/api/1/events/search.json'
+            h3 Parameters
+            table.table.table-striped.table-hover
+              thead
+                tr
+                  th Key
+                  th Description
+              tbody
+                tr
+                  td q 
+                    span.text-muted (required)
+                  td Query
+                tr
+                  td count 
+                    span.text-muted (optional)
+                  td List count. Returns all event if count is not specified.
+            h3 Example Request
+            p
+              a(target='_blank',href='https://' + site.url + '/api/1/events/search.json?q=%E4%BC%91%E8%AC%9B&count=1')='https://' + site.url + '/api/1/events/search.json?q=%E4%BC%91%E8%AC%9B&count=1'
+            h3 Response Format
+            p
+              a(href='#formats-events') events
+          section#logs-about
+            h2.page-header Get Logs/:about
+            p Returns latest log.
+            h3 Resource URL
+            code='https://' + site.url + '/api/1/logs/:about.json'
+            h3 Parameter
+            table.table.table-striped.table-hover
+              thead
+                tr
+                  th Key
+                  th Description
+              tbody
+                tr
+                  td about 
+                    span.text-muted (required)
+                  td Must be `task` or `twit_new` or `twit_tomorrow` or `delete`.
+            h3 Example Request
+            p
+              a(target='_blank',href='https://' + site.url + '/api/1/logs/task.json')='https://' + site.url + '/api/1/logs/task.json'
+            h3 Response Format
+            p
+              a(href='#formats-log') log
+          section#formats-events
+            h2.page-header Format: events
+            pre
+              code.
+                events = [
+                  event
+                ]
+            p
+              code events
+              |  is Array of 
+              a(href='#formats-event')
+                code event
+              | , and  sorted by 
+              code eventDate
+              |  and 
+              code period
+              | .
+          section#formats-event
+            h2.page-header Format: event
+            pre
+              code.
+                event = {
+                  "raw": "String",
+                  "about": "String",
+                  "link": "String",
+                  "eventDate": "Date",
+                  "pubDate": "Date",
+                  "period": "String",
+                  "department": "String",
+                  "subject": "String",
+                  "teacher": "String",
+                  "campus": "String",
+                  "room": "String",
+                  "note": "String",
+                  "hash": "String",
+                  "tweet": {
+                    "new": "Boolean",
+                    "tomorrow": "Boolean"
+                  }
+                }
+            p
+              code pubDate
+              | , 
+              code teacher
+              | , 
+              code campus
+              | , 
+              code room
+              | , 
+              code note
+              |  are optional values.
+          section#formats-log
+            h2.page-header Format: log
+            pre
+              code.
+                log = {
+                  "name": "String",
+                  "log": "String",
+                  "level": "Number",
+                  "time": "Date",
+                  "elapsedTime": "Number"
+                }
+      include ./includes/footer.jade

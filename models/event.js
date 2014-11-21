@@ -28,14 +28,6 @@ var event = {
   },
   period: {
     type: String,
-    /*validate: function (value) {
-      for (var i; i < value.length; i++) {
-        if (typeof value[i] !== 'number') {
-          return false;
-        }
-      }
-      return true;
-    },*/
     required: true
   },
   department: {
@@ -63,7 +55,7 @@ var event = {
     required: true
   },
   // below auto
-  tweet:{
+  tweet: {
     new: {
       type: Boolean,
       default: false

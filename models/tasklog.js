@@ -11,6 +11,10 @@ var tasklog = {
     type: String,
     required: true
   },
+  level: {
+    type: Number,
+    default: 1
+  },
   time: {
     type: Date,
     default: new Date()

@@ -14,10 +14,16 @@ var twit = new Twit(config.twitter);
 var today = new Date();
 
 // tweet tomorrow event
-db.connect();
+// TODO: sort
+db.connect(config.mongoURI);
 Event.find({
   'tweet.tomorrow': false,
   eventDate: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 0, 0)
+}, null, {
+  sort: {
+    eventDate: 1,
+    period: 1
+  }
 }, function (err, events) {
   //console.log(events)
   if (err) {

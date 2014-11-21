@@ -1,143 +1,150 @@
 var express = require('express');
 var router = express.Router();
-var async = require('async');
 var mongoose = require('mongoose');
 var Event = mongoose.model('Event');
 var TaskLog = mongoose.model('Tasklog');
 
 var site = require('../settings/site');
 
-router.get('/list.json', function(req, res) {
-  var start_index = parseInt(req.query.start_index) || 0;
-  var count = parseInt(req.query.count) || null;
-  if (req.query.order) {
-    try {
-      var order = JSON.parse(req.query.order);
-      var keys = Object.keys(order);
-      var validKeys = ['raw', 'about', 'link', 'eventDate', 'pubDate', 'period', 'department', 'subject', 'teacher', 'campus', 'room', 'note', 'hash', 'tweet.new', 'tweet.tomorrow'];
-      for (var i = 0; i < keys.length; i++) {
-        if (validKeys.indexOf(keys[i]) === -1) {
-          throw new Error('Unknown order key ' + keys[i]);
-        }
-        order[keys[i]] = parseInt(order[keys[i]], 10);
-        if (order[keys[i]] !== 1 && order[keys[i]] !== -1) {
-          throw new Error('Invalid order `' + keys[i] + '` value ' + order[keys[i]]);
-        }
-      }
-    } catch (e) {
-      res.status(400);
-      return res.render('error', {
-        message: '400 Bad Request',
-        error: e
-      });
-    }
-  } else {
-    var order = {
+router.get('/events', function (req, res) {
+  res.status(400).type('text/plain').send('Bad Request');
+});
+
+router.get('/events/list.json', function (req, res) {
+  var start_index = parseInt(req.query.start_index, 10) || 0;
+  var count = parseInt(req.query.count, 10) || null;
+  Event.find(null, '-_id -__v', {
+    skip: start_index,
+    limit: count,
+    sort: {
       eventDate: 1,
       period: 1
-    };
-  }
-  async.waterfall([
-    function (callback) {
-      Event.find(null, '-_id -__v', {
-        skip: start_index,
-        limit: count,
-        sort: order
-      }, function (err, events) {
-        if (err) {
-          return callback(err, null);
-        }
-        return callback(null, events);
-      });
     }
-  ], function (err, events) {
+  }, function (err, events) {
     if (err) {
-      res.status(500);
-      return res.render('error', {
-        message: '500 Internal Server Error',
-        error: err
+      return res.status(500).json({
+        error: {
+          message: err.message
+        }
       });
     }
-    res.set('Content-Type', 'application/json');
-    res.send(JSON.stringify(events));
+    res.json(events);
   });
 });
 
-router.get('/log/:about.json', function(req, res) {
-  var about = req.params.about.toString();
-  if (['task', 'twit_new', 'twit_tomorrow', 'delete'].indexOf(about) === -1) {
-    res.status(400);
-    return res.render('error', {
-      message: '400 Bad Request',
+router.get('/events/:yyyy-:mm-:dd.json', function (req, res) {
+  var date = new Date(parseInt(req.params.yyyy, 10), parseInt(req.params.mm, 10) - 1, parseInt(req.params.dd, 10));
+  if (isNaN(date.getTime())) {
+    return res.status(400).json({
       error: {
-        status: ':about must be one of `task`, `twit_new`, `twit_tomorrow`, `delete`'
+        message: 'Invalid Date'
       }
     });
   }
-  async.waterfall([
-    function (callback) {
-      TaskLog.findOne({
-        name: about
-      }, '-_id -__v', function (err, tasklog) {
-        if (err) {
-          return callback(err, null);
-        }
-        return callback(null, tasklog);
-      });
+  var count = parseInt(req.query.count, 10) || null;
+  Event.find({
+    eventDate: date
+  }, '-_id -__v', {
+    limit: count,
+    sort: {
+      period: 1
     }
-  ], function (err, tasklog) {
+  }, function (err, events) {
     if (err) {
-      res.status(500);
-      return res.render('error', {
-        message: '500 Internal Server Error',
-        error: err
+      return res.status(500).json({
+        error: {
+          message: err.message
+        }
       });
     }
-    res.set('Content-Type', 'application/json');
-    res.send(JSON.stringify(tasklog, null, '  '));
+    res.json(events);
   });
 });
 
-router.get('/', function(req, res) {
+router.get('/events/search.json', function (req, res) {
+  if (!req.query.q) {
+    return res.status(400).json({
+      error: {
+        message: 'query is not specified'
+      }
+    });
+  }
+  var q = String(req.query.q).replace(/([.*+?^${}()|\[\]\/\\])/g, '\\$1');
+  if (q.length >= 128) {
+    return res.status(400).json({
+      error: {
+        message: 'Too long query'
+      }
+    });
+  }
+  var count = parseInt(req.query.count, 10) || null;
+  Event.find({
+    $or: [{
+      department: {
+        $regex: q
+      }
+    }, {
+      raw: {
+        $regex: q
+      }
+    }, {
+      about: {
+        $regex: q
+      }
+    }]
+  }, '-_id -__v', {
+    limit: count,
+    sort: {
+      eventDate: 1,
+      period: 1
+    }
+  }, function (err, events) {
+    if (err) {
+      return res.status(500).json({
+        error: {
+          message: err.message
+        }
+      });
+    }
+    res.json(events);
+  });
+});
+
+router.get('/logs', function (req, res) {
+  res.status(400).type('text/plain').send('Bad Request');
+});
+
+router.get('/logs/:about.json', function (req, res) {
+  var about = req.params.about.toString();
+  if (['task', 'twit_new', 'twit_tomorrow', 'delete'].indexOf(about) === -1) {
+    return res.status(400).json({
+      error: {
+        message: ':about must be one of task, twit_new, twit_tomorrow, delete'
+      }
+    });
+  }
+  TaskLog.findOne({
+    name: about
+  }, '-_id -__v', function (err, tasklog) {
+    if (err) {
+      return res.status(500).json({
+        error: {
+          message: err.message
+        }
+      });
+    }
+    res.json(tasklog);
+  });
+});
+
+router.get('/', function (req, res) {
   res.render('api', {
     site: site,
-    title: 'API Reference',
-    apis: [
-      {
-        title: 'List',
-        description: 'List all event(s).',
-        url: 'GET: http://kyukou-kyudai.rhcloud.com/api/list.json',
-        parameters: [
-          {
-            key: 'start_index (optional)',
-            type: 'Number',
-            description: 'Starting index. default: 0'
-          },
-          {
-            key: 'count (optional)',
-            type: 'Number',
-            description: 'event(s) count. returns all events if count is not specified.'
-          },
-          {
-            key: 'order (optional)',
-            type: 'JSON',
-            description: 'Order object. default: { eventDate: 1, period: 1 }'
-          }
-        ]
-      },
-      {
-        title: 'Log',
-        description: 'Show latest log.',
-        url: 'GET: http://kyukou-kyudai.rhcloud.com/api/log/:about.json',
-        parameters: [
-          {
-            key: 'about (require)',
-            type: 'String',
-            description: 'Must be `task` or `twit_new` or `twit_tomorrow` or `delete`.'
-          }
-        ]
-      }
-    ]
+    page: {
+      title: site.name + ' API v1',
+      description: '九州大学休講情報のAPIです。教育学部、文学部、法学部、理学部、経済学部に対応しています。',
+      keywords: '九州大学休講情報 API,九州大学,九大,休講情報,休講,API'
+    }
   });
 });
 

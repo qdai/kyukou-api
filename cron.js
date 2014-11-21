@@ -21,28 +21,43 @@ new CronJob('0 5 2 * * *', function () {
 }, null, true, 'Asia/Tokyo');
 
 function task(name, file) {
-  var time = process.hrtime();
+  var time = new Date();
+  var hrtime = process.hrtime();
   exec(file, function (error, stdout, stderr) {
-    if (error) {
-      return console.log('exec error: ' + error);
-    }
-    if (stderr) {
-      return console.log('stderr: ' + stderr);
-    }
-    var diff = process.hrtime(time);
+    var diff = process.hrtime(hrtime);
     var tasklog = {
       name: name,
       log: stdout,
-      time: new Date(),
+      level: 1,
+      time: time,
       elapsedTime: diff[0] * 1e3 + diff[1] * 1e-6
     };
+    if (stderr) {
+      tasklog.log = 'err: stderr.\nmsg: ' + stderr;
+    }
+    if (error) {
+      tasklog.log = 'err: exec error.\nmsg: ' + error.message;
+    }
+    if (/err: /.test(tasklog.log)) {
+      tasklog.level = 4;
+      if (/err: findorcreate failed/.test(tasklog.log) && /msg: ValidationError: Validator failed for path `eventDate`/.test(tasklog.log)
+          && tasklog.log.match(/err: /g).length === tasklog.log.match(/err: findorcreate failed/g).length
+          && tasklog.log.match(/err: findorcreate failed/g).length === tasklog.log.match(/msg: ValidationError: Validator failed for path `eventDate`/g).length) {
+        tasklog.level = 2;
+        if (/wrn: /.test(tasklog.log)) {
+          tasklog.level = 3;
+        }
+      }
+    } else if (/wrn: /.test(tasklog.log)) {
+      tasklog.level = 3;
+    }
     Tasklog.findOneAndUpdate({
       name: tasklog.name
     }, tasklog, function (err, tasklog) {
       if (err) {
         console.log('db save err: ' + err);
       }
-      console.log('task: done');
+      console.log('msg: ' + tasklog.name + ' done');
     });
   });
 }

@@ -5,6 +5,7 @@ var mongoose = require('mongoose');
 require('../models/tasklog')();
 var TaskLog = mongoose.model('Tasklog');
 
+var config = require('../settings/config')
 var db = require('../lib/db');
 
 var tasklogs = [];
@@ -29,7 +30,7 @@ tasklogs.push(new TaskLog({
   elapsedTime: 0
 }));
 
-db.connect();
+db.connect(config.mongoURI);
 async.each(tasklogs, function (tasklog, callback) {
   tasklog.save(function (err, tasklog) {
     if (err) {

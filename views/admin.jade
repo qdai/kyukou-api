@@ -1,0 +1,157 @@
+doctype html
+html(data-ng-app='adminApp')
+  head
+    meta(charset='utf-8')
+    title=page.title
+    <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><![endif]-->
+    meta(name='viewport', content='width=device-width')
+    meta(name='author', content=site.author)
+    link(rel='stylesheet', href='/lib/bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/css/main.css')
+    script(src='/lib/angular/angular.min.js', defer)
+    script(src='/lib/angular-bootstrap/ui-bootstrap-tpls.min.js', defer)
+    script(src='/js/admin.js', defer)
+  body.container
+    header.page-header.clearfix
+      h1.pull-left=page.title
+      p.pull-right
+        a.btn.btn-default.btn-lg(href='/admin/logout') Logout
+    main(role='main', data-ng-controller='adminCtrl')
+      tabset
+        tab(heading='List')
+          table.table.table-bordered.table-hover
+            thead
+              tr
+                th hash
+                th about
+                th link
+                th eventDate
+                th pubDate
+                th period
+                th department
+                th subject
+                th teacher
+                th campus
+                th room
+                th note
+                th raw
+                th tweet.new
+                th tweet.tomorrow
+            tbody
+              tr(data-ng-repeat='event in events')
+                td {{event.hash}}
+                td {{event.about}}
+                td {{event.link}}
+                td {{event.eventDate}}
+                td {{event.pubDate}}
+                td {{event.period}}
+                td {{event.department}}
+                td {{event.subject}}
+                td {{event.teacher}}
+                td {{event.campus}}
+                td {{event.room}}
+                td {{event.note}}
+                td {{event.raw}}
+                td {{event.tweet.new}}
+                td {{event.tweet.tomorrow}}
+        tab(heading='Add', data-ng-controller='addCtrl as ac')
+          alert(data-ng-repeat='alert in ac.alerts', type='{{alert.type}}', close='ac.closeAlert($index)') {{alert.message}}
+          form.form-inline(role='form', data-ng-submit='ac.post(add)')
+            p
+              label(for='add-about') about
+              |  
+              input#add-about.form-control(name='about', type='text', required, data-ng-model='add.about')
+            p
+              label(for='add-link') link
+              |  
+              input#add-link.form-control(name='link', type='text', required, data-ng-model='add.link')
+            p
+              label(for='add-eventDate') eventDate
+              |  
+              input#add-eventDate.form-control(name='eventDate', type='text', required, data-ng-model='add.eventDate')
+            p
+              label(for='add-pubDate') pubDate
+              |  
+              input#add-pubDate.form-control(name='pubDate', type='text', data-ng-model='add.pubDate')
+            p
+              label(for='add-period') period
+              |  
+              input#add-period.form-control(name='period', type='text', required, data-ng-model='add.period')
+            p
+              label(for='add-department') department
+              |  
+              input#add-department.form-control(name='department', type='text', required, data-ng-model='add.department')
+            p
+              label(for='add-subject') subject
+              |  
+              input#add-subject.form-control(name='subject', type='text', required, data-ng-model='add.subject')
+            p
+              label(for='add-teacher') teacher
+              |  
+              input#add-teacher.form-control(name='teacher', type='text', data-ng-model='add.teacher')
+            p
+              label(for='add-campus') campus
+              |  
+              input#add-campus.form-control(name='campus', type='text', data-ng-model='add.campus')
+            p
+              label(for='add-room') room
+              |  
+              input#add-room.form-control(name='room', type='text', data-ng-model='add.room')
+            p
+              label(for='add-note') note
+              |  
+              input#add-note.form-control(name='note', type='text', data-ng-model='add.note')
+            p
+              label(for='add-raw') raw
+              |  
+              input#add-raw.form-control(name='raw', type='text', required, data-ng-model='add.raw')
+            p
+              label(for='add-tweetnew') tweet.new
+              |  
+              input#add-tweetnew.form-control(name='tweetnew', type='text',  required, data-ng-model='add.tweet.new')
+            p
+              label(for='add-tweettomorrow') tweet.tomorrow
+              |  
+              input#add-tweettomorrow.form-control(name='tweettomorrow', type='text', required, data-ng-model='add.tweet.tomorrow')
+            p
+              input.btn.btn-primary.btn-lg(type='submit', value='Add')
+        tab(heading='Edit', data-ng-controller='editCtrl as ec')
+          alert(data-ng-repeat='alert in ec.alerts', type='{{alert.type}}', close='ec.closeAlert($index)') {{alert.message}}
+          form.form-inline(role='form', data-ng-submit='ec.post(edit)')
+            p
+              label(for='edit-hash') hash
+              |  
+              input#edit-hash.form-control(name='hash', type='text', required, data-ng-model='edit.hash')
+            p
+              label(for='edit-key') key
+              |  
+              select#edit-key.form-control(name='key', required, data-ng-model='edit.key')
+                option(value='about') about
+                option(value='link') link
+                option(value='eventDate') eventDate
+                option(value='period') period
+                option(value='department') department
+                option(value='subject') subject
+                option(value='teacher') teacher
+                option(value='campus') campus
+                option(value='room') room
+                option(value='note') note
+                option(value='raw') raw
+                option(value='tweet.new') tweet.new
+                option(value='tweet.tomorrow') tweet.tomorrow
+            p
+              label(for='edit-value') value
+              |  
+              input#edit-value.form-control(name='value', type='text', required, data-ng-model='edit.value')
+            p
+              input.btn.btn-primary.btn-lg(type='submit', value='Edit')
+        tab(heading='Delete', data-ng-controller='deleteCtrl as dc')
+          alert(data-ng-repeat='alert in dc.alerts', type='{{alert.type}}', close='dc.closeAlert($index)') {{alert.message}}
+          form.form-inline(role='form', data-ng-submit='dc.post(delete)')
+            p
+              label(for='delete-hash') hash
+              |  
+              input#delete-hash.form-control(name='hash', type='text', required, data-ng-model='delete.hash')
+            p
+              input.btn.btn-danger.btn-lg(type='submit', value='Delete')
+    include ./includes/footer.jade

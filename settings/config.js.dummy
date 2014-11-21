@@ -20,7 +20,7 @@ var config = {
 };
 
 // db and twitter
-var db_database = 'kyukou'
+var db_database = 'kyukou';
 if (process.env.NODE_ENV === 'production') {
   var db_user = '*';
   var db_pass = '*';

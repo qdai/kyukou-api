@@ -1,0 +1,22 @@
+doctype html
+html(data-ng-app)
+  head
+    meta(charset='utf-8')
+    title=page.title
+    <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><![endif]-->
+    meta(name='viewport', content='width=device-width')
+    meta(name='author', content=site.author)
+    link(rel='stylesheet', href='/lib/bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/css/main.css')
+  body.container
+    h1.page-header=page.title
+    form(action='/admin/login', method='post')
+      p.form-group
+        label(for='user-name') Name
+        input#user-name.form-control.input-lg(type='text', required, name='name', autocomplete='off')
+      p.form-group
+        label(for='user-password') Password
+        input#user-password.form-control.input-lg(type='password', required, name='password', autocomplete='off')
+      p
+        button.btn.btn-default.btn-lg(type='submit') Login
+    include ./includes/footer.jade

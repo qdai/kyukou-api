@@ -13,9 +13,15 @@ var db = require('../lib/db');
 var twit = new Twit(config.twitter);
 
 // tweet new event
-db.connect();
+// TODO: sort
+db.connect(config.mongoURI);
 Event.find({
   'tweet.new': false
+}, null, {
+  sort: {
+    eventDate: 1,
+    period: 1
+  }
 }, function (err, events) {
   //console.log(events)
   if (err) {

@@ -1,8 +1,0 @@
-#!/bin/bash
-
-if [ -f ${OPENSHIFT_REPO_DIR}/Gruntfile.js ]; then
-  HOME=${OPENSHIFT_REPO_DIR}
-  cd ${OPENSHIFT_REPO_DIR} && ./node_modules/grunt-cli/bin/grunt
-else
-  grunt
-fi

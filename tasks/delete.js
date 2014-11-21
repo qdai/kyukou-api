@@ -5,11 +5,12 @@ var mongoose = require('mongoose');
 require('../models/event')();
 var Event = mongoose.model('Event');
 
+var config = require('../settings/config');
 var db = require('../lib/db');
 
 var today = new Date();
 // delete expired data
-db.connect();
+db.connect(config.mongoURI);
 Event.find({
   eventDate: {
     $lte: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1, 0, 0)

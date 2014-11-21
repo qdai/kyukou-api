@@ -8,13 +8,13 @@ NOTICE: This is **Unofficial** web site.
 
 ## For development
 
-1. Run `npm install`.
-2. Run `grunt`.
-3. Set environment variables: `TZ` and `NODE_ENV`.
-4. Rename `settings/config.js.dummy` to `settings/config.js` and modify it to suit your server environment.
-5. Modify `settings/site.js`.
-6. Run `./bin/init_db`.
-7. Start with `npm start`.
+1. Set environment variables: `TZ` and `NODE_ENV`
+2. Install: `NODE_ENV=development npm install`
+3. Configure: Rename `settings/config.js.dummy` to `settings/config.js` and modify it to suit your server environment
+4. Configure: Modify `settings/site.js`
+5. Build: `npm run build`
+6. Init Database: `./bin/init_db`
+7. Start: `npm start`
 
 ## Contact
 

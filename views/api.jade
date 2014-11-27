@@ -52,7 +52,9 @@ html(lang=site.lang, prefix='og: http://ogp.me/ns#')
             h2.page-header Get Events/list
             p Returns a list of current sheduled events.
             h3 Resource URL
-            code='https://' + site.url + '/api/1/events/list.json'
+            code='https://' + site.url + '/api/1/'
+              wbr
+              | events/list.json
             h3 Parameters
             table.table.table-striped.table-hover
               thead
@@ -78,7 +80,9 @@ html(lang=site.lang, prefix='og: http://ogp.me/ns#')
             h2.page-header Get Events/:YYYY-:MM-:DD
             p Returns a list of YYYY-MM-DD's events.
             h3 Resource URL
-            code='https://' + site.url + '/api/1/events/:YYYY-:MM-:DD.json'
+            code='https://' + site.url + '/api/1/'
+              wbr
+              | events/:YYYY-:MM-:DD.json
             h3 Parameters
             table.table.table-striped.table-hover
               thead
@@ -87,7 +91,7 @@ html(lang=site.lang, prefix='og: http://ogp.me/ns#')
                   th Description
               tbody
                 tr
-                  td YYYY
+                  td YYYY 
                     span.text-muted (required)
                   td Year
                 tr
@@ -99,7 +103,7 @@ html(lang=site.lang, prefix='og: http://ogp.me/ns#')
                     span.text-muted (required)
                   td Date
                 tr
-                  td count
+                  td count 
                     span.text-muted (optional)
                   td List count. Returns all event if count is not specified.
             h3 Example Request
@@ -112,7 +116,9 @@ html(lang=site.lang, prefix='og: http://ogp.me/ns#')
             h2.page-header Get Events/search
             p Returns a list of events matched search query.
             h3 Resource URL
-            code='https://' + site.url + '/api/1/events/search.json'
+            code='https://' + site.url + '/api/1/'
+              wbr
+              | events/search.json
             h3 Parameters
             table.table.table-striped.table-hover
               thead
@@ -138,7 +144,9 @@ html(lang=site.lang, prefix='og: http://ogp.me/ns#')
             h2.page-header Get Logs/:about
             p Returns latest log.
             h3 Resource URL
-            code='https://' + site.url + '/api/1/logs/:about.json'
+            code='https://' + site.url + '/api/1/'
+              wbr
+              | logs/:about.json
             h3 Parameter
             table.table.table-striped.table-hover
               thead

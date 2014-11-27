@@ -20,7 +20,7 @@ logApp.factory('logList', ['$http', '$q', function ($http, $q) {
   return deferred.promise;
 }]);
 logApp.controller('logListCtrl', ['logList', function (logList) {
-  this.ctrlTmpl = 'log-app-loading';
+  this.ctrlTmpl = 'logapp-loading';
   this.oneAtATime = true;
   this.logs = null;
   this.error = null;
@@ -28,7 +28,7 @@ logApp.controller('logListCtrl', ['logList', function (logList) {
   var self = this;
   logList.then(function (data) {
     self.logs = data;
-    self.ctrlTmpl = 'log-app';
+    self.ctrlTmpl = 'logapp';
     self.error = null;
   }, function (err) {
     self.error = err;

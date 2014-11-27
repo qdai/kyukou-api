@@ -1,4 +1,4 @@
-# [Kyukou Kyudai](http://kyukou-kyudai.rhcloud.com/)
+# [Kyukou Kyudai](https://kyukou-kyudai.rhcloud.com/)
 
 [![Dependency Status](https://david-dm.org/Qdai/kyukou.svg?style=flat)](https://david-dm.org/Qdai/kyukou) [![devDependency Status](https://david-dm.org/Qdai/kyukou/dev-status.svg?style=flat)](https://david-dm.org/Qdai/kyukou#info=devDependencies)
 

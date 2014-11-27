@@ -95,4 +95,6 @@ html(lang=site.lang, manifest='/kyukou.appcache', prefix='og: http://ogp.me/ns#'
           div.alert.alert-danger
             h2=site.name + 'はJavaScriptを使用しています。'
             p お使いのブラウザのJavaScriptを有効にしてご利用ください。
+        div.alert.alert-info(role='alert')
+          p.lead(data-ng-show='!error') Now loading...
       include ./includes/footer.jade

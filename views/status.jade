@@ -11,13 +11,13 @@ html(lang=site.lang, manifest='/kyukou.appcache', data-ng-app='statusApp')
     script(src='/lib/angular/angular.min.js', defer)
     script(src='/lib/angular-bootstrap/ui-bootstrap.min.js', defer)
     script(src='/js/status.js', defer)
-    script#log-app-loading(type='text/ng-template')
+    script#logapp-loading(type='text/ng-template')
       div.alert(role='alert', data-ng-class='{\'alert-info\': !llc.error, \'alert-danger\': llc.error}')
         p.lead(data-ng-show='!llc.error') Now loading...
         p.lead(data-ng-show='llc.error') Load error ({{llc.error.status}}). Please 
           a(href='/status') load again
           | .
-    script#log-app(type='text/ng-template')
+    script#logapp(type='text/ng-template')
       accordion(data-close-others='llc.oneAtATime')
         accordion-group(data-ng-repeat='log in llc.logs', class='panel panel-{{log.level}}')
           accordion-heading {{log.name}} ({{log.elapsedTime}}ms) 
@@ -41,4 +41,6 @@ html(lang=site.lang, manifest='/kyukou.appcache', data-ng-app='statusApp')
           div.alert.alert-danger
             h2=site.name + 'はJavaScriptを使用しています。'
             p お使いのブラウザのJavaScriptを有効にしてご利用ください。
+        div.alert.alert-info(role='alert')
+          p.lead Now loading...
       include ./includes/footer.jade

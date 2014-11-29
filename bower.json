@@ -7,7 +7,7 @@
   "homepage": "http://kyukou-kyudai.rhcloud.com/",
   "private": true,
   "dependencies": {
-    "angular": "~1.3.2",
+    "angular": "~1.3.4",
     "angular-bootstrap": "~0.11.2",
     "bootstrap": "~3.3.1"
   },

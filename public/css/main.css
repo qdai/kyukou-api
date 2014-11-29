@@ -74,9 +74,9 @@ body > .container {
   background-color: #f39700;
 }
 
-  #header-buttons span {
-    display: none;
-  }
+#header-buttons span {
+  display: none;
+}
 
 .page-footer {
   margin-top: 20px;

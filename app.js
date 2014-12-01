@@ -33,6 +33,7 @@ var routes = require('./routes/index');
 var status = require('./routes/status');
 var rss = require('./routes/rss');
 var api = require('./routes/api');
+var api0 = require('./routes/api0');
 var admin = require('./routes/admin');
 
 var app = express();
@@ -77,13 +78,15 @@ app.use('/', routes);
 app.use('/status', status);
 app.use('/rss', rss);
 app.use('/api/1', api);
-app.use('/api', function (req, res) {
-  res.status(410).json({
-    error: {
-      message: 'API v0 is no longer active'
-    }
-  })
-});
+app.use('/api', api0);
+// app.use('/api', function (req, res) {
+//   // TODO: inactivate v0
+//   res.status(410).json({
+//     error: {
+//       message: 'API v0 is no longer active'
+//     }
+//   })
+// });
 app.use('/admin', admin);
 
 /// catch 404 and forward to error handler

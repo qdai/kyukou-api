@@ -15,7 +15,7 @@ html(lang=site.lang, manifest='/kyukou.appcache', data-ng-app='statusApp')
       div.alert(role='alert', data-ng-class='{\'alert-info\': !llc.error, \'alert-danger\': llc.error}')
         p.lead(data-ng-show='!llc.error') Now loading...
         p.lead(data-ng-show='llc.error') Load error ({{llc.error.status}}). Please 
-          a(href='/status') load again
+          a(href='https://' + site.url + '/status') load again
           | .
     script#logapp(type='text/ng-template')
       accordion(data-close-others='llc.oneAtATime')

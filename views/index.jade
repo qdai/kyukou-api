@@ -27,7 +27,7 @@ html(lang=site.lang, manifest='/kyukou.appcache', prefix='og: http://ogp.me/ns#'
       div.alert(role='alert', data-ng-class='{\'alert-info\': !error, \'alert-danger\': error}')
         p.lead(data-ng-show='!error') Now loading...
         p.lead(data-ng-show='error') Load error ({{error.status}}). Please 
-          a(href='/') load again
+          a(href='https://' + site.url) load again
           | .
     script#kyukou-app(type='text/ng-template')
       section

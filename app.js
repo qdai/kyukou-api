@@ -65,8 +65,10 @@ app.use(session({
 }));
 
 // redirect to HTTPS on production
+var site = require('./settings/site.js');
 if (app.get('env') === 'production') {
   app.use(function (req, res, next) {
+    res.set('strict-transport-security', 'max-age=63072000');
     if (req.headers['x-forwarded-proto'] === 'http') {
       res.redirect(301, 'https://' + req.headers.host + req.originalUrl);
     } else {
@@ -77,7 +79,10 @@ if (app.get('env') === 'production') {
 app.use('/', routes);
 app.use('/status', status);
 app.use('/rss', rss);
-app.use('/api/1', api);
+app.use('/api/1', function (req, res, next) {
+  res.set('access-control-allow-origin', 'http://' + site.url);
+  next()
+}, api);
 app.use('/api', api0);
 // app.use('/api', function (req, res) {
 //   // TODO: inactivate v0

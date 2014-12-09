@@ -68,10 +68,18 @@ app.use(session({
 var site = require('./settings/site.js');
 if (app.get('env') === 'production') {
   app.use(function (req, res, next) {
-    res.set('strict-transport-security', 'max-age=63072000');
     if (req.headers['x-forwarded-proto'] === 'http') {
+      if (req.originalUrl === '/kyukou.appcache') {
+        res.set('Content-Type', 'text/cache-manifest; charset=UTF-8');
+        return res.status(410).send('CACHE MANIFEST\n'
+                                  + '\n'
+                                  + 'NETWORK:\n'
+                                  + '*\n');
+      }
+      res.set('strict-transport-security', 'max-age=63072000');
       res.redirect(301, 'https://' + req.headers.host + req.originalUrl);
     } else {
+      res.set('strict-transport-security', 'max-age=63072000');
       return next();
     }
   });

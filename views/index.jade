@@ -12,7 +12,7 @@ html(lang=site.lang, manifest='/kyukou.appcache', prefix='og: http://ogp.me/ns#'
     meta(property='og:title', content=page.title)
     meta(property='og:type', content='website')
     meta(property='og:description', content=page.description)
-    meta(property='og:url', content='http://' + site.url)
+    meta(property='og:url', content='https://' + site.url)
     meta(property='og:site_name', content=site.name)
     link(rel='stylesheet', href='/lib/bootstrap/css/bootstrap.min.css')
     link(rel='stylesheet', href='/icomoon/style.css')
@@ -22,12 +22,12 @@ html(lang=site.lang, manifest='/kyukou.appcache', prefix='og: http://ogp.me/ns#'
     script(src='/js/app.js', defer)
     link(rel='icon', type='image/vnd.microsoft.icon', href='/favicon.ico')
     link(rel='shortcut icon', type='image/vnd.microsoft.icon', href='/favicon.ico')
-    link(rel='alternate' type='application/rss+xml' title=site.name href='http://' + site.url + '/rss')
+    link(rel='alternate' type='application/rss+xml' title=site.name href='https://' + site.url + '/rss')
     script#kyukou-loading(type='text/ng-template')
       div.alert(role='alert', data-ng-class='{\'alert-info\': !error, \'alert-danger\': error}')
         p.lead(data-ng-show='!error') Now loading...
         p.lead(data-ng-show='error') Load error ({{error.status}}). Please 
-          a(href='https://' + site.url) load again
+          a(href='//' + site.url) load again
           | .
     script#kyukou-app(type='text/ng-template')
       section

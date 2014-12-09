@@ -1,7 +1,7 @@
 {
   "name": "kyukou",
-  "version": "1.0.0",
-  "homepage": "http://kyukou-kyudai.rhcloud.com/",
+  "version": "1.0.1",
+  "homepage": "https://kyukou-kyudai.rhcloud.com/",
   "scripts": {
     "start": "node ./bin/www",
     "build": "grunt build"

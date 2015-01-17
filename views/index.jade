@@ -14,11 +14,12 @@ html(lang=site.lang, manifest='/kyukou.appcache', prefix='og: http://ogp.me/ns#'
     meta(property='og:description', content=page.description)
     meta(property='og:url', content='https://' + site.url)
     meta(property='og:site_name', content=site.name)
-    link(rel='stylesheet', href='/lib/bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/lib/bootstrap/dist/css/bootstrap.min.css')
     link(rel='stylesheet', href='/icomoon/style.css')
     link(rel='stylesheet', href='/css/main.css')
     script(src='/lib/angular/angular.min.js', defer)
     script(src='/lib/angular-bootstrap/ui-bootstrap.min.js', defer)
+    script(src='/lib/angular-local-storage/dist/angular-local-storage.min.js', defer)
     script(src='/js/app.js', defer)
     link(rel='icon', type='image/vnd.microsoft.icon', href='/favicon.ico')
     link(rel='shortcut icon', type='image/vnd.microsoft.icon', href='/favicon.ico')
@@ -82,7 +83,7 @@ html(lang=site.lang, manifest='/kyukou.appcache', prefix='og: http://ogp.me/ns#'
             td {{event.note}} {{event.campus}} {{event.room}}
   body
     div.container
-      header.page-header.clearfix
+      header.page-header
         h1=page.title
         p=page.description
         p#header-buttons

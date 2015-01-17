@@ -9,14 +9,7 @@ var config = {
     hash: '*',
     salt: '*'
   },
-  secret: '*',
-  resource: {
-    education: 'http://www.education.kyushu-u.ac.jp/topics/student_index',
-    economics: 'http://www.econ.kyushu-u.ac.jp/student/kyuukou.php',
-    literature: 'http://www2.lit.kyushu-u.ac.jp/~syllabus/cgi-bin/class-schedule.cgi',
-    law: 'http://www.law.kyushu-u.ac.jp/kyukou/keiji.cgi',
-    science: 'http://www.sci.kyushu-u.ac.jp/home/cancel/cancel.php'
-  }
+  secret: '*'
 };
 
 // db and twitter
@@ -38,7 +31,7 @@ if (process.env.NODE_ENV === 'production') {
     consumer_secret: '*',
     access_token: '*',
     access_token_secret: '*'
-  }
+  };
 }
 
 module.exports = config;

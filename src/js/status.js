@@ -1,11 +1,13 @@
+/* global SITE_URL */
+
 var logApp = angular.module('statusApp', ['ui.bootstrap']);
 logApp.factory('logList', ['$http', '$q', function ($http, $q) {
   var deferred = $q.defer();
   $q.all([
-    $http.get('//$$SITE_URL$$/api/1/logs/task.json'),
-    $http.get('//$$SITE_URL$$/api/1/logs/twit_new.json'),
-    $http.get('//$$SITE_URL$$/api/1/logs/twit_tomorrow.json'),
-    $http.get('//$$SITE_URL$$/api/1/logs/delete.json')
+    $http.get(SITE_URL + 'api/1/logs/task.json'),
+    $http.get(SITE_URL + 'api/1/logs/twit_new.json'),
+    $http.get(SITE_URL + 'api/1/logs/twit_tomorrow.json'),
+    $http.get(SITE_URL + 'api/1/logs/delete.json')
   ]).then(function (results) {
     var temp = [];
     for (var i = 0; i < results.length; i++) {

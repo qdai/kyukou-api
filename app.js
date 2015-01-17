@@ -9,10 +9,11 @@ var MongoStore = require('connect-mongo')(session);
 var mongoose = require('mongoose');
 
 var config = require('./settings/config');
+var site = require('./settings/site.js');
 
 // db setting
-require('./models/event')();
-require('./models/tasklog')();
+require('./db/event');
+require('./db/tasklog');
 mongoose.connect(config.mongoURI);
 mongoose.connection.once('open', function () {
   console.log('Mongoose connected');
@@ -20,6 +21,7 @@ mongoose.connection.once('open', function () {
 mongoose.connection.on('error', function (err) {
   console.log('Mongoose connect failed');
   console.log(err);
+  process.exit(1);
 });
 process.on('SIGINT', function () {
   mongoose.connection.close(function () {
@@ -30,7 +32,7 @@ process.on('SIGINT', function () {
 
 // routes
 var routes = require('./routes/index');
-var status = require('./routes/status');
+var apiStatus = require('./routes/status');
 var rss = require('./routes/rss');
 var api = require('./routes/api');
 var api0 = require('./routes/api0');
@@ -56,7 +58,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   store: new MongoStore({
     url: config.mongoURI,
-    auto_reconnect: true,
+    autoReconnect: true,
     cookie: {}
   }),
   secret: config.secret,
@@ -65,10 +67,10 @@ app.use(session({
 }));
 
 // redirect to HTTPS on production
-var site = require('./settings/site.js');
 if (app.get('env') === 'production') {
   app.use(function (req, res, next) {
     if (req.headers['x-forwarded-proto'] === 'http') {
+      // TODO: remove
       if (req.originalUrl === '/kyukou.appcache') {
         res.set('Content-Type', 'text/cache-manifest; charset=UTF-8');
         return res.status(410).send('CACHE MANIFEST\n'
@@ -76,30 +78,24 @@ if (app.get('env') === 'production') {
                                   + 'NETWORK:\n'
                                   + '*\n');
       }
+      // end TODO
       res.set('strict-transport-security', 'max-age=63072000');
       res.redirect(301, 'https://' + req.headers.host + req.originalUrl);
     } else {
       res.set('strict-transport-security', 'max-age=63072000');
-      return next();
+      next();
     }
   });
 }
 app.use('/', routes);
-app.use('/status', status);
+app.use('/status', apiStatus);
 app.use('/rss', rss);
 app.use('/api/1', function (req, res, next) {
+  // TODO: remove
   res.set('access-control-allow-origin', 'http://' + site.url);
-  next()
+  next();
 }, api);
 app.use('/api', api0);
-// app.use('/api', function (req, res) {
-//   // TODO: inactivate v0
-//   res.status(410).json({
-//     error: {
-//       message: 'API v0 is no longer active'
-//     }
-//   })
-// });
 app.use('/admin', admin);
 
 /// catch 404 and forward to error handler
@@ -114,7 +110,7 @@ app.use(function (req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-  app.use(function (err, req, res, next) {
+  app.use(function (err, req, res) {
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
@@ -125,7 +121,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res) {
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,

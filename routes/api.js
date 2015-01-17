@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var mongoose = require('mongoose');
-var Event = mongoose.model('Event');
-var TaskLog = mongoose.model('Tasklog');
+
+var publicAPI = require('../api').public;
+var sendAPIResult = require('../lib/sendapiresult');
 
 var site = require('../settings/site');
 
@@ -11,103 +11,23 @@ router.get('/events', function (req, res) {
 });
 
 router.get('/events/list.json', function (req, res) {
-  var start_index = parseInt(req.query.start_index, 10) || 0;
-  var count = parseInt(req.query.count, 10) || null;
-  Event.find(null, '-_id -__v', {
-    skip: start_index,
-    limit: count,
-    sort: {
-      eventDate: 1,
-      period: 1
-    }
-  }, function (err, events) {
-    if (err) {
-      return res.status(500).json({
-        error: {
-          message: err.message
-        }
-      });
-    }
-    res.json(events);
-  });
+  var start_index = req.query.start_index;
+  var count = req.query.count;
+  sendAPIResult(publicAPI.events.list(start_index, count), res);
 });
 
 router.get('/events/:yyyy-:mm-:dd.json', function (req, res) {
-  var date = new Date(parseInt(req.params.yyyy, 10), parseInt(req.params.mm, 10) - 1, parseInt(req.params.dd, 10));
-  if (isNaN(date.getTime())) {
-    return res.status(400).json({
-      error: {
-        message: 'Invalid Date'
-      }
-    });
-  }
-  var count = parseInt(req.query.count, 10) || null;
-  Event.find({
-    eventDate: date
-  }, '-_id -__v', {
-    limit: count,
-    sort: {
-      period: 1
-    }
-  }, function (err, events) {
-    if (err) {
-      return res.status(500).json({
-        error: {
-          message: err.message
-        }
-      });
-    }
-    res.json(events);
-  });
+  var yyyy = req.params.yyyy;
+  var mm = req.params.mm;
+  var dd = req.params.dd;
+  var count = req.query.count;
+  sendAPIResult(publicAPI.events.yyyymmdd(yyyy, mm, dd, count), res);
 });
 
 router.get('/events/search.json', function (req, res) {
-  if (!req.query.q) {
-    return res.status(400).json({
-      error: {
-        message: 'query is not specified'
-      }
-    });
-  }
-  var q = String(req.query.q).replace(/([.*+?^${}()|\[\]\/\\])/g, '\\$1');
-  if (q.length >= 128) {
-    return res.status(400).json({
-      error: {
-        message: 'Too long query'
-      }
-    });
-  }
-  var count = parseInt(req.query.count, 10) || null;
-  Event.find({
-    $or: [{
-      department: {
-        $regex: q
-      }
-    }, {
-      raw: {
-        $regex: q
-      }
-    }, {
-      about: {
-        $regex: q
-      }
-    }]
-  }, '-_id -__v', {
-    limit: count,
-    sort: {
-      eventDate: 1,
-      period: 1
-    }
-  }, function (err, events) {
-    if (err) {
-      return res.status(500).json({
-        error: {
-          message: err.message
-        }
-      });
-    }
-    res.json(events);
-  });
+  var q = req.query.q;
+  var count = req.query.count;
+  sendAPIResult(publicAPI.events.search(q, count), res);
 });
 
 router.get('/logs', function (req, res) {
@@ -115,26 +35,8 @@ router.get('/logs', function (req, res) {
 });
 
 router.get('/logs/:about.json', function (req, res) {
-  var about = req.params.about.toString();
-  if (['task', 'twit_new', 'twit_tomorrow', 'delete'].indexOf(about) === -1) {
-    return res.status(400).json({
-      error: {
-        message: ':about must be one of task, twit_new, twit_tomorrow, delete'
-      }
-    });
-  }
-  TaskLog.findOne({
-    name: about
-  }, '-_id -__v', function (err, tasklog) {
-    if (err) {
-      return res.status(500).json({
-        error: {
-          message: err.message
-        }
-      });
-    }
-    res.json(tasklog);
-  });
+  var about = req.params.about;
+  sendAPIResult(publicAPI.logs.about(about), res);
 });
 
 router.get('/', function (req, res) {

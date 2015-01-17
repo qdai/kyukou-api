@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var findOrCreate = require('mongoose-findorcreate');
 var Schema = mongoose.Schema;
 
-var tasklog = {
+var stasklog = {
   name: {
     type: String,
     required: true
@@ -25,8 +25,8 @@ var tasklog = {
   }
 };
 
-module.exports = function () {
-  var Tasklog = new Schema(tasklog);
+module.exports = (function () {
+  var Tasklog = new Schema(stasklog);
   Tasklog.plugin(findOrCreate);
   mongoose.model('Tasklog', Tasklog);
-};
+})();

@@ -1,26 +1,21 @@
 var express = require('express');
 var router = express.Router();
+var BBPromise = require('bluebird');
 var RSS = require('rss');
 var mongoose = require('mongoose');
-var Event = mongoose.model('Event');
+var mEvent = mongoose.model('Event');
 
 var site = require('../settings/site');
 var twString = require('../lib/twstring');
 
 router.get('/', function (req, res) {
-  Event.find(null, '-_id -__v', {
+  BBPromise.resolve(mEvent.find(null, '-_id -__v', {
     limit: 20,
     sort: {
-      eventDate: 1,
+      pubDate: 1,
       period: 1
     }
-  }, function (err, events) {
-    if (err) {
-      return res.status(500).render('error', {
-        message: '500 Internal Server Error',
-        error: err
-      });
-    }
+  }).exec()).then(function (events) {
     var feed = new RSS({
       title: site.name,
       description: site.description,
@@ -40,7 +35,12 @@ router.get('/', function (req, res) {
       });
     }
     res.set('Content-Type', 'application/rss+xml');
-    res.send(feed.xml('  '));
+    res.send(feed.xml());
+  }).catch(function (err) {
+    res.status(500).render('error', {
+      message: '500 Internal Server Error',
+      error: err
+    });
   });
 });
 

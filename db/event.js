@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var findOrCreate = require('mongoose-findorcreate');
 var Schema = mongoose.Schema;
 
-var event = {
+var sevent = {
   raw: {
     type: String,
     required: true
@@ -67,8 +67,8 @@ var event = {
   }
 };
 
-module.exports = function () {
-  var Event = new Schema(event);
+module.exports = (function () {
+  var Event = new Schema(sevent);
   Event.plugin(findOrCreate);
   mongoose.model('Event', Event);
-};
+})();

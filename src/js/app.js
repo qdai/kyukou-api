@@ -1,8 +1,10 @@
-var kyukouApp = angular.module('kyukouApp', ['kyukouApp.filters', 'ui.bootstrap']);
+/* global SITE_URL */
+
+var kyukouApp = angular.module('kyukouApp', ['kyukouApp.filters', 'ui.bootstrap', 'LocalStorageModule']);
 kyukouApp.factory('eventList', ['$http', '$q', function ($http, $q) {
   var deferred = $q.defer();
   $q.all([
-    $http.get('//$$SITE_URL$$/api/1/events/list.json')
+    $http.get(SITE_URL + 'api/1/events/list.json')
   ]).then(function (results) {
     var data = results[0].data;
     var abouts = [];
@@ -32,7 +34,7 @@ kyukouApp.factory('eventList', ['$http', '$q', function ($http, $q) {
   });
   return deferred.promise;
 }]);
-kyukouApp.controller('eventListCtrl', ['$scope', 'eventList', function ($scope, eventList) {
+kyukouApp.controller('eventListCtrl', ['$scope', 'eventList', 'localStorageService', function ($scope, eventList, localStorageService) {
   $scope.isCollapsed = true;
 
   $scope.ctrlTmpl = 'kyukou-loading';
@@ -52,7 +54,10 @@ kyukouApp.controller('eventListCtrl', ['$scope', 'eventList', function ($scope, 
     };
   });
 
-  $scope.selectedAbouts = [];
+  if (!localStorageService.get('selectedAbouts')) {
+    localStorageService.set('selectedAbouts', []);
+  }
+  localStorageService.bind($scope, 'selectedAbouts');
   $scope.setSelectedAbouts = function () {
     var about = this.about;
     var index = $scope.selectedAbouts.indexOf(about);
@@ -67,7 +72,10 @@ kyukouApp.controller('eventListCtrl', ['$scope', 'eventList', function ($scope, 
     return ($scope.selectedAbouts.indexOf(about) !== -1);
   };
 
-  $scope.selectedDepartments = [];
+  if (!localStorageService.get('selectedDepartments')) {
+    localStorageService.set('selectedDepartments', []);
+  }
+  localStorageService.bind($scope, 'selectedDepartments');
   $scope.setSelectedDepartments = function () {
     var department = this.department;
     var index = $scope.selectedDepartments.indexOf(department);
@@ -82,10 +90,13 @@ kyukouApp.controller('eventListCtrl', ['$scope', 'eventList', function ($scope, 
     return ($scope.selectedDepartments.indexOf(department) !== -1);
   };
 
-  $scope.sort = {
-    col: 'datetime',
-    desc: false
+  if (!localStorageService.get('sort')) {
+    localStorageService.set('sort', {
+      col: 'datetime',
+      desc: false
+    });
   }
+  localStorageService.bind($scope, 'sort');
   $scope.setSorting = function (col) {
     var sort = $scope.sort;
     if (sort.col === col) {
@@ -94,13 +105,13 @@ kyukouApp.controller('eventListCtrl', ['$scope', 'eventList', function ($scope, 
       sort.col = col;
       sort.desc = false;
     }
-  }
+  };
   $scope.isSortedCol = function (col) {
     return ($scope.sort.col === col);
-  }
+  };
 }]);
 
-var kyukouAppFilters = angular.module('kyukouApp.filters', [])
+var kyukouAppFilters = angular.module('kyukouApp.filters', []);
 kyukouAppFilters.filter('aboutFilter', [function () {
   return function (events, selectedAbouts) {
     if (!angular.isUndefined(events) && !angular.isUndefined(selectedAbouts) && selectedAbouts.length > 0) {

@@ -203,7 +203,7 @@ function getEconomics () {
         data.department = '経済学部';
         data.subject = data.raw.match(/「(.*)」/)[1];
         data.teacher = data.raw.match(/」\s*（(.*)教員）/)[1];
-        if (data.about === '補講') {
+        if (/教室：/.test(data.raw)) {
           data.room = data.raw.match(/教室：(.*)/)[1];
         }
         data.hash = require('crypto').createHash('sha256').update(data.raw.replace(/\s/g, '')).digest('hex');

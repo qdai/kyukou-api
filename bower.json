@@ -7,10 +7,11 @@
   "homepage": "https://kyukou-kyudai.rhcloud.com/",
   "private": true,
   "dependencies": {
-    "angular": "~1.3.6",
+    "angular": "~1.3.13",
     "angular-bootstrap": "~0.11.2",
     "angular-local-storage": "~0.1.5",
-    "bootstrap": "~3.3.1"
+    "bootstrap": "~3.3.2",
+    "highlightjs": "~8.4.0"
   },
   "overrides": {
     "angular": {
@@ -31,6 +32,12 @@
         "dist/fonts/*.*"
       ],
       "dependencies": null
+    },
+    "highlightjs": {
+      "main": [
+        "highlight.pack.js",
+        "styles/github.css"
+      ]
     }
   }
 }

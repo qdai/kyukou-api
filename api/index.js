@@ -17,7 +17,62 @@ function HttpError(code, message) {
 var api = {};
 
 api.public = {};
+
+/**
+ * @apiDefine FormatEvents
+ * @apiSuccess {Object[]} events Array of event. Sorted by <code>eventDate</code> and <code>period</code>.
+ * @apiSuccess {String} events.about Event type.
+ * @apiSuccess {String} events.department Department.
+ * @apiSuccess {String} events.subject Subject.
+ * @apiSuccess {String} events.period Event period.
+ * @apiSuccess {String} events.link Event URL.
+ * @apiSuccess {Date} events.eventDate Event date.
+ * @apiSuccess {Date} events.pubDate Date the event published.
+ * @apiSuccess {String} events.raw Event source.
+ * @apiSuccess {String} events.hash Event ID.
+ * @apiSuccess {Object} events.tweet Tweet flags.
+ * @apiSuccess {Boolean} events.tweet.new
+ * @apiSuccess {Boolean} events.tweet.tomorrow
+ * @apiSuccess {String} [events.campus] Campus.
+ * @apiSuccess {String} [events.room] Room.
+ * @apiSuccess {String} [events.teacher] Teacher.
+ * @apiSuccess {String} [events.note] Notes.
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   HTTP/1.1 200 OK
+ *   [
+ *     {
+ *       "about": "休講",
+ *       "department": "教育学部",
+ *       "subject": "教科名",
+ *       "period": "1",
+ *       "link": "http://www.education.kyushu-u.ac.jp/topics/student_index",
+ *       "eventDate": "2015-01-18T15:00:00.000Z",
+ *       "pubDate": "2015-01-15T15:00:00.000Z",
+ *       "raw": "【休講】1月19日（月） 1限 「教科名」（教員名教員）",
+ *       "hash": "89c5918f7d1decffcfd72eebec6413ac7f3795d71f335bd97129df0c69818e8f",
+ *       "tweet": {
+ *         "tomorrow": true,
+ *         "new": true
+ *       },
+ *       "teacher": "教員名"
+ *     }
+ *   ]
+ */
 api.public.events = {};
+
+/**
+ * @api {get} /events/list.json List
+ * @apiDescription Get a list of current sheduled events.
+ * @apiVersion 1.0.0
+ * @apiName EventsList
+ * @apiGroup Events
+ *
+ * @apiParam {Number} [start_index=0] Starting index.
+ * @apiParam {Number} [count] List count. Returns all event if <code>count</code> is not specified.
+ *
+ * @apiUse FormatEvents
+ */
 api.public.events.list = function (start_index, count) {
   start_index = parseInt(start_index, 10) || 0;
   count = parseInt(count, 10) || null;
@@ -32,6 +87,21 @@ api.public.events.list = function (start_index, count) {
     return BBPromise.reject(new HttpError(500, err.message));
   });
 };
+
+/**
+ * @api {get} /events/:YYYY-:MM-:DD.json :YYYY-:MM-:DD
+ * @apiDescription Get a list of YYYY-MM-DD's events.
+ * @apiVersion 1.0.0
+ * @apiName EventsYYYYMMDD
+ * @apiGroup Events
+ *
+ * @apiParam {Number} YYYY Year.
+ * @apiParam {Number} MM Month.
+ * @apiParam {Number} DD Date.
+ * @apiParam {Number} [count] List count. Returns all event if <code>count</code> is not specified.
+ *
+ * @apiUse FormatEvents
+ */
 api.public.events.yyyymmdd = function (yyyy, mm, dd, count) {
   var date = new Date(parseInt(yyyy, 10), parseInt(mm, 10) - 1, parseInt(dd, 10));
   if (isNaN(date.getTime())) {
@@ -49,6 +119,19 @@ api.public.events.yyyymmdd = function (yyyy, mm, dd, count) {
     return BBPromise.reject(new HttpError(500, err.message));
   });
 };
+
+/**
+ * @api {get} /events/search.json Search
+ * @apiDescription Get a list of events matched search query.
+ * @apiVersion 1.0.0
+ * @apiName EventsSearch
+ * @apiGroup Events
+ *
+ * @apiParam {String} q Query.
+ * @apiParam {Number} [count] List count. Returns all event if <code>count</code> is not specified.
+ *
+ * @apiUse FormatEvents
+ */
 api.public.events.search = function (q, count) {
   if (!q) {
     return BBPromise.reject(new HttpError(400, 'Query is not specified'));
@@ -82,7 +165,39 @@ api.public.events.search = function (q, count) {
     return BBPromise.reject(new HttpError(500, err.message));
   });
 };
+
+/**
+ * @apiDefine FormatLog
+ * @apiSuccess {Object} log Log object.
+ * @apiSuccess {String} log.name Log type. Same as requested <code>about</code>.
+ * @apiSuccess {String} log.log Main content.
+ * @apiSuccess {Number} log.level Error level.
+ * @apiSuccess {Date} log.time Loged time.
+ * @apiSuccess {Number} log.elapsedTime Elapsed time in ms.
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   HTTP/1.1 200 OK
+ *   {
+ *     "name": "task",
+ *     "log": "msg: 0 event(s) created\nmsg: 19 event(s) already exist",
+ *     "level": 1,
+ *     "time": "2015-01-21T11:05:00.298Z",
+ *     "elapsedTime": 915.768167
+ *   }
+ */
 api.public.logs = {};
+
+/**
+ * @api {get} /logs/:about.json :About
+ * @apiDescription Get latest log.
+ * @apiVersion 1.0.0
+ * @apiName LogsAbout
+ * @apiGroup Logs
+ *
+ * @apiParam {String=task,twit_new,twit_tomorrow,delete} about
+ *
+ * @apiUse FormatLog
+ */
 api.public.logs.about = function (about) {
   about = about.toString();
   if (['task', 'twit_new', 'twit_tomorrow', 'delete'].indexOf(about) === -1) {

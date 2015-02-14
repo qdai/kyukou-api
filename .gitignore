@@ -6,6 +6,7 @@ bower_components/
 public/*.html
 public/lib/
 public/js/
+api/doc.json
 
 old/
 public/test/

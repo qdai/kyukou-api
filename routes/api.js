@@ -5,6 +5,7 @@ var publicAPI = require('../api').public;
 var sendAPIResult = require('../lib/sendapiresult');
 
 var site = require('../settings/site');
+var doc = require('../api/doc.json');
 
 router.get('/events', function (req, res) {
   res.status(400).type('text/plain').send('Bad Request');
@@ -43,10 +44,11 @@ router.get('/', function (req, res) {
   res.render('api', {
     site: site,
     page: {
-      title: site.name + ' API v1',
-      description: '九州大学休講情報のAPIです。教育学部、文学部、法学部、理学部、経済学部に対応しています。',
+      title: doc.project.title,
+      description: doc.project.description,
       keywords: '九州大学休講情報 API,九州大学,九大,休講情報,休講,API'
-    }
+    },
+    doc: doc
   });
 });
 

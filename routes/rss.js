@@ -19,7 +19,7 @@ router.get('/', function (req, res) {
     var feed = new RSS({
       title: site.name,
       description: site.description,
-      genarator: site.genarator,
+      generator: site.generator,
       feed_url: site.url + '/rss',
       site_url: site.url,
       language: site.lang,

@@ -1,5 +1,4 @@
-var fs = require('fs');
-var pkg = JSON.parse(fs.readFileSync('./package.json').toString());
+var pkg = require('../package.json');
 
 var config = {
   name: '九州大学休講情報',
@@ -10,7 +9,7 @@ var config = {
   twitter: 'kyukou_kyudai',
   version: 'v' + pkg.version,
   author: pkg.author,
-  genarator: pkg.name
+  generator: pkg.name
 };
 
 if (process.env.NODE_ENV === 'development') {

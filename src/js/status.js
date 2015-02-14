@@ -1,4 +1,4 @@
-/* global SITE_URL */
+/* global angular, SITE_URL */
 
 var logApp = angular.module('statusApp', ['ui.bootstrap']);
 logApp.factory('logList', ['$http', '$q', function ($http, $q) {

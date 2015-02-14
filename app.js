@@ -34,6 +34,7 @@ process.on('SIGINT', function () {
 var routes = require('./routes/index');
 var apiStatus = require('./routes/status');
 var rss = require('./routes/rss');
+var calendar = require('./routes/calendar');
 var api = require('./routes/api');
 var api0 = require('./routes/api0');
 var admin = require('./routes/admin');
@@ -90,6 +91,7 @@ if (app.get('env') === 'production') {
 app.use('/', routes);
 app.use('/status', apiStatus);
 app.use('/rss', rss);
+app.use('/calendar', calendar);
 app.use('/api/1', function (req, res, next) {
   // TODO: remove
   res.set('access-control-allow-origin', 'http://' + site.url);
@@ -110,7 +112,9 @@ app.use(function (req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
+/* jshint -W098 */
   app.use(function (err, req, res, next) {
+/* jshint +W098 */
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
@@ -121,7 +125,9 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
+/* jshint -W098 */
 app.use(function (err, req, res, next) {
+/* jshint +W098 */
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,

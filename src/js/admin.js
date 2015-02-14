@@ -1,4 +1,4 @@
-/* global SITE_URL */
+/* global angular, SITE_URL */
 
 var adminApp = angular.module('adminApp', ['ui.bootstrap']);
 adminApp.controller('adminCtrl', ['$scope', '$http', function ($scope, $http) {

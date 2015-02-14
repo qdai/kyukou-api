@@ -1,4 +1,4 @@
-/* global SITE_URL */
+/* global angular, SITE_URL */
 
 var kyukouApp = angular.module('kyukouApp', ['kyukouApp.filters', 'ui.bootstrap', 'LocalStorageModule']);
 kyukouApp.factory('eventList', ['$http', '$q', function ($http, $q) {

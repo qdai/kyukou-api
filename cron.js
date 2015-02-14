@@ -10,23 +10,30 @@ var tasks = {
 };
 
 // run task.js 0, 4, 8, 12, 16, 20
-new CronJob('0 5 0,4,8,12,16,20 * * *', function () {
-  task('task');
+var jobTask = new CronJob('0 5 0,4,8,12,16,20 * * *', function () {
+  runTask('task');
 }, null, true, 'Asia/Tokyo');
-// run twit_new.js 1, 5, 9, 13, 17, 21
-new CronJob('0 0,5,10 1,5,9,13,17,21 * * *', function () {
-  task('twit_new');
-}, null, true, 'Asia/Tokyo');
-// run twit_tomorrow.js 22
-new CronJob('0 0,5,10 22 * * *', function () {
-  task('twit_tomorrow');
-}, null, true, 'Asia/Tokyo');
-// run delete.js 2
-new CronJob('0 5 2 * * *', function () {
-  task('delete');
-}, null, true, 'Asia/Tokyo');
+console.log('Job twit_new running:', jobTask.running);
 
-function task(name) {
+// run twit_new.js 1, 5, 9, 13, 17, 21
+var jobTwitNew = new CronJob('0 0,5,10 1,5,9,13,17,21 * * *', function () {
+  runTask('twit_new');
+}, null, true, 'Asia/Tokyo');
+console.log('Job twit_tomorrow running:', jobTwitNew.running);
+
+// run twit_tomorrow.js 22
+var jobTwitTomorrow = new CronJob('0 0,5,10 22 * * *', function () {
+  runTask('twit_tomorrow');
+}, null, true, 'Asia/Tokyo');
+console.log('Job task running:', jobTwitTomorrow.running);
+
+// run delete.js 2
+var jobDelete = new CronJob('0 5 2 * * *', function () {
+  runTask('delete');
+}, null, true, 'Asia/Tokyo');
+console.log('Job delete running:', jobDelete.running);
+
+function runTask(name) {
   var time = new Date();
   var hrtime = process.hrtime();
   tasks[name]().catch(function (err) {

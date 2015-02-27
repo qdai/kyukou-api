@@ -6,7 +6,7 @@ var mEvent = mongoose.model('Event');
 var vobject = require('vobject');
 
 var site = require('../settings/site');
-var twString = require('../lib/twstring');
+var get = require('../lib/getasstring');
 
 var site = require('../settings/site');
 
@@ -62,8 +62,8 @@ router.get('/kyukou.ics', function (req, res) {
       startDate = vobject.dateValue(startDate.toISOString().slice(0, 10));
       endDate = vobject.dateValue(endDate.toISOString().slice(0, 10));
       var event = vobject.event();
-      event.setSummary(twString(events[i], 'icalt'));
-      event.setDescription(twString(events[i], 'icald'));
+      event.setSummary(get(events[i]).asCalSummary());
+      event.setDescription(get(events[i]).asCalDescription());
       event.setUID(events[i].hash);
       event.setDTStart(startDate);
       event.setDTEnd(endDate);

@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 var mEvent = mongoose.model('Event');
 
 var site = require('../settings/site');
-var twString = require('../lib/twstring');
+var get = require('../lib/getasstring');
 
 router.get('/', function (req, res) {
   BBPromise.resolve(mEvent.find(null, '-_id -__v', {
@@ -27,8 +27,8 @@ router.get('/', function (req, res) {
     });
     for (var i = 0; i < events.length; i++) {
       feed.item({
-        title: twString(events[i], 'rsttl'),
-        description: twString(events[i], 'rstxt'),
+        title: get(events[i]).asRSSTitle(),
+        description: get(events[i]).asRSSDescription(),
         url: events[i].link,
         guid: events[i].hash,
         date: events[i].eventDate.toISOString()

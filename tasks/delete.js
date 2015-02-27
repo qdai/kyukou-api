@@ -1,11 +1,9 @@
-#!/usr/bin/env node
-
 var BBPromise = require('bluebird');
 
 var getConnection = require('../db');
 
 // delete expired data
-var taskDelete = function () {
+module.exports = function () {
   return BBPromise.using(getConnection(), function (db) {
     var today = new Date();
     return BBPromise.resolve(db.model('Event').find({
@@ -17,13 +15,3 @@ var taskDelete = function () {
     return 'msg: ' + removed + ' event(s) deleted';
   });
 };
-
-module.exports = taskDelete;
-
-if (require.main === module) {
-  taskDelete().catch(function (err) {
-    return 'err: ' + err.stack;
-  }).then(function (msg) {
-    console.log(msg);
-  });
-}

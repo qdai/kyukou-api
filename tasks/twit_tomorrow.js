@@ -1,16 +1,14 @@
-#!/usr/bin/env node
-
 var BBPromise = require('bluebird');
 var Twit = require('twit');
 
 var config = require('../settings/config');
-var twString = require('../lib/twstring');
+var get = require('../lib/getasstring');
 var getConnection = require('../db');
 
 var twit = new Twit(config.twitter);
 
 // tweet tomorrow event
-var taskTwitTomorrow = function () {
+module.exports = function () {
   return BBPromise.using(getConnection(), function (db) {
     var today = new Date();
     return BBPromise.resolve(db.model('Event').find({
@@ -27,13 +25,12 @@ var taskTwitTomorrow = function () {
       }
       return BBPromise.all(events.map(function (event) {
         return new BBPromise(function (resolve, reject) {
-          var text = twString(event, 'twtom');
+          var text = get(event).asTomorrowTweet();
           twit.post('statuses/update', { status: text }, function (err, data, res) {
             if (!err && res.statusCode === 200) {
               resolve(event);
             } else {
-              err = err ? err : new Error('status code: ' + res.statusCode);
-              reject(err);
+              reject(err || new Error('status code: ' + res.statusCode));
             }
           });
         });
@@ -52,13 +49,3 @@ var taskTwitTomorrow = function () {
     return 'msg: ' + affecteds.length + ' event(s) posted';
   });
 };
-
-module.exports = taskTwitTomorrow;
-
-if (require.main === module) {
-  taskTwitTomorrow().catch(function (err) {
-    return 'err: ' + err.stack;
-  }).then(function (msg) {
-    console.log(msg);
-  });
-}

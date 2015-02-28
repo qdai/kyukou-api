@@ -57,10 +57,14 @@ function getEducation () {
     return data;
   }
   return fetch(baseURL + resourcePath, 'utf-8').spread(function (res, $) {
+    var event;
     var events = [];
     $('#news dd').each(function () {
       try {
-        events.push(makeEventData($(this)));
+        event = makeEventData($(this));
+        if (event) {
+          events.push(event);
+        }
       } catch (err) {
         events.push(new Error(err.message + ' on ' + normalizeText($(this).find('.text').text()).replace(/[\f\n\r]/g, '')));
       }
@@ -93,10 +97,14 @@ function getLiterature () {
     return data;
   }
   return fetch(resourceURL, 'SHIFT_JIS').spread(function (res, $) {
+    var event;
     var events = [];
     $('table tr:first-child table tr:not(:first-child)').each(function () {
       try {
-        events.push(makeEventData($(this)));
+        event = makeEventData($(this));
+        if (event) {
+          events.push(event);
+        }
       } catch (err) {
         events.push(new Error(err.message + ' on ' + $(this).text().replace(/[\f\n\r]/g, '')));
       }
@@ -129,10 +137,14 @@ function getLaw () {
     return data;
   }
   return fetch(resourceURL, 'SHIFT_JIS').spread(function (res, $) {
+    var event;
     var events = [];
     $('.article-main [style="height: 600px; overflow: auto;"] table tr:not(:first-child)').each(function () {
       try {
-        events.push(makeEventData($(this)));
+        event = makeEventData($(this));
+        if (event) {
+          events.push(event);
+        }
       } catch (err) {
         events.push(new Error(err.message + ' on ' + $(this).text().replace(/[\f\n\r]/g, '')));
       }
@@ -179,10 +191,14 @@ function getScience () {
     }
     items = normalizeText(items)
       .replace(/^\[\[/, '').split('[[ ');
+    var event;
     var events = [];
     for (var i = 0; i < items.length; i++) {
       try {
-        events.push(makeEventData(items[i]));
+        event = makeEventData($(this));
+        if (event) {
+          events.push(event);
+        }
       } catch (err) {
         events.push(new Error(err.message + ' on ' + items[i].trim().replace(/[\f\n\r]/g, '')));
       }
@@ -222,10 +238,14 @@ function getEconomics () {
     return data;
   }
   return fetch(baseURL + resourcePath, 'utf-8').spread(function (res, $) {
+    var event;
     var events = [];
     $('.box01 tr[bgcolor="#FFFFFF"]').each(function () {
       try {
-        events.push(makeEventData($(this)));
+        event = makeEventData($(this));
+        if (event) {
+          events.push(event);
+        }
       } catch (err) {
         events.push(new Error(err.message + ' on ' + normalizeText($(this).find('a').text())
           .replace(/、|，/g, ',').replace(/[\f\n\r]/g, '')));

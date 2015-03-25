@@ -10,11 +10,10 @@ NOTICE: This is **Unofficial** web site.
 
 1. Set environment variables: `TZ` and `NODE_ENV`
 2. Install: `NODE_ENV=development npm install`
-3. Configure: Rename `settings/config.js.dummy` to `settings/config.js` and modify it to suit your server environment
-4. Configure: Modify `settings/site.js`
-5. Build: `npm run build`
-6. Init Database: `./bin/init_db`
-7. Start: `npm start`
+3. Configure: Edit `config/${NODE_ENV}.json` (kyukou uses [node-config](https://github.com/lorenwest/node-config) to load config)
+4. Build: `npm run build`
+5. Init Database: `./bin/init_db`
+6. Start: `npm start`
 
 ## Contact
 

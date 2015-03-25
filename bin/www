@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 
 var debug = require('debug')('kyukou');
-var config = require('../settings/config');
+var config = require('config');
 var app = require('../app');
 
-app.set('port', config.server.port);
-app.set('ipaddr', config.server.ipaddress);
+var serverConfig = config.get('server');
+
+app.set('port', serverConfig.port);
+app.set('ipaddr', serverConfig.ipaddress);
 
 var server = app.listen(app.get('port'), app.get('ipaddr'), function () {
   debug('Express server listening on port ' + server.address().port);

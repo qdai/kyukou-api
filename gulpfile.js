@@ -1,6 +1,7 @@
 var apidoc = require('apidoc');
 var BBPromise = require('bluebird');
 var bower = require('bower');
+var config = require('config');
 var del = require('del');
 var fs = require('fs');
 var gulp = require('gulp');
@@ -43,7 +44,7 @@ gulp.task('build_js', function () {
   var destPath = 'public/js';
   del.sync(destPath);
   return gulp.src('src/js/**/*.js')
-    .pipe(header('var SITE_URL = \'//' + require('./settings/site').url + '/\';\n'))
+    .pipe(header('var SITE_URL = \'//' + config.get('site.url') + '/\';\n'))
     .pipe(uglify())
     .pipe(gulp.dest(destPath));
 });

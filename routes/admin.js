@@ -1,13 +1,14 @@
-var express = require('express');
-var router = express.Router();
 var BBPromise = require('bluebird');
+var config = require('config');
+var express = require('express');
 var pwd = require('pwd');
+
+var admin = config.get('admin');
+var router = express.Router();
+var site = config.get('site');
 
 var privateAPI = require('../api').private;
 var sendAPIResult = require('../lib/sendapiresult');
-
-var config = require('../settings/config');
-var site = require('../settings/site');
 
 router.get('/', function (req, res) {
   if (req.session.loggedin) {
@@ -38,9 +39,9 @@ router.get('/login', function (req, res) {
 router.post('/login', function (req, res) {
   var name = req.body.name;
   var pass = req.body.password;
-  if (name === config.admin.name) {
+  if (name === admin.name) {
     new BBPromise(function (resolve, reject) {
-      pwd.hash(pass, config.admin.salt, function (err, hash) {
+      pwd.hash(pass, admin.salt, function (err, hash) {
         if (err) {
           reject(err);
         } else {
@@ -48,7 +49,7 @@ router.post('/login', function (req, res) {
         }
       });
     }).then(function (hash) {
-      if (hash !== config.admin.hash) {
+      if (hash !== admin.hash) {
         res.redirect('/admin/login');
       } else {
         req.session.loggedin = true;

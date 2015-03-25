@@ -1,10 +1,10 @@
+var config = require('config');
 var express = require('express');
+
 var router = express.Router();
 
 var publicAPI = require('../api').public;
 var sendAPIResult = require('../lib/sendapiresult');
-
-var site = require('../settings/site');
 var doc = require('../api/doc.json');
 
 router.get('/events', function (req, res) {
@@ -42,7 +42,7 @@ router.get('/logs/:about.json', function (req, res) {
 
 router.get('/', function (req, res) {
   res.render('api', {
-    site: site,
+    site: config.get('site'),
     page: {
       title: doc.project.title,
       description: doc.project.description,

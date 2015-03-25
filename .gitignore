@@ -1,6 +1,7 @@
 *.*~
 *~
-settings/config.js
+config/development.*
+config/production.*
 node_modules/
 bower_components/
 public/*.html

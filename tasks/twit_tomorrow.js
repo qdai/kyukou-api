@@ -1,11 +1,11 @@
 var BBPromise = require('bluebird');
+var config = require('config');
 var Twit = require('twit');
 
-var config = require('../settings/config');
 var get = require('../lib/getasstring');
 var getConnection = require('../db');
 
-var twit = new Twit(config.twitter);
+var twit = new Twit(config.get('twitter'));
 
 // tweet tomorrow event
 module.exports = function () {

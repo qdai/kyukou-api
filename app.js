@@ -1,20 +1,20 @@
+var bodyParser = require('body-parser');
+var config = require('config');
+var cookieParser = require('cookie-parser');
 var express = require('express');
-var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var session = require('express-session');
-var MongoStore = require('connect-mongo')(session);
 var mongoose = require('mongoose');
+var path = require('path');
+var session = require('express-session');
 
-var config = require('./settings/config');
-var site = require('./settings/site.js');
+var MongoStore = require('connect-mongo')(session);
+var mongoURI = config.get('mongoURI');
 
 // db setting
 require('./db/event');
 require('./db/tasklog');
-mongoose.connect(config.mongoURI);
+mongoose.connect(mongoURI);
 mongoose.connection.once('open', function () {
   console.log('Mongoose connected');
 });
@@ -58,11 +58,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // session for routes/admin
 app.use(session({
   store: new MongoStore({
-    url: config.mongoURI,
+    url: mongoURI,
     autoReconnect: true,
     cookie: {}
   }),
-  secret: config.secret,
+  secret: config.get('secret'),
   resave: false,
   saveUninitialized: false
 }));
@@ -94,7 +94,7 @@ app.use('/rss', rss);
 app.use('/calendar', calendar);
 app.use('/api/1', function (req, res, next) {
   // TODO: remove
-  res.set('access-control-allow-origin', 'http://' + site.url);
+  res.set('access-control-allow-origin', 'http://' + config.get('site.url'));
   next();
 }, api);
 app.use('/api', api0);

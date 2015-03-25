@@ -1,14 +1,13 @@
-var mongoose = require('mongoose');
 var BBPromise = require('bluebird');
+var config = require('config');
+var mongoose = require('mongoose');
 
 // load models
 require('./event');
 require('./tasklog');
 
-var config = require('../settings/config');
-
 module.exports = function (uri) {
-  uri = uri ? uri : config.mongoURI;
+  uri = uri ? uri : config.get('mongoURI');
   return new BBPromise(function(resolve, reject) {
     var conn = mongoose.createConnection(uri);
     conn.once('open', function () {

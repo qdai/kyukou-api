@@ -1,0 +1,31 @@
+{
+  "server": {
+    "port": 3000,
+    "ipaddress": "127.0.0.1",
+    "logDir": "./"
+  },
+  "admin": {
+    "name": "",
+    "hash": "",
+    "salt": ""
+  },
+  "secret": "",
+  "mongoURI": "mongodb://localhost/kyukou",
+  "twitter": {
+    "consumer_key": "",
+    "consumer_secret": "",
+    "access_token": "",
+    "access_token_secret": ""
+  },
+  "site": {
+    "name": "",
+    "description": "",
+    "keywords": "",
+    "url": "",
+    "lang": "",
+    "twitter": "",
+    "version": "",
+    "author": "",
+    "generator": "kyukou"
+  }
+}

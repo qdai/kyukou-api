@@ -1,11 +1,13 @@
-var express = require('express');
-var router = express.Router();
 var BBPromise = require('bluebird');
-var RSS = require('rss');
+var config = require('config');
+var express = require('express');
 var mongoose = require('mongoose');
-var mEvent = mongoose.model('Event');
+var RSS = require('rss');
 
-var site = require('../settings/site');
+var mEvent = mongoose.model('Event');
+var router = express.Router();
+var site = config.get('site');
+
 var get = require('../lib/getasstring');
 
 router.get('/', function (req, res) {

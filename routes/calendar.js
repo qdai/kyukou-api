@@ -1,14 +1,14 @@
-var express = require('express');
-var router = express.Router();
 var BBPromise = require('bluebird');
+var config = require('config');
+var express = require('express');
 var mongoose = require('mongoose');
-var mEvent = mongoose.model('Event');
 var vobject = require('vobject');
 
-var site = require('../settings/site');
-var get = require('../lib/getasstring');
+var mEvent = mongoose.model('Event');
+var router = express.Router();
+var site = config.get('site');
 
-var site = require('../settings/site');
+var get = require('../lib/getasstring');
 
 router.get('/', function (req, res) {
   res.render('calendar', {

@@ -1,10 +1,11 @@
+var config = require('config');
 var express = require('express');
+
 var router = express.Router();
 
-var site = require('../settings/site');
 var errorMessage = {
   error: {
-    message: 'API v0 is no longer active. Please migrate to API v1 (https://' + site.url + '/api/1).'
+    message: 'API v0 is no longer active. Please migrate to API v1 (https://' + config.get('site.url') + '/api/1).'
   }
 };
 

@@ -14,7 +14,7 @@ router.get('/', function (req, res) {
   BBPromise.resolve(mEvent.find(null, '-_id -__v', {
     limit: 20,
     sort: {
-      pubDate: 1,
+      pubDate: -1,
       period: 1
     }
   }).exec()).then(function (events) {
@@ -22,8 +22,8 @@ router.get('/', function (req, res) {
       title: site.name,
       description: site.description,
       generator: site.generator,
-      feed_url: site.url + '/rss',
-      site_url: site.url,
+      feed_url: 'https://' + site.url + '/rss',
+      site_url: 'https://' + site.url,
       language: site.lang,
       ttl: 180
     });
@@ -33,7 +33,7 @@ router.get('/', function (req, res) {
         description: get(events[i]).asRSSDescription(),
         url: events[i].link,
         guid: events[i].hash,
-        date: events[i].eventDate.toISOString()
+        date: events[i].pubDate.toISOString()
       });
     }
     res.set('Content-Type', 'application/rss+xml');

@@ -1,11 +1,8 @@
 {
   "name": "kyukou",
+  "description": "Alert information about cancellation of a lecture.",
   "version": "1.1.0",
-  "homepage": "https://kyukou-kyudai.rhcloud.com/",
-  "scripts": {
-    "start": "node ./bin/www",
-    "build": "gulp build"
-  },
+  "author": "Qdai",
   "dependencies": {
     "bluebird": "~2.9.14",
     "body-parser": "~1.12.2",
@@ -31,8 +28,6 @@
     "twit": "~1.1.20",
     "vobject": "0.0.33"
   },
-  "description": "Alert information about cancellation of a lecture.",
-  "main": "./bin/www",
   "devDependencies": {
     "apidoc": "~0.12.1",
     "bluebird": "~2.9.14",
@@ -40,17 +35,24 @@
     "del": "~1.1.1",
     "gulp": "~3.8.11",
     "gulp-header": "~1.2.2",
+    "gulp-less": "^3.0.2",
+    "gulp-minify-css": "^1.0.0",
     "gulp-uglify": "~1.1.0",
     "gulp-util": "~3.0.3",
     "main-bower-files": "~2.6.2"
   },
+  "homepage": "https://kyukou-kyudai.rhcloud.com/",
   "keywords": [
     "kyukou"
   ],
-  "author": "Qdai",
   "license": "MIT",
+  "main": "./bin/www",
   "repository": {
     "type": "git",
     "url": "https://github.com/Qdai/kyukou.git"
+  },
+  "scripts": {
+    "build": "gulp build",
+    "start": "node ./bin/www"
   }
 }

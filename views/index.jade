@@ -89,6 +89,8 @@ html(lang=site.lang, manifest='/kyukou.appcache', prefix='og: http://ogp.me/ns#'
         p#header-buttons
           a.icon-twitter(target='_blank', href='//twitter.com/' + site.twitter, title='Twitter')
             span Twitter
+          a.icon-calendar(href='/calendar', title='calendar')
+            span Calendar
           a.icon-feed(href='/rss', title='RSS')
             span RSS
       main(role='main', data-ng-include='ctrlTmpl', data-ng-controller='eventListCtrl')

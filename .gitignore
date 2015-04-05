@@ -4,13 +4,11 @@ config/development.*
 config/production.*
 node_modules/
 bower_components/
-public/*.html
-public/lib/
-public/js/
+public/
 api/doc.json
 
 old/
-public/test/
+src/test/
 task.log
 twit_new.log
 twit_tomorrow.log

@@ -7,7 +7,9 @@ var fs = require('fs');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var header = require('gulp-header');
+var less = require('gulp-less');
 var mainBowerFiles = require('main-bower-files');
+var minify = require('gulp-minify-css');
 var uglify = require('gulp-uglify');
 
 function apiList (apiData) {
@@ -49,6 +51,20 @@ gulp.task('build_js', function () {
     .pipe(gulp.dest(destPath));
 });
 
+gulp.task('build_css', function () {
+  var destPath = 'public/css';
+  del.sync(destPath);
+  gulp.src('src/less/**/*.less')
+    .pipe(less())
+    .pipe(minify())
+    .pipe(gulp.dest(destPath));
+});
+
+gulp.task('build_static', function () {
+  gulp.src('src/static/**')
+    .pipe(gulp.dest('public'));
+});
+
 gulp.task('apidoc', function () {
   var chunk = apidoc.createDoc({
     src: 'api/',
@@ -66,5 +82,5 @@ gulp.task('apidoc', function () {
   }
 });
 
-gulp.task('build', ['bower', 'build_js', 'apidoc']);
+gulp.task('build', ['bower', 'build_js', 'build_css', 'build_static', 'apidoc']);
 gulp.task('default', ['build']);

@@ -1,0 +1,130 @@
+@monospace: Menlo, Monaco, Consolas, "Courier New", Osaka,Meiryo, monospace;
+@sans-serif: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+
+
+th, td {
+  min-width: 65px;
+  :last-child {
+    margin-bottom: 0;
+  }
+}
+
+a {
+  cursor: pointer;
+}
+
+h1 {
+  margin-top: 0;
+}
+
+code {
+  font-family: @monospace;
+}
+
+body {
+  text-align: justify;
+  font-family: @sans-serif;
+  min-width: 320px;
+}
+
+[data-ng-app="kyukouApp"] body {
+  min-width: 640px;
+}
+
+.alert, .panel-body {
+  >:first-child {
+    margin-top: 0;
+  }
+  >:last-child {
+    margin-bottom: 0;
+  }
+}
+
+h2 small.badge {
+  font-size: 65%;
+  font-weight: normal;
+}
+
+h2.page-header span:first-child {
+  text-transform: capitalize;
+}
+
+.btn-group [type="checkbox"] {
+  display: none;
+}
+
+@header-button-size: 40px;
+body > .container {
+  position: relative;
+}
+#header-buttons {
+  position: absolute;
+  right: 15px;
+  top: @header-button-size / 10;
+  a {
+    display: inline-block;
+    width: @header-button-size;
+    height: @header-button-size;
+    color: rgb(255, 255, 255);
+    font-size: @header-button-size * 3 / 5;
+    padding: @header-button-size / 5;
+    margin: @header-button-size / 10;
+    text-decoration: none;
+    border-radius: @header-button-size / 2;
+    transition: border-radius .2s ease-in-out;
+    &:hover, &:active {
+      color: #fff;
+      border-radius: @header-button-size / 10;
+      box-shadow: 1px 1px 2px rgba(0, 0, 0, .4);
+    }
+  }
+  .icon-twitter {
+    background-color: hsl(206, 82%, 63%);
+  }
+  .icon-calendar {
+    background-color: hsl(2, 52%, 63%);
+  }
+  .icon-feed {
+    background-color: hsl(32, 82%, 63%);
+  }
+  span {
+    display: none;
+  }
+}
+
+.page-footer {
+  margin-top: 20px;
+  margin-bottom: 40px;
+  padding-top: 20px;
+  border-top: 1px solid rgb(238, 238, 238);
+}
+
+.table-sortable thead th[data-ng-click] {
+  cursor: pointer;
+  position: relative;
+  &:hover {
+    background: rgb(238, 238, 238);
+  }
+  span.glyphicon {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    font-size: 12px;
+    margin-top: -5px;
+    color: rgb(191, 191, 193);
+  }
+}
+
+[data-ng-app="adminApp"] {
+  .nav.nav-tabs {
+    margin-bottom: 20px;
+  }
+  th, td {
+    max-width: 250px;
+    overflow: hidden;
+  }
+}
+
+.hljs {
+  background: transparent;
+}

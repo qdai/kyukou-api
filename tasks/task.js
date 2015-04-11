@@ -284,8 +284,10 @@ module.exports = function () {
     });
   }).then(function (results) {
     var log = '';
-    var created = 0;
-    var exist = 0;
+    var count = {
+      created: 0,
+      exist: 0
+    };
     results.map(function (result) {
       var err = result[0];
       var created = result[1];
@@ -299,14 +301,14 @@ module.exports = function () {
         }
       } else {
         if (created) {
-          created++;
+          count.created++;
         } else {
-          exist++;
+          count.exist++;
         }
       }
     });
-    log += 'msg: ' + created + ' event(s) created\n';
-    log += 'msg: ' + exist + ' event(s) already exist';
+    log += 'msg: ' + count.created + ' event(s) created\n';
+    log += 'msg: ' + count.exist + ' event(s) already exist';
     return log;
   });
 };

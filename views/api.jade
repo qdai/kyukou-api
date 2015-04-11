@@ -40,7 +40,10 @@ html(lang=site.lang, prefix='og: http://ogp.me/ns#')
             section(id=api.group+'-'+api.title)
               h2.page-header
                 span=api.type
-                =' '+api.groupTitle+'/'+api.title
+                |  
+                =api.groupTitle+'/'+api.title
+                |  
+                small='v'+api.version
               !=api.description
               h3 Resource URL
               code=doc.project.url

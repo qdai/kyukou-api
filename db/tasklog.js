@@ -13,11 +13,11 @@ var stasklog = {
   },
   level: {
     type: Number,
-    default: 1
+    required: true
   },
   time: {
     type: Date,
-    default: new Date()
+    required: true
   },
   elapsedTime: {
     type: Number,

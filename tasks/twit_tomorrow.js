@@ -11,7 +11,7 @@ var twit = new Twit(config.get('twitter'));
 module.exports = function () {
   return BBPromise.using(getConnection(), function (db) {
     var today = new Date();
-    return BBPromise.resolve(db.model('Event').find({
+    return db.model('Event').find({
       'tweet.tomorrow': false,
       eventDate: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 0, 0)
     }, null, {
@@ -19,7 +19,7 @@ module.exports = function () {
         eventDate: 1,
         period: 1
       }
-    }).exec()).then(function (events) {
+    }).exec().then(function (events) {
       if (events.length === 0) {
         return events;
       }
@@ -40,9 +40,9 @@ module.exports = function () {
         return [];
       }
       return BBPromise.all(events.map(function (event) {
-        return BBPromise.resolve(event.update({
+        return event.update({
           'tweet.tomorrow': true
-        }).exec());
+        }).exec();
       }));
     });
   }).then(function (affecteds) {

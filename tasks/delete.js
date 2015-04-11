@@ -6,12 +6,12 @@ var getConnection = require('../db');
 module.exports = function () {
   return BBPromise.using(getConnection(), function (db) {
     var today = new Date();
-    return BBPromise.resolve(db.model('Event').find({
+    return db.model('Event').find({
       eventDate: {
         $lte: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1, 0, 0)
       }
-    }).remove().exec());
+    }).remove().exec();
   }).then(function (removed) {
-    return 'msg: ' + removed + ' event(s) deleted';
+    return 'msg: ' + removed.result.n + ' event(s) deleted';
   });
 };

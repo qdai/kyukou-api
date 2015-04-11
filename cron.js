@@ -55,9 +55,11 @@ function runTask(name) {
       tasklog.level = 2;
     }
     return BBPromise.using(getConnection(), function (db) {
-      return BBPromise.resolve(db.model('Tasklog').findOneAndUpdate({
+      return db.model('Tasklog').findOneAndUpdate({
         name: tasklog.name
-      }, tasklog).exec());
+      }, tasklog, {
+        new: true
+      }).exec();
     });
   }).then(function (tasklog) {
     return 'msg: ' + tasklog.name + ' done';

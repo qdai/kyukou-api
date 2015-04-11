@@ -262,6 +262,8 @@ api.private.edit = function (hash, data) {
     hash: hash
   }, {
     $set: data
+  }, {
+    new: true
   }).exec()).then(function (event) {
     if (event) {
       return {

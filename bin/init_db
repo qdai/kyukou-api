@@ -28,15 +28,7 @@ tasklogs.push({
 BBPromise.using(getConnection(), function (db) {
   var Tasklog = db.model('Tasklog');
   return BBPromise.all(tasklogs.map(function (tasklog) {
-    return new BBPromise(function (resolve, reject) {
-      new Tasklog(tasklog).save(function (err, tasklog) {
-        if (!err) {
-          resolve(tasklog);
-        } else {
-          reject(err);
-        }
-      });
-    });
+    return new Tasklog(tasklog).save();
   }));
 }).then(function () {
   console.log('msg: db init success');

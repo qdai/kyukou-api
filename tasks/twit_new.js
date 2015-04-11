@@ -10,14 +10,14 @@ var twit = new Twit(config.get('twitter'));
 // tweet new event
 module.exports = function () {
   return BBPromise.using(getConnection(), function (db) {
-    return BBPromise.resolve(db.model('Event').find({
+    return db.model('Event').find({
       'tweet.new': false
     }, null, {
       sort: {
         eventDate: 1,
         period: 1
       }
-    }).exec()).then(function (events) {
+    }).exec().then(function (events) {
       if (events.length === 0) {
         return events;
       }
@@ -38,9 +38,9 @@ module.exports = function () {
         return [];
       }
       return BBPromise.all(events.map(function (event) {
-        return BBPromise.resolve(event.update({
+        return event.update({
           'tweet.new': true
-        }).exec());
+        }).exec();
       }));
     });
   }).then(function (affecteds) {

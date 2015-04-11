@@ -54,7 +54,6 @@ var sevent = {
     type: String,
     required: true
   },
-  // below auto
   tweet: {
     new: {
       type: Boolean,

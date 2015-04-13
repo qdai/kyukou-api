@@ -195,7 +195,7 @@ function getScience () {
     var events = [];
     for (var i = 0; i < items.length; i++) {
       try {
-        event = makeEventData($(this));
+        event = makeEventData(items[i]);
         if (event) {
           events.push(event);
         }

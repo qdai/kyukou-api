@@ -19,7 +19,7 @@ html(lang=site.lang, manifest='/kyukou.appcache', data-ng-app='statusApp')
           | .
     script#logapp(type='text/ng-template')
       accordion(data-close-others='llc.oneAtATime')
-        accordion-group(data-ng-repeat='log in llc.logs', class='panel panel-{{log.level}}')
+        accordion-group(data-ng-repeat='log in llc.logs', is-open='log.isFailure', class='panel panel-{{log.level}}')
           accordion-heading {{log.name}} ({{log.elapsedTime}}ms) 
             time {{log.time}}
           pre {{log.log}}

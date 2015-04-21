@@ -12,7 +12,8 @@ logApp.factory('logList', ['$http', '$q', function ($http, $q) {
     var temp = [];
     for (var i = 0; i < results.length; i++) {
       results[i].data.time = new Date(results[i].data.time).toString();
-      results[i].data.level = [, 'success', 'info', 'warning', 'danger'][results[i].data.level];
+      results[i].data.isFailure = results[i].data.level !== 1;
+      results[i].data.level = ['', 'success', 'info', 'warning', 'danger'][results[i].data.level];
       temp.push(results[i].data);
     }
     deferred.resolve(temp);
@@ -23,7 +24,7 @@ logApp.factory('logList', ['$http', '$q', function ($http, $q) {
 }]);
 logApp.controller('logListCtrl', ['logList', function (logList) {
   this.ctrlTmpl = 'logapp-loading';
-  this.oneAtATime = true;
+  this.oneAtATime = false;
   this.logs = null;
   this.error = null;
 

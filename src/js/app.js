@@ -14,7 +14,7 @@ kyukouApp.factory('eventList', ['$http', '$q', function ($http, $q) {
       // datetime
       data[i].eventDate = new Date(data[i].eventDate);
       data[i].datetime = data[i].eventDate.toISOString();
-      data[i].dateformatted = data[i].eventDate.getFullYear() + '年' + (data[i].eventDate.getMonth() + 1) + '月' + data[i].eventDate.getDate() + '日（' + ['日', '月', '火', '水', '木', '金', '土'][data[i].eventDate.getDay()] + ')';
+      data[i].dateformatted = data[i].eventDate.getFullYear() + '年' + (data[i].eventDate.getMonth() + 1) + '月' + data[i].eventDate.getDate() + '日（' + ['日', '月', '火', '水', '木', '金', '土'][data[i].eventDate.getDay()] + '）';
       // push to abouts
       if (abouts.indexOf(data[i].about) === -1) {
         abouts.push(data[i].about);

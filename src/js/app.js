@@ -99,8 +99,8 @@ kyukouApp.controller('eventListCtrl', ['$scope', 'eventList', 'localStorageServi
     };
   });
 
-  if (!localStorageService.get('selectedAbouts')) {
-    localStorageService.set('selectedAbouts', []);
+  if (!localStorageService.get('selectedAbouts') || localStorageService.get('selectedAbouts').length === 0) {
+    localStorageService.set('selectedAbouts', ['休講', '補講', '連絡', '教室変更', 'その他', '公務']);
   }
   localStorageService.bind($scope, 'selectedAbouts');
   $scope.setSelectedAbouts = function () {
@@ -117,8 +117,8 @@ kyukouApp.controller('eventListCtrl', ['$scope', 'eventList', 'localStorageServi
     return ($scope.selectedAbouts.indexOf(about) !== -1);
   };
 
-  if (!localStorageService.get('selectedDepartments')) {
-    localStorageService.set('selectedDepartments', []);
+  if (!localStorageService.get('selectedDepartments') || localStorageService.get('selectedDepartments').length === 0) {
+    localStorageService.set('selectedDepartments', ['教育学部', '文学部', '法学部', '理学部', '経済学部']);
   }
   localStorageService.bind($scope, 'selectedDepartments');
   $scope.setSelectedDepartments = function () {

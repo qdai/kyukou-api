@@ -3,7 +3,6 @@
 
 
 th, td {
-  min-width: 65px;
   :last-child {
     margin-bottom: 0;
   }
@@ -25,10 +24,6 @@ body {
   text-align: justify;
   font-family: @sans-serif;
   min-width: 320px;
-}
-
-[data-ng-app="kyukouApp"] body {
-  min-width: 640px;
 }
 
 .alert, .panel-body {
@@ -92,27 +87,51 @@ body > .container {
   }
 }
 
+.events {
+  h2 {
+    background: #fff;
+    margin-top: 0;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .panel {
+    box-shadow: none;
+    border-radius: 0;
+    + .panel {
+      margin-top: -1px;
+    }
+  }
+  .panel-collapse {
+    border-top: 1px solid rgb(221, 221, 221);
+    background-color: rgb(252, 252, 252);
+  }
+  .panel-body {
+    ul {
+      padding-left: 20px;
+    }
+    li {
+      padding: 0;
+    }
+  }
+  .accordion-toggle {
+    cursor: pointer;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 10px 0;
+    [class*="col-"] {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  }
+}
+
 .page-footer {
   margin-top: 20px;
   margin-bottom: 40px;
   padding-top: 20px;
   border-top: 1px solid rgb(238, 238, 238);
-}
-
-.table-sortable thead th[data-ng-click] {
-  cursor: pointer;
-  position: relative;
-  &:hover {
-    background: rgb(238, 238, 238);
-  }
-  span.glyphicon {
-    position: absolute;
-    top: 50%;
-    right: 12px;
-    font-size: 12px;
-    margin-top: -5px;
-    color: rgb(191, 191, 193);
-  }
 }
 
 [data-ng-app="adminApp"] {
@@ -127,4 +146,10 @@ body > .container {
 
 .hljs {
   background: transparent;
+}
+
+@media (max-width: 767px) {
+  .page-header {
+    margin-top: 50px;
+  }
 }

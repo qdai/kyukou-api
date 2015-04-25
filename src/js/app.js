@@ -2,19 +2,43 @@
 
 var kyukouApp = angular.module('kyukouApp', ['kyukouApp.filters', 'ui.bootstrap', 'LocalStorageModule']);
 kyukouApp.factory('eventList', ['$http', '$q', function ($http, $q) {
+  var toJapaneseDateString = function (date) {
+    return date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日（' + ['日', '月', '火', '水', '木', '金', '土'][date.getDay()] + '）';
+  };
   var deferred = $q.defer();
   $q.all([
     $http.get(SITE_URL + 'api/1/events/list.json')
   ]).then(function (results) {
     var data = results[0].data;
+    var eventsObj = {};
     var abouts = [];
     var departments = [];
-    for (var i = 0; i < data.length; i++) {
+    var i;
+    var date = new Date();
+    var today = toJapaneseDateString(date);
+    date.setDate(date.getDate() + 1);
+    var nextday = toJapaneseDateString(date);
+    for (i = 0; i < data.length; i++) {
       data[i].raw = data[i].raw.replace(/\s+/g, ' ');
       // datetime
       data[i].eventDate = new Date(data[i].eventDate);
       data[i].datetime = data[i].eventDate.toISOString();
-      data[i].dateformatted = data[i].eventDate.getFullYear() + '年' + (data[i].eventDate.getMonth() + 1) + '月' + data[i].eventDate.getDate() + '日（' + ['日', '月', '火', '水', '木', '金', '土'][data[i].eventDate.getDay()] + '）';
+      data[i].dateformatted = toJapaneseDateString(data[i].eventDate);
+      if (data[i].note || data[i].campus || data[i].note) {
+        data[i].hasNote = true;
+      }
+      if (data[i].dateformatted === today) {
+        data[i].dateformatted = '今日';
+        data[i].isToday = true;
+      }
+      if (data[i].dateformatted === nextday) {
+        data[i].dateformatted = '明日';
+      }
+      // push to events
+      if (!eventsObj[data[i].eventDate.getTime()]) {
+        eventsObj[data[i].eventDate.getTime()] = [];
+      }
+      eventsObj[data[i].eventDate.getTime()].push(data[i]);
       // push to abouts
       if (abouts.indexOf(data[i].about) === -1) {
         abouts.push(data[i].about);
@@ -24,8 +48,20 @@ kyukouApp.factory('eventList', ['$http', '$q', function ($http, $q) {
         departments.push(data[i].department.match(/^\S*学部/)[0]);
       }
     }
+    var keys = Object.keys(eventsObj).sort();
+    var events = [];
+    var daysEvent;
+    for (i = 0; i < keys.length; i++) {
+      daysEvent = {
+        data: eventsObj[keys[i]]
+      };
+      daysEvent.date = daysEvent.data[0].dateformatted;
+      // push
+      events[i] = daysEvent;
+    }
     deferred.resolve({
-      events: data,
+      events: events,
+      eventsCount: data.length,
       abouts: abouts.sort(),
       departments: departments.sort()
     });
@@ -40,9 +76,18 @@ kyukouApp.controller('eventListCtrl', ['$scope', 'eventList', 'localStorageServi
   $scope.ctrlTmpl = 'kyukou-loading';
   $scope.error = null;
 
+  $scope.filteredEvents = [];
+  $scope.filteredCount = function () {
+    var count = 0;
+    for (var i = 0; i < $scope.filteredEvents.length; i++) {
+      count += $scope.filteredEvents[i].length;
+    }
+    return count;
+  };
   // load
   eventList.then(function (data) {
     $scope.events = data.events;
+    $scope.eventsCount = data.eventsCount;
     $scope.abouts = data.abouts;
     $scope.departments = data.departments;
 
@@ -88,26 +133,6 @@ kyukouApp.controller('eventListCtrl', ['$scope', 'eventList', 'localStorageServi
   };
   $scope.isSelectedDepartment = function (department) {
     return ($scope.selectedDepartments.indexOf(department) !== -1);
-  };
-
-  if (!localStorageService.get('sort')) {
-    localStorageService.set('sort', {
-      col: 'datetime',
-      desc: false
-    });
-  }
-  localStorageService.bind($scope, 'sort');
-  $scope.setSorting = function (col) {
-    var sort = $scope.sort;
-    if (sort.col === col) {
-      sort.desc = !sort.desc;
-    } else {
-      sort.col = col;
-      sort.desc = false;
-    }
-  };
-  $scope.isSortedCol = function (col) {
-    return ($scope.sort.col === col);
   };
 }]);
 

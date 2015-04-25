@@ -37,7 +37,7 @@ html(lang=site.lang, manifest='/kyukou.appcache', prefix='og: http://ogp.me/ns#'
             span.glyphicon(data-ng-class='{\'glyphicon-chevron-down\': !isCollapsed, \'glyphicon-chevron-right\': isCollapsed}')
             | 検索
           |  
-          small.badge {{filtered.length}}/{{events.length}}
+          small.badge {{filteredCount()}}/{{eventsCount}}
         div.collapse(data-collapse='isCollapsed')
           p.input-group.input-group-lg
             label.input-group-addon(for='query-filter') Filter:
@@ -53,34 +53,28 @@ html(lang=site.lang, manifest='/kyukou.appcache', prefix='og: http://ogp.me/ns#'
               label.btn.btn-default.btn-lg(data-ng-repeat='department in departments', data-ng-class='{active: isSelectedDepartment(department)}')
                 input(type='checkbox', value='{{department}}', data-ng-click='setSelectedDepartments()')
                 | {{department}}
-      table.table.table-bordered.table-hover.table-sortable
-        thead
-          tr
-            th(data-ng-click='setSorting(\'about\')') 種別
-              span.glyphicon(data-ng-show='isSortedCol(\'about\')', data-ng-class='{\'glyphicon-chevron-down\': !sort.desc, \'glyphicon-chevron-up\': sort.desc}')
-            th(data-ng-click='setSorting(\'datetime\')') 日付
-              span.glyphicon(data-ng-show='isSortedCol(\'datetime\')', data-ng-class='{\'glyphicon-chevron-down\': !sort.desc, \'glyphicon-chevron-up\': sort.desc}')
-            th(data-ng-click='setSorting(\'period\')') 時限
-              span.glyphicon(data-ng-show='isSortedCol(\'period\')', data-ng-class='{\'glyphicon-chevron-down\': !sort.desc, \'glyphicon-chevron-up\': sort.desc}')
-            th(data-ng-click='setSorting(\'department\')') 学部
-              span.glyphicon(data-ng-show='isSortedCol(\'department\')', data-ng-class='{\'glyphicon-chevron-down\': !sort.desc, \'glyphicon-chevron-up\': sort.desc}')
-            th(data-ng-click='setSorting(\'subject\')') 授業科目名
-              span.glyphicon(data-ng-show='isSortedCol(\'subject\')', data-ng-class='{\'glyphicon-chevron-down\': !sort.desc, \'glyphicon-chevron-up\': sort.desc}')
-            th(data-ng-click='setSorting(\'teacher\')') 担当教員
-              span.glyphicon(data-ng-show='isSortedCol(\'teacher\')', data-ng-class='{\'glyphicon-chevron-down\': !sort.desc, \'glyphicon-chevron-up\': sort.desc}')
-            th(data-ng-click='setSorting(\'note\')') 備考
-              span.glyphicon(data-ng-show='isSortedCol(\'note\')', data-ng-class='{\'glyphicon-chevron-down\': !sort.desc, \'glyphicon-chevron-up\': sort.desc}')
-        tbody
-          tr(title='{{event.raw}}', data-ng-repeat='event in filtered = (events | aboutFilter:selectedAbouts | departmentFilter:selectedDepartments | filter:queryFilter | orderBy:sort.col:sort.desc)')
-            td {{event.about}}
-            td
-              time(datetime='{{event.datetime}}') {{event.dateformatted}}
-            td {{event.period}}
-            td {{event.department}}
-            td
-              a(target='_blank', href='{{event.link}}') {{event.subject}}
-            td {{event.teacher}}
-            td {{event.note}} {{event.campus}} {{event.room}}
+      section.events(data-ng-repeat='daysEvent in events', data-ng-show='filteredEvents[$index].length')
+        h2.h3 {{daysEvent.date}}
+        accordion(data-close-others='false')
+          accordion-group(data-ng-repeat='event in filteredEvents[$index] = (daysEvent.data | aboutFilter:selectedAbouts | departmentFilter:selectedDepartments | filter:queryFilter)', title='{{event.raw}}', is-open='event.isToday')
+            accordion-heading
+              span.col-sm-2.col-xs-3 {{event.about}}
+              span.col-sm-2.col-xs-3 {{event.period}}時限
+              span.col-sm-3.hidden-xs {{event.department}}
+              span.col-sm-5.col-xs-6 {{event.subject}}
+            ul
+              li.hidden-sm.hidden-md.hidden-lg {{event.department}}
+              li {{event.teacher}}教員
+              li(data-ng-show='event.hasNote') {{event.note}} {{event.campus}} {{event.room}}
+      p(data-ng-hide='filteredCount()') {{selectedDepartments.join('、')}}の{{selectedAbouts.join('、')}}に関する情報はありません。
+    script(type='text/ng-template', id='template/accordion/accordion-group.html')
+      article.panel.panel-default
+        h3.h4.container.accordion-toggle(data-ng-click='toggleOpen()', data-accordion-transclude='heading') {{heading}}
+        div.panel-collapse(data-collapse='!isOpen')
+          div.panel-body(data-ng-transclude)
+    script(type='text/ng-template', id='template/accordion/accordion.html')
+      div.panel-group(data-ng-transclude)
+
   body
     div.container
       header.page-header

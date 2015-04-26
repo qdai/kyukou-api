@@ -25,38 +25,36 @@ html(lang=site.lang, manifest='/kyukou.appcache', prefix='og: http://ogp.me/ns#'
     link(rel='shortcut icon', type='image/vnd.microsoft.icon', href='/favicon.ico')
     link(rel='alternate' type='application/rss+xml' title=site.name href='https://' + site.url + '/rss')
     script#kyukou-loading(type='text/ng-template')
-      div.alert(role='alert', data-ng-class='{\'alert-info\': !error, \'alert-danger\': error}')
+      div.alert(role='alert', data-ng-class='{"alert-info": !error, "alert-danger": error}')
         p.lead(data-ng-show='!error') Now loading...
         p.lead(data-ng-show='error') Load error ({{error.status}}). Please 
           a(href='//' + site.url) load again
           | .
     script#kyukou-app(type='text/ng-template')
-      section
-        h2
-          a(title='検索', data-ng-click='isCollapsed = !isCollapsed')
-            span.glyphicon(data-ng-class='{\'glyphicon-chevron-down\': !isCollapsed, \'glyphicon-chevron-right\': isCollapsed}')
-            | 検索
-          |  
-          small.badge {{filteredCount()}}/{{eventsCount}}
+      section#settings
+        h2.h3
+          a(title='Settings', data-ng-click='isCollapsed = !isCollapsed')
+            span.glyphicon(data-ng-class='{"glyphicon-chevron-down": !isCollapsed, "glyphicon-chevron-right": isCollapsed}')
+            | Settings
         div.collapse(data-collapse='isCollapsed')
-          p.input-group.input-group-lg
-            label.input-group-addon(for='query-filter') Filter:
-            input#query-filter.form-control(type='text', data-ng-model='queryFilter')
+          h3 表示する情報（表示中：{{filteredCount()}}/{{eventsCount}}）
           dl
-            dt 種別
-            dd.btn-group
-              label.btn.btn-default.btn-lg(data-ng-repeat='about in abouts', data-ng-class='{active: isSelectedAbout(about)}')
-                input(type='checkbox', value='{{about}}', data-ng-click='setSelectedAbouts()')
-                | {{about}}
             dt 学部
-            dd.btn-group
-              label.btn.btn-default.btn-lg(data-ng-repeat='department in departments', data-ng-class='{active: isSelectedDepartment(department)}')
-                input(type='checkbox', value='{{department}}', data-ng-click='setSelectedDepartments()')
+            dd
+              label(data-ng-repeat='department in departments')
+                span.glyphicon(aria-hidden='true', data-ng-class='{"glyphicon glyphicon-check": exists(department, selectedDepartments), "glyphicon glyphicon-unchecked": !exists(department, selectedDepartments)}')
+                input(type='checkbox', value='{{department}}', data-ng-click='toggle(department, selectedDepartments)', ng-checked='exists(department, selectedDepartments)')
                 | {{department}}
+            dt 種別
+            dd
+              label(data-ng-repeat='about in abouts')
+                span.glyphicon(aria-hidden='true', data-ng-class='{"glyphicon glyphicon-check": exists(about, selectedAbouts), "glyphicon glyphicon-unchecked": !exists(about, selectedAbouts)}')
+                input(type='checkbox', value='{{about}}', data-ng-click='toggle(about, selectedAbouts)', ng-checked='exists(about, selectedAbouts)')
+                | {{about}}
       section.events(data-ng-repeat='daysEvent in events', data-ng-show='filteredEvents[$index].length')
         h2.h3 {{daysEvent.date}}
         accordion(data-close-others='false')
-          accordion-group(data-ng-repeat='event in filteredEvents[$index] = (daysEvent.data | aboutFilter:selectedAbouts | departmentFilter:selectedDepartments | filter:queryFilter)', title='{{event.raw}}', is-open='event.isToday')
+          accordion-group(data-ng-repeat='event in filteredEvents[$index] = (daysEvent.data | aboutFilter:selectedAbouts | departmentFilter:selectedDepartments)', title='{{event.raw}}', is-open='event.isToday')
             accordion-heading
               span.col-sm-2.col-xs-3 {{event.about}}
               span.col-sm-2.col-xs-3 {{event.period}}時限

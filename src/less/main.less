@@ -1,7 +1,6 @@
 @monospace: Menlo, Monaco, Consolas, "Courier New", Osaka,Meiryo, monospace;
 @sans-serif: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
 
-
 th, td {
   :last-child {
     margin-bottom: 0;
@@ -33,11 +32,6 @@ body {
   >:last-child {
     margin-bottom: 0;
   }
-}
-
-h2 small.badge {
-  font-size: 65%;
-  font-weight: normal;
 }
 
 h2.page-header span:first-child {
@@ -83,6 +77,30 @@ body > .container {
     background-color: hsl(32, 82%, 63%);
   }
   span {
+    display: none;
+  }
+}
+
+#settings {
+  h3 {
+    font-size: 18px;
+    margin-top: 0;
+  }
+  dt {
+    font-weight: normal;
+    &:after {
+      content: ":";
+    }
+  }
+  dd {
+    font-size: 20px;
+  }
+  label {
+    cursor: pointer;
+    font-weight: normal;
+    margin: 10px;
+  }
+  input[type="checkbox"] {
     display: none;
   }
 }

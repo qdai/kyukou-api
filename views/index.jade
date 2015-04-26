@@ -64,6 +64,9 @@ html(lang=site.lang, manifest='/kyukou.appcache', prefix='og: http://ogp.me/ns#'
               li.hidden-sm.hidden-md.hidden-lg {{event.department}}
               li {{event.teacher}}教員
               li(data-ng-show='event.hasNote') {{event.note}} {{event.campus}} {{event.room}}
+            p
+              a(href='{{event.link}}', target='_blank') 情報取得元
+                span.glyphicon.glyphicon-new-window
       p(data-ng-hide='filteredCount()') {{selectedDepartments.join('、')}}の{{selectedAbouts.join('、')}}に関する情報はありません。
     script(type='text/ng-template', id='template/accordion/accordion-group.html')
       article.panel.panel-default

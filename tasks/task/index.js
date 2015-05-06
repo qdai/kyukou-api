@@ -7,7 +7,6 @@ var law = require('./law');
 var literature = require('./literature');
 var science = require('./science');
 
-
 // get events
 module.exports = function () {
   return Bluebird.all([economics(), education(), law(), literature(), science()]).then(function (events) {
@@ -38,8 +37,11 @@ module.exports = function () {
     });
   }).then(function (results) {
     var log = '';
-    var createdCount = 0;
-    results.map(function (result) {
+    var count = {
+      created: 0,
+      exist: 0
+    };
+    results.forEach(function (result) {
       var err = result[0];
       var created = result[1];
       if (err) {
@@ -51,11 +53,15 @@ module.exports = function () {
           log += 'err: ' + err.message + '\n';
         }
       } else if (created) {
-        createdCount++;
+        if (created) {
+          count.created++;
+        } else {
+          count.exist++;
+        }
       }
     });
-    log += 'msg: ' + createdCount + ' event(s) created\n';
-    log += 'msg: ' + (results.length - createdCount) + ' event(s) already exist';
+    log += 'msg: ' + count.created + ' event(s) created\n';
+    log += 'msg: ' + count.exist + ' event(s) already exist';
     return log;
   });
 };

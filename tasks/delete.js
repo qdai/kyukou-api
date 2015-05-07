@@ -1,10 +1,10 @@
-var BBPromise = require('bluebird');
+var Bluebird = require('bluebird');
 
 var getConnection = require('../db');
 
 // delete expired data
 module.exports = function () {
-  return BBPromise.using(getConnection(), function (db) {
+  return Bluebird.using(getConnection(), function (db) {
     var today = new Date();
     return db.model('Event').find({
       eventDate: {

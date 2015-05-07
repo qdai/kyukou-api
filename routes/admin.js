@@ -1,4 +1,4 @@
-var BBPromise = require('bluebird');
+var Bluebird = require('bluebird');
 var config = require('config');
 var express = require('express');
 var pwd = require('pwd');
@@ -40,7 +40,7 @@ router.post('/login', function (req, res) {
   var name = req.body.name;
   var pass = req.body.password;
   if (name === admin.name) {
-    new BBPromise(function (resolve, reject) {
+    new Bluebird(function (resolve, reject) {
       pwd.hash(pass, admin.salt, function (err, hash) {
         if (err) {
           reject(err);
@@ -55,11 +55,6 @@ router.post('/login', function (req, res) {
         req.session.loggedin = true;
         res.redirect('/admin');
       }
-    }).catch(function (err) {
-      res.status(500).render('error', {
-        message: err.message,
-        error: err
-      });
     });
   } else {
     res.redirect('/admin/login');

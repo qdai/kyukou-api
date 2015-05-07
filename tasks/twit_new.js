@@ -1,4 +1,4 @@
-var BBPromise = require('bluebird');
+var Bluebird = require('bluebird');
 var config = require('config');
 var Twit = require('twit');
 
@@ -9,7 +9,7 @@ var twit = new Twit(config.get('twitter'));
 
 // tweet new event
 module.exports = function () {
-  return BBPromise.using(getConnection(), function (db) {
+  return Bluebird.using(getConnection(), function (db) {
     return db.model('Event').find({
       'tweet.new': false
     }, null, {
@@ -21,8 +21,8 @@ module.exports = function () {
       if (events.length === 0) {
         return events;
       }
-      return BBPromise.all(events.map(function (event) {
-        return new BBPromise(function (resolve, reject) {
+      return Bluebird.all(events.map(function (event) {
+        return new Bluebird(function (resolve, reject) {
           var text = get(event).asNewTweet();
           twit.post('statuses/update', { status: text }, function (err, data, res) {
             if (!err && res.statusCode === 200) {
@@ -37,7 +37,7 @@ module.exports = function () {
       if (events.length === 0) {
         return [];
       }
-      return BBPromise.all(events.map(function (event) {
+      return Bluebird.all(events.map(function (event) {
         return event.update({
           'tweet.new': true
         }).exec();

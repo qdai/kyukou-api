@@ -1,4 +1,4 @@
-var BBPromise = require('bluebird');
+var Bluebird = require('bluebird');
 var config = require('config');
 var express = require('express');
 var mongoose = require('mongoose');
@@ -11,7 +11,7 @@ var site = config.get('site');
 var get = require('../lib/getasstring');
 
 router.get('/', function (req, res) {
-  BBPromise.resolve(mEvent.find(null, '-_id -__v', {
+  Bluebird.resolve(mEvent.find(null, '-_id -__v', {
     limit: 20,
     sort: {
       pubDate: -1,
@@ -27,22 +27,17 @@ router.get('/', function (req, res) {
       language: site.lang,
       ttl: 180
     });
-    for (var i = 0; i < events.length; i++) {
+    events.forEach(function (event) {
       feed.item({
-        title: get(events[i]).asRSSTitle(),
-        description: get(events[i]).asRSSDescription(),
-        url: events[i].link,
-        guid: events[i].hash,
-        date: events[i].pubDate.toISOString()
+        title: get(event).asRSSTitle(),
+        description: get(event).asRSSDescription(),
+        url: event.link,
+        guid: event.hash,
+        date: event.pubDate.toISOString()
       });
-    }
+    });
     res.set('Content-Type', 'application/rss+xml');
     res.send(feed.xml());
-  }).catch(function (err) {
-    res.status(500).render('error', {
-      message: '500 Internal Server Error',
-      error: err
-    });
   });
 });
 

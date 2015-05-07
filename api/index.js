@@ -1,4 +1,4 @@
-var BBPromise = require('bluebird');
+var Bluebird = require('bluebird');
 var mongoose = require('mongoose');
 var mEvent = mongoose.model('Event');
 var mTaskLog = mongoose.model('Tasklog');
@@ -76,7 +76,7 @@ api.public.events = {};
 api.public.events.list = function (start_index, count) {
   start_index = parseInt(start_index, 10) || 0;
   count = parseInt(count, 10) || null;
-  return BBPromise.resolve(mEvent.find(null, '-_id -__v', {
+  return Bluebird.resolve(mEvent.find(null, '-_id -__v', {
     skip: start_index,
     limit: count,
     sort: {
@@ -84,7 +84,7 @@ api.public.events.list = function (start_index, count) {
       period: 1
     }
   }).exec()).catch(function (err) {
-    return BBPromise.reject(new HttpError(500, err.message));
+    return Bluebird.reject(new HttpError(500, err.message));
   });
 };
 
@@ -105,10 +105,10 @@ api.public.events.list = function (start_index, count) {
 api.public.events.yyyymmdd = function (yyyy, mm, dd, count) {
   var date = new Date(parseInt(yyyy, 10), parseInt(mm, 10) - 1, parseInt(dd, 10));
   if (isNaN(date.getTime())) {
-    return BBPromise.reject(new HttpError(400, 'Invalid Date'));
+    return Bluebird.reject(new HttpError(400, 'Invalid Date'));
   }
   count = parseInt(count, 10) || null;
-  return BBPromise.resolve(mEvent.find({
+  return Bluebird.resolve(mEvent.find({
     eventDate: date
   }, '-_id -__v', {
     limit: count,
@@ -116,7 +116,7 @@ api.public.events.yyyymmdd = function (yyyy, mm, dd, count) {
       period: 1
     }
   }).exec()).catch(function (err) {
-    return BBPromise.reject(new HttpError(500, err.message));
+    return Bluebird.reject(new HttpError(500, err.message));
   });
 };
 
@@ -134,14 +134,14 @@ api.public.events.yyyymmdd = function (yyyy, mm, dd, count) {
  */
 api.public.events.search = function (q, count) {
   if (!q) {
-    return BBPromise.reject(new HttpError(400, 'Query is not specified'));
+    return Bluebird.reject(new HttpError(400, 'Query is not specified'));
   }
   q = String(q).replace(/([.*+?^${}()|\[\]\/\\])/g, '\\$1');
   if (q.length >= 128) {
-    return BBPromise.reject(new HttpError(400, 'Too long query'));
+    return Bluebird.reject(new HttpError(400, 'Too long query'));
   }
   count = parseInt(count, 10) || null;
-  return BBPromise.resolve(mEvent.find({
+  return Bluebird.resolve(mEvent.find({
     $or: [{
       department: {
         $regex: q
@@ -162,7 +162,7 @@ api.public.events.search = function (q, count) {
       period: 1
     }
   }).exec()).catch(function (err) {
-    return BBPromise.reject(new HttpError(500, err.message));
+    return Bluebird.reject(new HttpError(500, err.message));
   });
 };
 
@@ -201,24 +201,24 @@ api.public.logs = {};
 api.public.logs.about = function (about) {
   about = about.toString();
   if (['task', 'twit_new', 'twit_tomorrow', 'delete'].indexOf(about) === -1) {
-    return BBPromise.reject(new HttpError(400, ':about must be one of task, twit_new, twit_tomorrow, delete'));
+    return Bluebird.reject(new HttpError(400, ':about must be one of task, twit_new, twit_tomorrow, delete'));
   }
-  return BBPromise.resolve(mTaskLog.findOne({
+  return Bluebird.resolve(mTaskLog.findOne({
     name: about
   }, '-_id -__v').exec()).catch(function (err) {
-    return BBPromise.reject(new HttpError(500, err.message));
+    return Bluebird.reject(new HttpError(500, err.message));
   });
 };
 
 api.private = {};
 api.private.list = function () {
-  return BBPromise.resolve(mEvent.find(null, '-__v', {
+  return Bluebird.resolve(mEvent.find(null, '-__v', {
     sort: {
       eventDate: 1,
       period: 1
     }
   }).exec()).catch(function (err) {
-    return BBPromise.reject(new HttpError(500, err.message));
+    return Bluebird.reject(new HttpError(500, err.message));
   });
 };
 api.private.add = function (event) {
@@ -227,7 +227,7 @@ api.private.add = function (event) {
     event.pubDate = new Date(event.pubDate);
   }
   event.hash = require('crypto').createHash('sha256').update(event.raw.replace(/\s/g, '')).digest('hex');
-  return new BBPromise(function (resolve, reject) {
+  return new Bluebird(function (resolve, reject) {
     mEvent.findOrCreate({
       hash: event.hash
     }, event, function (err, event, created) {
@@ -247,18 +247,18 @@ api.private.add = function (event) {
 };
 api.private.edit = function (hash, data) {
   if (!/^[a-f0-9]{64}$/.test(hash)) {
-    return BBPromise.reject(new HttpError(400, 'Invalid hash ' + hash));
+    return Bluebird.reject(new HttpError(400, 'Invalid hash ' + hash));
   }
   var validKeys = ['about', 'link', 'eventDate', 'period', 'department', 'subject', 'teacher', 'campus', 'room', 'note', 'raw', 'tweet.new', 'tweet.tomorrow'];
   for (var key in data) {
     if (validKeys.indexOf(key) === -1) {
-      return BBPromise.reject(new HttpError(400, 'Invalid key ' + key));
+      return Bluebird.reject(new HttpError(400, 'Invalid key ' + key));
     }
   }
   if (data.eventDate) {
     data.eventDate = new Date(data.eventDate);
   }
-  return BBPromise.resolve(mEvent.findOneAndUpdate({
+  return Bluebird.resolve(mEvent.findOneAndUpdate({
     hash: hash
   }, {
     $set: data
@@ -272,17 +272,17 @@ api.private.edit = function (hash, data) {
         }
       };
     } else {
-      return BBPromise.reject(new HttpError(400, hash + ' not found'));
+      return Bluebird.reject(new HttpError(400, hash + ' not found'));
     }
   }).catch(function (err) {
-    return BBPromise.reject(new HttpError(500, err.message));
+    return Bluebird.reject(new HttpError(500, err.message));
   });
 };
 api.private.delete = function (hash) {
   if (!/^[a-f0-9]{64}$/.test(hash)) {
-    return BBPromise.reject(new HttpError(400, 'Invalid hash ' + hash));
+    return Bluebird.reject(new HttpError(400, 'Invalid hash ' + hash));
   }
-  return BBPromise.resolve(mEvent.findOneAndRemove({
+  return Bluebird.resolve(mEvent.findOneAndRemove({
     hash: hash
   }).exec()).then(function (event) {
     if (event) {
@@ -292,10 +292,10 @@ api.private.delete = function (hash) {
         }
       };
     } else {
-      return BBPromise.reject(new HttpError(400, hash + ' not found'));
+      return Bluebird.reject(new HttpError(400, hash + ' not found'));
     }
   }).catch(function (err) {
-    return BBPromise.reject(new HttpError(500, err.message));
+    return Bluebird.reject(new HttpError(500, err.message));
   });
 };
 

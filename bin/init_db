@@ -1,33 +1,22 @@
 #!/usr/bin/env node
 
-var BBPromise = require('bluebird');
+var Bluebird = require('bluebird');
 
-var getConnection = require('../db');
-var tasklogs = [];
-tasklogs.push({
-  name: 'task',
-  log: 'initialized',
-  elapsedTime: 0
-});
-tasklogs.push({
-  name: 'twit_new',
-  log: 'initialized',
-  elapsedTime: 0
-});
-tasklogs.push({
-  name: 'twit_tomorrow',
-  log: 'initialized',
-  elapsedTime: 0
-});
-tasklogs.push({
-  name: 'delete',
-  log: 'initialized',
-  elapsedTime: 0
+var dbConnection = require('../db');
+
+var tasklogs = ['task', 'twit_new', 'twit_tomorrow', 'delete'].map(function (name) {
+  return {
+    name: name,
+    log: 'initialized',
+    level: 1,
+    time: new Date(),
+    elapsedTime: 0
+  };
 });
 
-BBPromise.using(getConnection(), function (db) {
+Bluebird.using(dbConnection(), function (db) {
   var Tasklog = db.model('Tasklog');
-  return BBPromise.all(tasklogs.map(function (tasklog) {
+  return Bluebird.all(tasklogs.map(function (tasklog) {
     return new Tasklog(tasklog).save();
   }));
 }).then(function () {

@@ -1,4 +1,4 @@
-var BBPromise = require('bluebird');
+var Bluebird = require('bluebird');
 var config = require('config');
 var mongoose = require('mongoose');
 
@@ -8,7 +8,7 @@ require('./tasklog');
 
 module.exports = function (uri) {
   uri = uri ? uri : config.get('mongoURI');
-  return new BBPromise(function(resolve, reject) {
+  return new Bluebird(function(resolve, reject) {
     var conn = mongoose.createConnection(uri);
     conn.once('open', function () {
       resolve(conn);

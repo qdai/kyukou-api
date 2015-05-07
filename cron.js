@@ -1,5 +1,5 @@
 var CronJob = require('cron').CronJob;
-var BBPromise = require('bluebird');
+var Bluebird = require('bluebird');
 
 var getConnection = require('./db');
 var tasks = {
@@ -54,7 +54,7 @@ function runTask(name) {
     } else if (/inf: /.test(tasklog.log)) {
       tasklog.level = 2;
     }
-    return BBPromise.using(getConnection(), function (db) {
+    return Bluebird.using(getConnection(), function (db) {
       return db.model('Tasklog').findOneAndUpdate({
         name: tasklog.name
       }, tasklog, {

@@ -53,11 +53,9 @@ module.exports = function () {
           log += 'err: ' + err.message + '\n';
         }
       } else if (created) {
-        if (created) {
-          count.created++;
-        } else {
-          count.exist++;
-        }
+        count.created++;
+      } else {
+        count.exist++;
       }
     });
     log += 'msg: ' + count.created + ' event(s) created\n';

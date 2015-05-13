@@ -104,8 +104,11 @@ kyukouApp.service('defaults', function () {
 kyukouApp.controller('eventListCtrl', ['$scope', 'eventList', 'defaults', 'localStorageService', function ($scope, eventList, defaults, localStorageService) {
   $scope.toggle = function (item, list) {
     var idx = list.indexOf(item);
-    if (idx > -1) list.splice(idx, 1);
-    else list.push(item);
+    if (idx > -1) {
+      list.splice(idx, 1);
+    } else {
+      list.push(item);
+    }
   };
 
   $scope.exists = function (item, list) {

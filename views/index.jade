@@ -54,7 +54,7 @@ html(lang=site.lang, manifest='/kyukou.appcache', prefix='og: http://ogp.me/ns#'
       section.events(data-ng-repeat='daysEvent in events', data-ng-show='filteredEvents[$index].length')
         h2.h3 {{daysEvent.date}}
         accordion(data-close-others='false')
-          accordion-group(data-ng-repeat='event in filteredEvents[$index] = (daysEvent.data | aboutFilter:selectedAbouts | departmentFilter:selectedDepartments)', title='{{event.raw}}', is-open='event.isToday')
+          accordion-group(data-ng-repeat='event in filteredEvents[$index] = (daysEvent.data | aboutFilter:selectedAbouts | departmentFilter:selectedDepartments | orderBy:"period":false)', title='{{event.raw}}', is-open='event.isToday')
             accordion-heading
               span.col-sm-2.col-xs-3 {{event.about}}
               span.col-sm-2.col-xs-3 {{event.period}}時限

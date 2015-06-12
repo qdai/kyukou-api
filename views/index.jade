@@ -70,12 +70,11 @@ html(lang=site.lang, manifest='/kyukou.appcache', prefix='og: http://ogp.me/ns#'
       p(data-ng-hide='filteredCount()') {{selectedDepartments.join('、')}}の{{selectedAbouts.join('、')}}に関する情報はありません。
     script(type='text/ng-template', id='template/accordion/accordion-group.html')
       article.panel.panel-default
-        h3.h4.container.accordion-toggle(data-ng-click='toggleOpen()', data-accordion-transclude='heading') {{heading}}
+        h3.h4.row.accordion-toggle(data-ng-click='toggleOpen()', data-accordion-transclude='heading') {{heading}}
         div.panel-collapse(data-collapse='!isOpen')
           div.panel-body(data-ng-transclude)
     script(type='text/ng-template', id='template/accordion/accordion.html')
       div.panel-group(data-ng-transclude)
-
   body
     div.container
       header.page-header

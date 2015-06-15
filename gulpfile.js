@@ -5,6 +5,7 @@ var del = require('del');
 var fs = require('fs');
 var gulp = require('gulp');
 var header = require('gulp-header');
+var jshint = require('gulp-jshint');
 var less = require('gulp-less');
 var mainBowerFiles = require('main-bower-files');
 var minify = require('gulp-minify-css');
@@ -39,6 +40,13 @@ gulp.task('bower', ['bower:install'], function () {
   var destPath = srcPathBase + '/static/lib';
   return gulp.src(mainBowerFiles(), { base: 'bower_components' })
     .pipe(gulp.dest(destPath));
+});
+
+gulp.task('lint:js', function () {
+  gulp.src(['./**/*.js', '!./node_modules/**', '!./bower_components/**', '!./public/**', '!./src/static/**'])
+    .pipe(jshint())
+    .pipe(jshint.reporter('default'))
+    .pipe(jshint.reporter('fail'));
 });
 
 gulp.task('build:js', function () {
@@ -79,5 +87,6 @@ gulp.task('apidoc', function (callback) {
   }
 });
 
+gulp.task('lint', ['lint:js']);
 gulp.task('build', ['build:js', 'build:css', 'build:static', 'apidoc']);
 gulp.task('default', ['build']);

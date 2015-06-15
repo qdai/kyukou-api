@@ -2,7 +2,7 @@ var Bluebird = require('bluebird');
 var cheerio = require('cheerio');
 var crypto = require('crypto');
 var Iconv = require('iconv').Iconv;
-var jschardet = require("jschardet");
+var jschardet = require('jschardet');
 var request = require('request');
 
 module.exports = {

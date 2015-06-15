@@ -74,10 +74,10 @@ if (app.get('env') === 'production') {
       // TODO: remove
       if (req.originalUrl === '/kyukou.appcache') {
         res.set('Content-Type', 'text/cache-manifest; charset=UTF-8');
-        return res.status(410).send('CACHE MANIFEST\n'
-                                  + '\n'
-                                  + 'NETWORK:\n'
-                                  + '*\n');
+        return res.status(410).send('CACHE MANIFEST\n' +
+                                    '\n' +
+                                    'NETWORK:\n' +
+                                    '*\n');
       }
       // end TODO
       res.set('strict-transport-security', 'max-age=63072000');

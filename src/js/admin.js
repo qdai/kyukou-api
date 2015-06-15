@@ -1,24 +1,6 @@
 /* global angular, SITE_URL */
 
-var adminApp = angular.module('adminApp', ['ui.bootstrap']);
-adminApp.controller('adminCtrl', ['$scope', '$http', function ($scope, $http) {
-  $scope.events = [];
-
-  $scope.loadEvents = function () {
-    $http.get(SITE_URL + 'admin/list.json').success(function (data) {
-      $scope.events = data;
-    }).error(function (data, status) {
-      console.error('load error: %s: %s', status, data);
-    });
-  };
-
-  $scope.loadEvents();
-}]);
-adminApp.controller('addCtrl', ['$scope', '$http', adminMethod('add')]);
-adminApp.controller('editCtrl', ['$scope', '$http', adminMethod('edit')]);
-adminApp.controller('deleteCtrl', ['$scope', '$http', adminMethod('delete')]);
-
-function adminMethod(method) {
+var adminMethod = function (method) {
   return function ($scope, $http) {
     this.alerts = [];
     var self = this;
@@ -50,4 +32,22 @@ function adminMethod(method) {
       this.alerts.splice(index, 1);
     };
   };
-}
+};
+
+var adminApp = angular.module('adminApp', ['ui.bootstrap']);
+adminApp.controller('adminCtrl', ['$scope', '$http', function ($scope, $http) {
+  $scope.events = [];
+
+  $scope.loadEvents = function () {
+    $http.get(SITE_URL + 'admin/list.json').success(function (data) {
+      $scope.events = data;
+    }).error(function (data, status) {
+      console.error('load error: %s: %s', status, data);
+    });
+  };
+
+  $scope.loadEvents();
+}]);
+adminApp.controller('addCtrl', ['$scope', '$http', adminMethod('add')]);
+adminApp.controller('editCtrl', ['$scope', '$http', adminMethod('edit')]);
+adminApp.controller('deleteCtrl', ['$scope', '$http', adminMethod('delete')]);

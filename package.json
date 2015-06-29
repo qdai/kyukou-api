@@ -40,7 +40,7 @@
     "gulp-uglify": "^1.2.0",
     "main-bower-files": "^2.8.0"
   },
-  "homepage": "https://kyukou-kyudai.rhcloud.com/",
+  "homepage": "https://kyukou-kyudai.herokuapp.com/",
   "keywords": [
     "kyukou"
   ],
@@ -53,6 +53,7 @@
   "scripts": {
     "build": "gulp build",
     "clean": "gulp clean",
+    "postinstall": "./bin/build",
     "start": "node ./bin/www"
   }
 }

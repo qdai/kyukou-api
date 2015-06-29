@@ -4,7 +4,7 @@
     "Qdai"
   ],
   "license": "MIT",
-  "homepage": "https://kyukou-kyudai.rhcloud.com/",
+  "homepage": "https://kyukou-kyudai.herokuapp.com/",
   "private": true,
   "dependencies": {
     "angular": "~1.3.13",

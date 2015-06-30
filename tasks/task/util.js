@@ -1,7 +1,7 @@
 var Bluebird = require('bluebird');
 var cheerio = require('cheerio');
 var crypto = require('crypto');
-var Iconv = require('iconv').Iconv;
+var iconv = require('iconv-lite');
 var jschardet = require('jschardet');
 var request = require('request');
 
@@ -20,8 +20,7 @@ module.exports = {
             encode = detected.encoding;
           }
           if (encode.toLowerCase() !== 'utf-8') {
-            var iconv = new Iconv(encode, 'UTF-8//TRANSLIT//IGNORE');
-            body = iconv.convert(body).toString();
+            body = iconv.decode(body, encode);
           }
           resolve([res, cheerio.load(body)]);
         } else {

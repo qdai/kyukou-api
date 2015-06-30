@@ -17,7 +17,7 @@
     "debug": "^2.2.0",
     "express": "^4.12.4",
     "express-session": "^1.11.3",
-    "iconv": "^2.1.8",
+    "iconv-lite": "^0.4.10",
     "jade": "^1.10.0",
     "jschardet": "^1.1.1",
     "mongoose": "^4.0.5",

@@ -90,3 +90,4 @@ gulp.task('apidoc', function (callback) {
 gulp.task('lint', ['lint:js']);
 gulp.task('build', ['build:js', 'build:css', 'build:static', 'apidoc']);
 gulp.task('default', ['build']);
+gulp.task('ci', ['lint', 'build']);

@@ -10,9 +10,7 @@ deploy:
   provider: heroku
   api_key:
     secure: QVdHJP0VscOljuW2fgXzEp2Ud1JltdOOnC65QjZ7Zdqc6H0tTxc/omM7Ag6zauUF4kLf4W7Tddmw7fAbOpz+WH4BwRznjJjYDoI4Z2HAtVhQc+qbXJSOhcZG9bSZD0SLAw0zRnJQKXaIocnTawoK9R5KVWt6EDoRISlzaazc5Hw=
-  app:
-    master: kyukou-kyudai
-    dev: kyukoudev-kyudai
+  app: kyukou-kyudai
   on:
     all_branches: true
     tags: true

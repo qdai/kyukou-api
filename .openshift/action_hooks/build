@@ -1,6 +1,0 @@
-#!/bin/bash
-
-cd ${OPENSHIFT_REPO_DIR}
-NODE_ENV=development npm install
-HOME=${OPENSHIFT_REPO_DIR} npm run build
-npm prune

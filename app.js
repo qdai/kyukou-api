@@ -70,20 +70,10 @@ app.use(session({
 // redirect to HTTPS on production
 if (app.get('env') === 'production') {
   app.use(function (req, res, next) {
+    res.set('strict-transport-security', 'max-age=63072000');
     if (req.headers['x-forwarded-proto'] === 'http') {
-      // TODO: remove
-      if (req.originalUrl === '/kyukou.appcache') {
-        res.set('Content-Type', 'text/cache-manifest; charset=UTF-8');
-        return res.status(410).send('CACHE MANIFEST\n' +
-                                    '\n' +
-                                    'NETWORK:\n' +
-                                    '*\n');
-      }
-      // end TODO
-      res.set('strict-transport-security', 'max-age=63072000');
       res.redirect(301, 'https://' + req.headers.host + req.originalUrl);
     } else {
-      res.set('strict-transport-security', 'max-age=63072000');
       next();
     }
   });
@@ -92,11 +82,7 @@ app.use('/', routes);
 app.use('/status', apiStatus);
 app.use('/rss', rss);
 app.use('/calendar', calendar);
-app.use('/api/1', function (req, res, next) {
-  // TODO: remove
-  res.set('access-control-allow-origin', 'http://' + config.get('site.url'));
-  next();
-}, api);
+app.use('/api/1', api);
 app.use('/api', api0);
 app.use('/admin', admin);
 

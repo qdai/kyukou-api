@@ -25,7 +25,7 @@ module.exports = function () {
           data.period = raw.match(/\)\s*(\S*)時限/)[1];
           data.department = '理学部' + raw.match(/学科:(\S*)\s*学年/)[1];
           data.subject = raw.match(/科目:(\S*.*\S)\s*\(担当/)[1].replace(/\s/g, '');
-          data.teacher = raw.match(/担当:(\S*\s*\S*)\)/)[1].replace(/\s/g, '');
+          data.teacher = raw.match(/担当:(.*)\)/)[1].replace(/\s/g, '');
           if (/連絡事項:/.test(raw)) {
             data.note = raw.match(/連絡事項:(\S*)/)[1];
           } else if (data.about === '教室変更') {

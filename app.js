@@ -1,7 +1,7 @@
 'use strict';
 
 const bodyParser = require('body-parser');
-const compression = require('compression')
+const compression = require('compression');
 const config = require('config');
 const connectMongo = require('connect-mongo');
 const cookieParser = require('cookie-parser');

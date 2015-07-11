@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const config = require('config');
 const connectMongo = require('connect-mongo');
 const cookieParser = require('cookie-parser');
+const createHttpError = require('http-errors');
 const express = require('express');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
@@ -90,9 +91,7 @@ app.use('/admin', admin);
 
 /// catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  const err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+  next(createHttpError(404));
 });
 
 /// error handlers

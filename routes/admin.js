@@ -71,7 +71,7 @@ router.get('/list.json', function (req, res) {
   if (req.session.loggedin) {
     sendAPIResult(privateAPI.list(), res);
   } else {
-    res.status(400).json({
+    res.status(403).json({
       error: {
         message: 'Authentication required'
       }
@@ -98,14 +98,14 @@ router.post('/:adminmethod', function (req, res) {
       sendAPIResult(privateAPI.delete(hash), res);
       break;
     default:
-      res.status(400).json({
+      res.status(404).json({
         error: {
           message: 'Unknown method ' + String(req.params.adminmethod)
         }
       });
     }
   } else {
-    res.status(400).json({
+    res.status(403).json({
       error: {
         message: 'Authentication required'
       }
@@ -114,7 +114,11 @@ router.post('/:adminmethod', function (req, res) {
 });
 
 router.get('/:adminmethod', function (req, res) {
-  res.redirect('/admin');
+  res.status(405).json({
+    error: {
+      message: 'Method Not Allowed'
+    }
+  });
 });
 
 module.exports = router;

@@ -1,16 +1,10 @@
 'use strict';
 
+const createHttpError = require('http-errors');
 const mongoose = require('mongoose');
+
 const mEvent = mongoose.model('Event');
 const mTaskLog = mongoose.model('Tasklog');
-
-function HttpError (code, message) { // eslint-disable-line func-style
-  Object.setPrototypeOf(this.constructor.prototype, Error.prototype);
-  Error.captureStackTrace(this, this.constructor);
-  this.name = this.constructor.name;
-  this.code = code;
-  this.message = message;
-}
 
 const api = {};
 
@@ -82,7 +76,7 @@ api.public.events.list = function (start_index, count) { // eslint-disable-line 
       period: 1
     }
   }).exec()).catch(function (err) {
-    return Promise.reject(new HttpError(500, err.message));
+    return Promise.reject(createHttpError(500, err.message));
   });
 };
 
@@ -103,7 +97,7 @@ api.public.events.list = function (start_index, count) { // eslint-disable-line 
 api.public.events.yyyymmdd = function (yyyy, mm, dd, count) {
   const date = new Date(parseInt(yyyy, 10), parseInt(mm, 10) - 1, parseInt(dd, 10));
   if (isNaN(date.getTime())) {
-    return Promise.reject(new HttpError(400, 'Invalid Date'));
+    return Promise.reject(createHttpError(400, 'Invalid Date'));
   }
   count = parseInt(count, 10) || null;
   return Promise.resolve(mEvent.find({
@@ -114,7 +108,7 @@ api.public.events.yyyymmdd = function (yyyy, mm, dd, count) {
       period: 1
     }
   }).exec()).catch(function (err) {
-    return Promise.reject(new HttpError(500, err.message));
+    return Promise.reject(createHttpError(500, err.message));
   });
 };
 
@@ -132,11 +126,11 @@ api.public.events.yyyymmdd = function (yyyy, mm, dd, count) {
  */
 api.public.events.search = function (q, count) {
   if (!q) {
-    return Promise.reject(new HttpError(400, 'Query is not specified'));
+    return Promise.reject(createHttpError(400, 'Query is not specified'));
   }
   q = String(q).replace(/([.*+?^${}()|\[\]\/\\])/g, '\\$1');
   if (q.length >= 128) {
-    return Promise.reject(new HttpError(400, 'Too long query'));
+    return Promise.reject(createHttpError(400, 'Too long query'));
   }
   count = parseInt(count, 10) || null;
   return Promise.resolve(mEvent.find({
@@ -160,7 +154,7 @@ api.public.events.search = function (q, count) {
       period: 1
     }
   }).exec()).catch(function (err) {
-    return Promise.reject(new HttpError(500, err.message));
+    return Promise.reject(createHttpError(500, err.message));
   });
 };
 
@@ -199,12 +193,12 @@ api.public.logs = {};
 api.public.logs.about = function (about) {
   about = about.toString();
   if (['task', 'twit_new', 'twit_tomorrow', 'delete'].indexOf(about) === -1) {
-    return Promise.reject(new HttpError(400, ':about must be one of task, twit_new, twit_tomorrow, delete'));
+    return Promise.reject(createHttpError(400, ':about must be one of task, twit_new, twit_tomorrow, delete'));
   }
   return Promise.resolve(mTaskLog.findOne({
     name: about
   }, '-_id -__v').exec()).catch(function (err) {
-    return Promise.reject(new HttpError(500, err.message));
+    return Promise.reject(createHttpError(500, err.message));
   });
 };
 
@@ -216,7 +210,7 @@ api.private.list = function () {
       period: 1
     }
   }).exec()).catch(function (err) {
-    return Promise.reject(new HttpError(500, err.message));
+    return Promise.reject(createHttpError(500, err.message));
   });
 };
 api.private.add = function (event) {
@@ -230,7 +224,7 @@ api.private.add = function (event) {
       hash: event.hash
     }, event, function (err, result, created) {
       if (err) {
-        reject(new HttpError(500, err.message));
+        reject(createHttpError(500, err.message));
       } else if (created) {
         resolve({
           success: {
@@ -238,19 +232,19 @@ api.private.add = function (event) {
           }
         });
       } else {
-        reject(new HttpError(400, result.hash + ' already exist'));
+        reject(createHttpError(409, result.hash + ' already exist'));
       }
     });
   });
 };
 api.private.edit = function (hash, data) {
   if (!/^[a-f0-9]{64}$/.test(hash)) {
-    return Promise.reject(new HttpError(400, 'Invalid hash ' + hash));
+    return Promise.reject(createHttpError(400, 'Invalid hash ' + hash));
   }
   const validKeys = ['about', 'link', 'eventDate', 'period', 'department', 'subject', 'teacher', 'campus', 'room', 'note', 'raw', 'tweet.new', 'tweet.tomorrow'];
   for (const key in data) {
     if (validKeys.indexOf(key) === -1) {
-      return Promise.reject(new HttpError(400, 'Invalid key ' + key));
+      return Promise.reject(createHttpError(400, 'Invalid key ' + key));
     }
   }
   if (data.eventDate) {
@@ -270,15 +264,15 @@ api.private.edit = function (hash, data) {
         }
       };
     } else {
-      return Promise.reject(new HttpError(400, hash + ' not found'));
+      return Promise.reject(createHttpError(404, hash + ' not found'));
     }
   }).catch(function (err) {
-    return Promise.reject(new HttpError(500, err.message));
+    return Promise.reject(createHttpError(500, err.message));
   });
 };
 api.private.delete = function (hash) {
   if (!/^[a-f0-9]{64}$/.test(hash)) {
-    return Promise.reject(new HttpError(400, 'Invalid hash ' + hash));
+    return Promise.reject(createHttpError(400, 'Invalid hash ' + hash));
   }
   return Promise.resolve(mEvent.findOneAndRemove({
     hash
@@ -290,10 +284,10 @@ api.private.delete = function (hash) {
         }
       };
     } else {
-      return Promise.reject(new HttpError(400, hash + ' not found'));
+      return Promise.reject(createHttpError(404, hash + ' not found'));
     }
   }).catch(function (err) {
-    return Promise.reject(new HttpError(500, err.message));
+    return Promise.reject(createHttpError(500, err.message));
   });
 };
 

@@ -2,10 +2,10 @@ var apidoc = require('apidoc');
 var bower = require('bower');
 var config = require('config');
 var del = require('del');
+var eslint = require('gulp-eslint');
 var fs = require('fs');
 var gulp = require('gulp');
 var header = require('gulp-header');
-var jshint = require('gulp-jshint');
 var less = require('gulp-less');
 var mainBowerFiles = require('main-bower-files');
 var minify = require('gulp-minify-css');
@@ -24,8 +24,8 @@ var apiList = function (apiData) {
   return list;
 };
 
-gulp.task('clear', function () {
-  del.sync(destPathBase);
+gulp.task('clean', function (callback) {
+  del(destPathBase, callback);
 });
 
 gulp.task('bower:install', function (callback) {
@@ -43,10 +43,10 @@ gulp.task('bower', ['bower:install'], function () {
 });
 
 gulp.task('lint:js', function () {
-  gulp.src(['./**/*.js', '!./node_modules/**', '!./bower_components/**', '!./public/**', '!./src/static/**'])
-    .pipe(jshint())
-    .pipe(jshint.reporter('default'))
-    .pipe(jshint.reporter('fail'));
+  return gulp.src(['./**/*.js', '!./node_modules/**', '!./bower_components/**', '!./public/**', '!./src/static/**'])
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
 });
 
 gulp.task('build:js', function () {
@@ -59,14 +59,14 @@ gulp.task('build:js', function () {
 
 gulp.task('build:css', function () {
   var destPath = destPathBase + '/css';
-  gulp.src(srcPathBase + '/less/**/*.less')
+  return gulp.src(srcPathBase + '/less/**/*.less')
     .pipe(less())
     .pipe(minify())
     .pipe(gulp.dest(destPath));
 });
 
 gulp.task('build:static', ['bower'], function () {
-  gulp.src(srcPathBase + '/static/**')
+  return gulp.src(srcPathBase + '/static/**')
     .pipe(gulp.dest(destPathBase));
 });
 
@@ -89,5 +89,5 @@ gulp.task('apidoc', function (callback) {
 
 gulp.task('lint', ['lint:js']);
 gulp.task('build', ['build:js', 'build:css', 'build:static', 'apidoc']);
-gulp.task('default', ['build']);
-gulp.task('ci', ['lint', 'build']);
+gulp.task('default', ['lint', 'build']);
+gulp.task('ci', ['default']);

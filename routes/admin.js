@@ -8,7 +8,7 @@ const admin = config.get('admin');
 const router = express.Router(); // eslint-disable-line new-cap
 const site = config.get('site');
 
-const privateAPI = require('../api').private;
+const privateAPI = require('../api').private.events;
 const sendAPIResult = require('../lib/sendapiresult');
 
 router.get('/', function (req, res) {

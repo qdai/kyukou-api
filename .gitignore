@@ -3,7 +3,7 @@
 config/development.*
 node_modules/
 bower_components/
-public/
+/public/
 api/doc.json
 src/static/lib/
 

@@ -2,12 +2,14 @@
 
 const config = require('config');
 const express = require('express');
+const jsonfile = require('jsonfile');
+const path = require('path');
 
 const router = express.Router(); // eslint-disable-line new-cap
 
 const publicAPI = require('../api').public;
 const sendAPIResult = require('../lib/sendapiresult');
-const doc = require('../api/doc.json');
+const doc = jsonfile.readFileSync(path.join(__dirname, '../api/doc.json'));
 
 router.get('/events', function (req, res) {
   res.status(400).type('text/plain').send('Bad Request');

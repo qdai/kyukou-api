@@ -1,6 +1,9 @@
 'use strict';
 
-const pkg = require('../package.json');
+const jsonfile = require('jsonfile');
+const path = require('path');
+
+const pkg = jsonfile.readFileSync(path.join(__dirname, '../package.json'));
 
 module.exports = {
   server: {

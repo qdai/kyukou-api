@@ -20,6 +20,7 @@
     "iconv-lite": "^0.4.10",
     "jade": "^1.10.0",
     "jschardet": "^1.1.1",
+    "jsonfile": "^2.2.1",
     "mongoose": "^4.0.5",
     "mongoose-findorcreate": "^0.1.2",
     "morgan": "^1.5.3",

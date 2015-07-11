@@ -16,9 +16,10 @@ router.get('/events', function (req, res) {
 });
 
 router.get('/events/list.json', function (req, res) {
+  const departments = req.query.departments;
   const startIndex = req.query.start_index;
   const count = req.query.count;
-  sendAPIResult(publicAPI.events.list(startIndex, count), res);
+  sendAPIResult(publicAPI.events.list(departments, startIndex, count), res);
 });
 
 router.get('/events/:yyyy-:mm-:dd.json', function (req, res) {

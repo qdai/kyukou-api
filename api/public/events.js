@@ -4,6 +4,31 @@ const createHttpError = require('http-errors');
 const mongoose = require('mongoose');
 
 const mEvent = mongoose.model('Event');
+const fromDepartmentKeys = function (departments) {
+  const departmentquery = [];
+  departments.forEach(function (d, index, arr) {
+    if (arr.lastIndexOf(d) === index) {
+      switch(d) {
+        case 'edu':
+          departmentquery.push('教育学部');
+          break;
+        case 'lit':
+          departmentquery.push('文学部');
+          break;
+        case 'law':
+          departmentquery.push('法学部');
+          break;
+        case 'sci':
+          departmentquery.push('理学部');
+          break;
+        case 'econ':
+          departmentquery.push('経済学部');
+          break;
+      }
+    }
+  });
+  return departmentquery;
+};
 
 /**
  * @apiDefine FormatEvents
@@ -51,19 +76,32 @@ const api = {};
 /**
  * @api {get} /events/list.json List
  * @apiDescription Get a list of current sheduled events.
- * @apiVersion 1.0.0
+ * @apiVersion 1.1.0
  * @apiName EventsList
  * @apiGroup Events
  *
+ * @apiParam {string[]=edu,lit,law,sci,econ} [departments] Specify department. Must be array of allowed values.
  * @apiParam {Number} [start_index=0] Starting index.
  * @apiParam {Number} [count] List count. Returns all event if <code>count</code> is not specified.
  *
  * @apiUse FormatEvents
  */
-api.list = function (start_index, count) { // eslint-disable-line camelcase
+api.list = function (departments, start_index, count) { // eslint-disable-line camelcase
+  if (!Array.isArray(departments)) {
+    departments = String(departments).split(',');
+  }
+  departments = fromDepartmentKeys(departments);
+  let condition;
+  if (departments.length === 0) {
+    condition = null;
+  } else {
+    condition = {
+      department: new RegExp(departments.join('|'))
+    };
+  }
   const startIndex = parseInt(start_index, 10) || 0;
   count = parseInt(count, 10) || null;
-  return Promise.resolve(mEvent.find(null, '-_id -__v', {
+  return Promise.resolve(mEvent.find(condition, '-_id -__v', {
     skip: startIndex,
     limit: count,
     sort: {

@@ -1,5 +1,5 @@
+/* eslint-disable no-var, object-shorthand, strict */
 /* global angular, SITE_URL */
-
 
 var kyukouAppFilters = angular.module('kyukouApp.filters', []);
 

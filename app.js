@@ -1,15 +1,18 @@
-var bodyParser = require('body-parser');
-var config = require('config');
-var cookieParser = require('cookie-parser');
-var express = require('express');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var mongoose = require('mongoose');
-var path = require('path');
-var session = require('express-session');
+'use strict';
 
-var MongoStore = require('connect-mongo')(session);
-var mongoURI = config.get('mongoURI');
+const bodyParser = require('body-parser');
+const config = require('config');
+const connectMongo = require('connect-mongo');
+const cookieParser = require('cookie-parser');
+const express = require('express');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const mongoose = require('mongoose');
+const path = require('path');
+const session = require('express-session');
+
+const MongoStore = connectMongo(session);
+const mongoURI = config.get('mongoURI');
 
 // db setting
 require('./db/event');
@@ -20,26 +23,25 @@ mongoose.connection.once('open', function () {
 });
 mongoose.connection.on('error', function (err) {
   console.log('Mongoose connect failed');
-  console.log(err);
-  process.exit(1);
+  throw err;
 });
 process.on('SIGINT', function () {
   mongoose.connection.close(function () {
     console.log('Mongoose disconnected');
-    process.exit(0);
+    process.exit(0); // eslint-disable-line no-process-exit
   });
 });
 
 // routes
-var routes = require('./routes/index');
-var apiStatus = require('./routes/status');
-var rss = require('./routes/rss');
-var calendar = require('./routes/calendar');
-var api = require('./routes/api');
-var api0 = require('./routes/api0');
-var admin = require('./routes/admin');
+const routes = require('./routes/index');
+const apiStatus = require('./routes/status');
+const rss = require('./routes/rss');
+const calendar = require('./routes/calendar');
+const api = require('./routes/api');
+const api0 = require('./routes/api0');
+const admin = require('./routes/admin');
 
-var app = express();
+const app = express();
 
 // cron job
 require('./cron');
@@ -88,7 +90,7 @@ app.use('/admin', admin);
 
 /// catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  var err = new Error('Not Found');
+  const err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
@@ -98,9 +100,7 @@ app.use(function (req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-/* jshint -W098 */
-  app.use(function (err, req, res, next) {
-/* jshint +W098 */
+  app.use(function (err, req, res, next) { // eslint-disable-line no-unused-vars
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
@@ -111,9 +111,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-/* jshint -W098 */
-app.use(function (err, req, res, next) {
-/* jshint +W098 */
+app.use(function (err, req, res, next) { // eslint-disable-line no-unused-vars
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,

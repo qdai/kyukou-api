@@ -1,3 +1,4 @@
+/* eslint-disable no-var, object-shorthand, strict */
 /* global angular, SITE_URL */
 
 var adminMethod = function (method) {
@@ -9,22 +10,22 @@ var adminMethod = function (method) {
         method: 'POST',
         url: SITE_URL + 'admin/' + method,
         data: data
-      }).success(function (data) {
+      }).success(function (result) {
         var alert = {};
-        if (data.error) {
+        if (result.error) {
           alert.type = 'danger';
-          alert.message = 'Error: ' + data.error.message;
+          alert.message = 'Error: ' + result.error.message;
         } else {
           alert.type = 'success';
-          alert.message = 'Success: ' + data.success.message;
+          alert.message = 'Success: ' + result.success.message;
         }
         self.alerts.push(alert);
         // reload
         $scope.loadEvents();
-      }).error(function (data, status) {
+      }).error(function (result, status) {
         self.alerts.push({
           type: 'danger',
-          message: 'Load error:' + status + ' ' + data.error.message
+          message: 'Load error:' + status + ' ' + result.error.message
         });
       });
     };

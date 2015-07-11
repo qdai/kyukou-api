@@ -1,19 +1,20 @@
-var Bluebird = require('bluebird');
-var config = require('config');
-var express = require('express');
-var pwd = require('pwd');
+'use strict';
 
-var admin = config.get('admin');
-var router = express.Router();
-var site = config.get('site');
+const config = require('config');
+const express = require('express');
+const pwd = require('pwd');
 
-var privateAPI = require('../api').private;
-var sendAPIResult = require('../lib/sendapiresult');
+const admin = config.get('admin');
+const router = express.Router(); // eslint-disable-line new-cap
+const site = config.get('site');
+
+const privateAPI = require('../api').private;
+const sendAPIResult = require('../lib/sendapiresult');
 
 router.get('/', function (req, res) {
   if (req.session.loggedin) {
     res.render('admin', {
-      site: site,
+      site,
       page: {
         title: 'Admin - ' + site.name
       }
@@ -28,7 +29,7 @@ router.get('/login', function (req, res) {
     res.redirect('/admin');
   } else {
     res.render('login', {
-      site: site,
+      site,
       page: {
         title: 'Login - ' + site.name
       }
@@ -37,10 +38,10 @@ router.get('/login', function (req, res) {
 });
 
 router.post('/login', function (req, res) {
-  var name = req.body.name;
-  var pass = req.body.password;
+  const name = req.body.name;
+  const pass = req.body.password;
   if (name === admin.name) {
-    new Bluebird(function (resolve, reject) {
+    new Promise(function (resolve, reject) {
       pwd.hash(pass, admin.salt, function (err, hash) {
         if (err) {
           reject(err);
@@ -80,16 +81,16 @@ router.get('/list.json', function (req, res) {
 
 router.post('/:adminmethod', function (req, res) {
   if (req.session.loggedin) {
-    var hash = req.body.hash;
+    const hash = req.body.hash;
     switch (String(req.params.adminmethod)) {
     case 'add':
-      var event = req.body;
+      var event = req.body; // eslint-disable-line no-var
       sendAPIResult(privateAPI.add(event), res);
       break;
     case 'edit':
-      var key = req.body.key;
-      var value = req.body.value;
-      var data = {};
+      var key = req.body.key; // eslint-disable-line no-var
+      var value = req.body.value; // eslint-disable-line no-var
+      var data = {}; // eslint-disable-line no-var
       data[key] = value;
       sendAPIResult(privateAPI.edit(hash, data), res);
       break;

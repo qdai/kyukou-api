@@ -1,29 +1,30 @@
-var Bluebird = require('bluebird');
-var config = require('config');
-var express = require('express');
-var mongoose = require('mongoose');
-var RSS = require('rss');
+'use strict';
 
-var mEvent = mongoose.model('Event');
-var router = express.Router();
-var site = config.get('site');
+const config = require('config');
+const express = require('express');
+const mongoose = require('mongoose');
+const RSS = require('rss');
 
-var get = require('../lib/getasstring');
+const mEvent = mongoose.model('Event');
+const router = express.Router(); // eslint-disable-line new-cap
+const site = config.get('site');
+
+const get = require('../lib/getasstring');
 
 router.get('/', function (req, res) {
-  Bluebird.resolve(mEvent.find(null, '-_id -__v', {
+  Promise.resolve(mEvent.find(null, '-_id -__v', {
     limit: 20,
     sort: {
       pubDate: -1,
       period: 1
     }
   }).exec()).then(function (events) {
-    var feed = new RSS({
+    const feed = new RSS({
       title: site.name,
       description: site.description,
       generator: site.generator,
-      feed_url: 'https://' + site.url + '/rss',
-      site_url: 'https://' + site.url,
+      feed_url: 'https://' + site.url + '/rss', // eslint-disable-line camelcase
+      site_url: 'https://' + site.url, // eslint-disable-line camelcase
       language: site.lang,
       ttl: 180
     });

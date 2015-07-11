@@ -1,20 +1,18 @@
-var Bluebird = require('bluebird');
-var mongoose = require('mongoose');
-var mEvent = mongoose.model('Event');
-var mTaskLog = mongoose.model('Tasklog');
+'use strict';
 
-function HttpError(code, message) {
-  /* jshint -W103 */
-  // TODO use Object.setPrototypeOf() (not implemented)
-  this.constructor.prototype.__proto__ = Error.prototype;
-  /* jshint +W103 */
+const mongoose = require('mongoose');
+const mEvent = mongoose.model('Event');
+const mTaskLog = mongoose.model('Tasklog');
+
+function HttpError (code, message) { // eslint-disable-line func-style
+  Object.setPrototypeOf(this.constructor.prototype, Error.prototype);
   Error.captureStackTrace(this, this.constructor);
   this.name = this.constructor.name;
   this.code = code;
   this.message = message;
 }
 
-var api = {};
+const api = {};
 
 api.public = {};
 
@@ -73,18 +71,18 @@ api.public.events = {};
  *
  * @apiUse FormatEvents
  */
-api.public.events.list = function (start_index, count) {
-  start_index = parseInt(start_index, 10) || 0;
+api.public.events.list = function (start_index, count) { // eslint-disable-line camelcase
+  const startIndex = parseInt(start_index, 10) || 0;
   count = parseInt(count, 10) || null;
-  return Bluebird.resolve(mEvent.find(null, '-_id -__v', {
-    skip: start_index,
+  return Promise.resolve(mEvent.find(null, '-_id -__v', {
+    skip: startIndex,
     limit: count,
     sort: {
       eventDate: 1,
       period: 1
     }
   }).exec()).catch(function (err) {
-    return Bluebird.reject(new HttpError(500, err.message));
+    return Promise.reject(new HttpError(500, err.message));
   });
 };
 
@@ -103,12 +101,12 @@ api.public.events.list = function (start_index, count) {
  * @apiUse FormatEvents
  */
 api.public.events.yyyymmdd = function (yyyy, mm, dd, count) {
-  var date = new Date(parseInt(yyyy, 10), parseInt(mm, 10) - 1, parseInt(dd, 10));
+  const date = new Date(parseInt(yyyy, 10), parseInt(mm, 10) - 1, parseInt(dd, 10));
   if (isNaN(date.getTime())) {
-    return Bluebird.reject(new HttpError(400, 'Invalid Date'));
+    return Promise.reject(new HttpError(400, 'Invalid Date'));
   }
   count = parseInt(count, 10) || null;
-  return Bluebird.resolve(mEvent.find({
+  return Promise.resolve(mEvent.find({
     eventDate: date
   }, '-_id -__v', {
     limit: count,
@@ -116,7 +114,7 @@ api.public.events.yyyymmdd = function (yyyy, mm, dd, count) {
       period: 1
     }
   }).exec()).catch(function (err) {
-    return Bluebird.reject(new HttpError(500, err.message));
+    return Promise.reject(new HttpError(500, err.message));
   });
 };
 
@@ -134,14 +132,14 @@ api.public.events.yyyymmdd = function (yyyy, mm, dd, count) {
  */
 api.public.events.search = function (q, count) {
   if (!q) {
-    return Bluebird.reject(new HttpError(400, 'Query is not specified'));
+    return Promise.reject(new HttpError(400, 'Query is not specified'));
   }
   q = String(q).replace(/([.*+?^${}()|\[\]\/\\])/g, '\\$1');
   if (q.length >= 128) {
-    return Bluebird.reject(new HttpError(400, 'Too long query'));
+    return Promise.reject(new HttpError(400, 'Too long query'));
   }
   count = parseInt(count, 10) || null;
-  return Bluebird.resolve(mEvent.find({
+  return Promise.resolve(mEvent.find({
     $or: [{
       department: {
         $regex: q
@@ -162,7 +160,7 @@ api.public.events.search = function (q, count) {
       period: 1
     }
   }).exec()).catch(function (err) {
-    return Bluebird.reject(new HttpError(500, err.message));
+    return Promise.reject(new HttpError(500, err.message));
   });
 };
 
@@ -201,24 +199,24 @@ api.public.logs = {};
 api.public.logs.about = function (about) {
   about = about.toString();
   if (['task', 'twit_new', 'twit_tomorrow', 'delete'].indexOf(about) === -1) {
-    return Bluebird.reject(new HttpError(400, ':about must be one of task, twit_new, twit_tomorrow, delete'));
+    return Promise.reject(new HttpError(400, ':about must be one of task, twit_new, twit_tomorrow, delete'));
   }
-  return Bluebird.resolve(mTaskLog.findOne({
+  return Promise.resolve(mTaskLog.findOne({
     name: about
   }, '-_id -__v').exec()).catch(function (err) {
-    return Bluebird.reject(new HttpError(500, err.message));
+    return Promise.reject(new HttpError(500, err.message));
   });
 };
 
 api.private = {};
 api.private.list = function () {
-  return Bluebird.resolve(mEvent.find(null, '-__v', {
+  return Promise.resolve(mEvent.find(null, '-__v', {
     sort: {
       eventDate: 1,
       period: 1
     }
   }).exec()).catch(function (err) {
-    return Bluebird.reject(new HttpError(500, err.message));
+    return Promise.reject(new HttpError(500, err.message));
   });
 };
 api.private.add = function (event) {
@@ -227,39 +225,39 @@ api.private.add = function (event) {
     event.pubDate = new Date(event.pubDate);
   }
   event.hash = require('crypto').createHash('sha256').update(event.raw.replace(/\s/g, '')).digest('hex');
-  return new Bluebird(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     mEvent.findOrCreate({
       hash: event.hash
-    }, event, function (err, event, created) {
+    }, event, function (err, result, created) {
       if (err) {
         reject(new HttpError(500, err.message));
       } else if (created) {
         resolve({
           success: {
-            message: event.hash + ' created'
+            message: result.hash + ' created'
           }
         });
       } else {
-        reject(new HttpError(400, event.hash + ' already exist'));
+        reject(new HttpError(400, result.hash + ' already exist'));
       }
     });
   });
 };
 api.private.edit = function (hash, data) {
   if (!/^[a-f0-9]{64}$/.test(hash)) {
-    return Bluebird.reject(new HttpError(400, 'Invalid hash ' + hash));
+    return Promise.reject(new HttpError(400, 'Invalid hash ' + hash));
   }
-  var validKeys = ['about', 'link', 'eventDate', 'period', 'department', 'subject', 'teacher', 'campus', 'room', 'note', 'raw', 'tweet.new', 'tweet.tomorrow'];
-  for (var key in data) {
+  const validKeys = ['about', 'link', 'eventDate', 'period', 'department', 'subject', 'teacher', 'campus', 'room', 'note', 'raw', 'tweet.new', 'tweet.tomorrow'];
+  for (const key in data) {
     if (validKeys.indexOf(key) === -1) {
-      return Bluebird.reject(new HttpError(400, 'Invalid key ' + key));
+      return Promise.reject(new HttpError(400, 'Invalid key ' + key));
     }
   }
   if (data.eventDate) {
     data.eventDate = new Date(data.eventDate);
   }
-  return Bluebird.resolve(mEvent.findOneAndUpdate({
-    hash: hash
+  return Promise.resolve(mEvent.findOneAndUpdate({
+    hash
   }, {
     $set: data
   }, {
@@ -272,18 +270,18 @@ api.private.edit = function (hash, data) {
         }
       };
     } else {
-      return Bluebird.reject(new HttpError(400, hash + ' not found'));
+      return Promise.reject(new HttpError(400, hash + ' not found'));
     }
   }).catch(function (err) {
-    return Bluebird.reject(new HttpError(500, err.message));
+    return Promise.reject(new HttpError(500, err.message));
   });
 };
 api.private.delete = function (hash) {
   if (!/^[a-f0-9]{64}$/.test(hash)) {
-    return Bluebird.reject(new HttpError(400, 'Invalid hash ' + hash));
+    return Promise.reject(new HttpError(400, 'Invalid hash ' + hash));
   }
-  return Bluebird.resolve(mEvent.findOneAndRemove({
-    hash: hash
+  return Promise.resolve(mEvent.findOneAndRemove({
+    hash
   }).exec()).then(function (event) {
     if (event) {
       return {
@@ -292,10 +290,10 @@ api.private.delete = function (hash) {
         }
       };
     } else {
-      return Bluebird.reject(new HttpError(400, hash + ' not found'));
+      return Promise.reject(new HttpError(400, hash + ' not found'));
     }
   }).catch(function (err) {
-    return Bluebird.reject(new HttpError(500, err.message));
+    return Promise.reject(new HttpError(500, err.message));
   });
 };
 

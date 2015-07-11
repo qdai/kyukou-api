@@ -1,9 +1,11 @@
-var config = require('config');
-var express = require('express');
+'use strict';
 
-var router = express.Router();
+const config = require('config');
+const express = require('express');
 
-var errorMessage = {
+const router = express.Router(); // eslint-disable-line new-cap
+
+const errorMessage = {
   error: {
     message: 'API v0 is no longer active. Please migrate to API v1 (https://' + config.get('site.url') + '/api/1).'
   }

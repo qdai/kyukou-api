@@ -1,15 +1,17 @@
-var Bluebird = require('bluebird');
-var config = require('config');
-var Twit = require('twit');
+'use strict';
 
-var get = require('../lib/getasstring');
-var getConnection = require('../db');
+const Bluebird = require('bluebird');
+const config = require('config');
+const Twit = require('twit');
 
-var twit = new Twit(config.get('twitter'));
+const get = require('../lib/getasstring');
+const dbConnection = require('../db');
+
+const twit = new Twit(config.get('twitter'));
 
 // tweet new event
 module.exports = function () {
-  return Bluebird.using(getConnection(), function (db) {
+  return Bluebird.using(dbConnection(), function (db) {
     return db.model('Event').find({
       'tweet.new': false
     }, null, {
@@ -21,9 +23,9 @@ module.exports = function () {
       if (events.length === 0) {
         return events;
       }
-      return Bluebird.all(events.map(function (event) {
-        return new Bluebird(function (resolve, reject) {
-          var text = get(event).asNewTweet();
+      return Promise.all(events.map(function (event) {
+        return new Promise(function (resolve, reject) {
+          const text = get(event).asNewTweet();
           twit.post('statuses/update', { status: text }, function (err, data, res) {
             if (!err && res.statusCode === 200) {
               resolve(event);
@@ -37,7 +39,7 @@ module.exports = function () {
       if (events.length === 0) {
         return [];
       }
-      return Bluebird.all(events.map(function (event) {
+      return Promise.all(events.map(function (event) {
         return event.update({
           'tweet.new': true
         }).exec();

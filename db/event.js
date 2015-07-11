@@ -1,8 +1,10 @@
-var mongoose = require('mongoose');
-var findOrCreate = require('mongoose-findorcreate');
-var Schema = mongoose.Schema;
+'use strict';
 
-var sevent = {
+const mongoose = require('mongoose');
+const findOrCreate = require('mongoose-findorcreate');
+const Schema = mongoose.Schema;
+
+const sevent = {
   raw: {
     type: String,
     required: true
@@ -17,7 +19,7 @@ var sevent = {
   },
   eventDate: {
     type: Date,
-    validate: function (value) {
+    validate (value) {
       return value.getTime() - Date.now() >= -64800000; // 18hours
     },
     required: true
@@ -67,7 +69,7 @@ var sevent = {
 };
 
 module.exports = (function () {
-  var Event = new Schema(sevent);
+  const Event = new Schema(sevent);
   Event.plugin(findOrCreate);
   mongoose.model('Event', Event);
 })();

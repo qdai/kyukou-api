@@ -1,6 +1,7 @@
 'use strict';
 
 const bodyParser = require('body-parser');
+const compression = require('compression')
 const config = require('config');
 const connectMongo = require('connect-mongo');
 const cookieParser = require('cookie-parser');
@@ -52,6 +53,7 @@ app.set('x-powered-by', false);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+app.use(compression());
 app.use(favicon(path.join(__dirname, 'public/favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());

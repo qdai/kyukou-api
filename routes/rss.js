@@ -2,23 +2,16 @@
 
 const config = require('config');
 const express = require('express');
-const mongoose = require('mongoose');
 const RSS = require('rss');
 
-const mEvent = mongoose.model('Event');
 const router = express.Router(); // eslint-disable-line new-cap
 const site = config.get('site');
 
 const get = require('../lib/getasstring');
+const publicAPI = require('../api').public;
 
 router.get('/', function (req, res) {
-  Promise.resolve(mEvent.find(null, '-_id -__v', {
-    limit: 20,
-    sort: {
-      pubDate: -1,
-      period: 1
-    }
-  }).exec()).then(function (events) {
+  publicAPI.events.list().then(function (events) {
     const feed = new RSS({
       title: site.name,
       description: site.description,
@@ -28,15 +21,18 @@ router.get('/', function (req, res) {
       language: site.lang,
       ttl: 180
     });
-    events.forEach(function (event) {
-      feed.item({
-        title: get(event).asRSSTitle(),
-        description: get(event).asRSSDescription(),
-        url: event.link,
-        guid: event.hash,
-        date: event.pubDate.toISOString()
-      });
+    events = events.sort(function (a, b) {
+      return b.pubDate.getTime() - a.pubDate.getTime();
     });
+    for (let i = 0; i < 20; i++) {
+      feed.item({
+        title: get(events[i]).asRSSTitle(),
+        description: get(events[i]).asRSSDescription(),
+        url: events[i].link,
+        guid: events[i].hash,
+        date: events[i].pubDate.toISOString()
+      });
+    }
     res.set('Content-Type', 'application/rss+xml');
     res.send(feed.xml());
   });

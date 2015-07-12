@@ -9,30 +9,11 @@ const createHttpError = require('http-errors');
 const express = require('express');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
-const mongoose = require('mongoose');
 const path = require('path');
 const session = require('express-session');
 
 const MongoStore = connectMongo(session);
 const mongoURI = config.get('mongoURI');
-
-// db setting
-require('./db/event');
-require('./db/tasklog');
-mongoose.connect(mongoURI);
-mongoose.connection.once('open', function () {
-  console.log('Mongoose connected');
-});
-mongoose.connection.on('error', function (err) {
-  console.log('Mongoose connect failed');
-  throw err;
-});
-process.on('SIGINT', function () {
-  mongoose.connection.close(function () {
-    console.log('Mongoose disconnected');
-    process.exit(0); // eslint-disable-line no-process-exit
-  });
-});
 
 // routes
 const routes = require('./routes/index');

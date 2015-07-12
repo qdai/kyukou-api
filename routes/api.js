@@ -1,6 +1,7 @@
 'use strict';
 
 const config = require('config');
+const createHttpError = require('http-errors');
 const express = require('express');
 const jsonfile = require('jsonfile');
 const path = require('path');
@@ -11,8 +12,8 @@ const publicAPI = require('../api').public;
 const sendAPIResult = require('../lib/sendapiresult');
 const doc = jsonfile.readFileSync(path.join(__dirname, '../api/doc.json'));
 
-router.get('/events', function (req, res) {
-  res.status(400).type('text/plain').send('Bad Request');
+router.get('/events', function () {
+  throw createHttpError(400);
 });
 
 router.get('/events/list.json', function (req, res) {
@@ -36,8 +37,9 @@ router.get('/events/search.json', function (req, res) {
   sendAPIResult(publicAPI.events.search(q, count), res);
 });
 
-router.get('/logs', function (req, res) {
-  res.status(400).type('text/plain').send('Bad Request');
+
+router.get('/logs', function () {
+  throw createHttpError(400);
 });
 
 router.get('/logs/:about.json', function (req, res) {

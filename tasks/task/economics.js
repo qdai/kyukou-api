@@ -6,7 +6,8 @@ const baseURL = 'http://www.econ.kyushu-u.ac.jp';
 const resourcePath = '/student/kyuukou.php';
 
 module.exports = function () {
-  return util.fetch(baseURL + resourcePath, 'utf-8').spread(function (res, $) {
+  return util.fetch(baseURL + resourcePath, 'utf-8').then(function (result) {
+    const $ = result[1];
     return $('.box01 tr[bgcolor="#FFFFFF"]').map(function () {
       const $item = $(this);
       const data = {};

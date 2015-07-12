@@ -5,7 +5,8 @@ const util = require('./util');
 const resourceURL = 'http://www2.lit.kyushu-u.ac.jp/~syllabus/cgi-bin/class-schedule.cgi';
 
 module.exports = function () {
-  return util.fetch(resourceURL, 'SHIFT_JIS').spread(function (res, $) {
+  return util.fetch(resourceURL, 'SHIFT_JIS').then(function (result) {
+    const $ = result[1];
     return $('table tr:first-child table tr:not(:first-child)').map(function () {
       const $item = $(this);
       const data = {};

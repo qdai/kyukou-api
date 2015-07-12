@@ -38,7 +38,7 @@ module.exports = function () {
       }));
     });
   }).then(function (results) {
-    const log = '';
+    let log = '';
     const count = {
       created: 0,
       exist: 0

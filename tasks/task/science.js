@@ -7,7 +7,8 @@ const resourceURL = baseURL + '/home/cancel/cancel.php';
 const linkURL = baseURL + '/index.php?type=0&sel1=11&sel2=0';
 
 module.exports = function () {
-  return util.fetch(resourceURL, 'SHIFT_JIS').spread(function (res, $) {
+  return util.fetch(resourceURL, 'SHIFT_JIS').then(function (result) {
+    const $ = result[1];
     const items = $('table table table td.j12 table[width="100%"] tr td').text();
     if (!items) {
       return [];

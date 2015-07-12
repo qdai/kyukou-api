@@ -5,7 +5,8 @@ const util = require('./util');
 const resourceURL = 'http://www.law.kyushu-u.ac.jp/kyukou/keiji.cgi';
 
 module.exports = function () {
-  return util.fetch(resourceURL, 'SHIFT_JIS').spread(function (res, $) {
+  return util.fetch(resourceURL, 'SHIFT_JIS').then(function (result) {
+    const $ = result[1];
     return $('.article-main [style="height: 600px; overflow: auto;"] table tr:not(:first-child)').map(function () {
       const $item = $(this);
       const data = {};

@@ -6,7 +6,8 @@ const baseURL = 'http://www.education.kyushu-u.ac.jp';
 const resourcePath = '/topics/student_index';
 
 module.exports = function () {
-  return util.fetch(baseURL + resourcePath, 'utf-8').spread(function (res, $) {
+  return util.fetch(baseURL + resourcePath, 'utf-8').then(function (result) {
+    const $ = result[1];
     return $('#news dd').map(function () {
       const $item = $(this);
       const data = {};

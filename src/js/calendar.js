@@ -1,3 +1,4 @@
+/* eslint-disable no-var, strict */
 /* global angular */
 
 var calendarApp = angular.module('calendarApp', []);
@@ -20,13 +21,13 @@ calendarApp.controller('calendarCtrl', ['$scope', function ($scope) {
     }
   };
   $scope.isSelectedDepartment = function (department) {
-    return ($scope.selectedDepartments.indexOf(department) !== -1);
+    return $scope.selectedDepartments.indexOf(department) !== -1;
   };
   $scope.query = function () {
     var q = '';
     $scope.selectedDepartments.forEach(function (elem) {
-      q += elem.key + ',';
+      q += 'departments[]=' + elem.key + '&';
     });
-    return ($scope.selectedDepartments.length === 0) ? '' : '?department=' + q.slice(0, -1);
+    return $scope.selectedDepartments.length === 0 ? '' : '?' + q.slice(0, -1);
   };
 }]);

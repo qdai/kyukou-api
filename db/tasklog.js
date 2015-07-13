@@ -1,8 +1,10 @@
-var mongoose = require('mongoose');
-var findOrCreate = require('mongoose-findorcreate');
-var Schema = mongoose.Schema;
+'use strict';
 
-var stasklog = {
+const mongoose = require('mongoose');
+const findOrCreate = require('mongoose-findorcreate');
+const Schema = mongoose.Schema;
+
+const stasklog = {
   name: {
     type: String,
     required: true
@@ -26,7 +28,7 @@ var stasklog = {
 };
 
 module.exports = (function () {
-  var Tasklog = new Schema(stasklog);
+  const Tasklog = new Schema(stasklog);
   Tasklog.plugin(findOrCreate);
   mongoose.model('Tasklog', Tasklog);
 })();

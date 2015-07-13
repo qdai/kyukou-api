@@ -1,11 +1,13 @@
-var Bluebird = require('bluebird');
+'use strict';
 
-var getConnection = require('../db');
+const Bluebird = require('bluebird');
+
+const dbConnection = require('../db');
 
 // delete expired data
 module.exports = function () {
-  return Bluebird.using(getConnection(), function (db) {
-    var today = new Date();
+  return Bluebird.using(dbConnection(), function (db) {
+    const today = new Date();
     return db.model('Event').find({
       eventDate: {
         $lte: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1, 0, 0)

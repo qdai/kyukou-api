@@ -1,14 +1,17 @@
-var util = require('./util');
+'use strict';
 
-var baseURL = 'http://www.econ.kyushu-u.ac.jp';
-var resourcePath = '/student/kyuukou.php';
+const util = require('./util');
+
+const baseURL = 'http://www.econ.kyushu-u.ac.jp';
+const resourcePath = '/student/kyuukou.php';
 
 module.exports = function () {
-  return util.fetch(baseURL + resourcePath, 'utf-8').spread(function (res, $) {
+  return util.fetch(baseURL + resourcePath, 'utf-8').then(function (result) {
+    const $ = result[1];
     return $('.box01 tr[bgcolor="#FFFFFF"]').map(function () {
-      var $item = $(this);
-      var data = {};
-      var raw = util.normalizeText($item.find('a').text()).replace(/、|，/g, ',');
+      const $item = $(this);
+      const data = {};
+      const raw = util.normalizeText($item.find('a').text()).replace(/、|，/g, ',');
       try {
         // format data
         data.raw = raw;
@@ -24,7 +27,7 @@ module.exports = function () {
         }
         data.pubDate = new Date($item.find('td[align="left"] + td[align="center"]').text());
         data.pubDate.setHours(data.pubDate.getHours() + new Date().getTimezoneOffset() / 60);
-        data.period = (/時限/.test(raw)) ? raw.match(/\)\s*(\S*)時限/)[1] : raw.match(/\)\s*(.*)(学部|学府)/)[1].trim();
+        data.period = /時限/.test(raw) ? raw.match(/\)\s*(\S*)時限/)[1] : raw.match(/\)\s*(.*)(学部|学府)/)[1].trim();
         data.department = '経済学部';
         data.subject = raw.match(/「(.*)」/)[1];
         data.teacher = raw.match(/」\s*\((.*)教員\)/)[1];
@@ -32,10 +35,10 @@ module.exports = function () {
           data.room = raw.match(/教室:(.*)/)[1];
         }
         data.hash = util.createHash(raw);
-        return data;
+        return data; // eslint-disable-line consistent-return
       } catch (err) {
-        err.message += 'on' + raw.replace(/[\f\n\r]/g, '');
-        return err;
+        err.message += ' on ' + raw.replace(/[\f\n\r]/g, '');
+        return err; // eslint-disable-line consistent-return
       }
     }).toArray();
   });

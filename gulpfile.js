@@ -1,20 +1,22 @@
-var apidoc = require('apidoc');
-var bower = require('bower');
-var config = require('config');
-var del = require('del');
-var eslint = require('gulp-eslint');
-var fs = require('fs');
-var gulp = require('gulp');
-var header = require('gulp-header');
-var less = require('gulp-less');
-var mainBowerFiles = require('main-bower-files');
-var minify = require('gulp-minify-css');
-var uglify = require('gulp-uglify');
+'use strict';
 
-var srcPathBase = './src';
-var destPathBase = './public';
-var apiList = function (apiData) {
-  var list = {};
+const apidoc = require('apidoc');
+const bower = require('bower');
+const config = require('config');
+const del = require('del');
+const eslint = require('gulp-eslint');
+const fs = require('fs');
+const gulp = require('gulp');
+const header = require('gulp-header');
+const less = require('gulp-less');
+const mainBowerFiles = require('main-bower-files');
+const minify = require('gulp-minify-css');
+const uglify = require('gulp-uglify');
+
+const srcPathBase = './src';
+const destPathBase = './public';
+const apiList = function (apiData) {
+  const list = {};
   apiData.forEach(function (el) {
     if (!list[el.group]) {
       list[el.group] = [];
@@ -37,7 +39,7 @@ gulp.task('bower:install', function (callback) {
 });
 
 gulp.task('bower', ['bower:install'], function () {
-  var destPath = srcPathBase + '/static/lib';
+  const destPath = srcPathBase + '/static/lib';
   return gulp.src(mainBowerFiles(), { base: 'bower_components' })
     .pipe(gulp.dest(destPath));
 });
@@ -50,7 +52,7 @@ gulp.task('lint:js', function () {
 });
 
 gulp.task('build:js', function () {
-  var destPath = destPathBase + '/js';
+  const destPath = destPathBase + '/js';
   return gulp.src(srcPathBase + '/js/**/*.js')
     .pipe(header('var SITE_URL = \'//' + config.get('site.url') + '/\';\n'))
     .pipe(uglify())
@@ -58,7 +60,7 @@ gulp.task('build:js', function () {
 });
 
 gulp.task('build:css', function () {
-  var destPath = destPathBase + '/css';
+  const destPath = destPathBase + '/css';
   return gulp.src(srcPathBase + '/less/**/*.less')
     .pipe(less())
     .pipe(minify())
@@ -71,7 +73,7 @@ gulp.task('build:static', ['bower'], function () {
 });
 
 gulp.task('apidoc', function (callback) {
-  var chunk = apidoc.createDoc({
+  const chunk = apidoc.createDoc({
     src: 'api/',
     parse: true,
     debug: false

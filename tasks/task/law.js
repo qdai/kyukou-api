@@ -1,13 +1,16 @@
-var util = require('./util');
+'use strict';
 
-var resourceURL = 'http://www.law.kyushu-u.ac.jp/kyukou/keiji.cgi';
+const util = require('./util');
+
+const resourceURL = 'http://www.law.kyushu-u.ac.jp/kyukou/keiji.cgi';
 
 module.exports = function () {
-  return util.fetch(resourceURL, 'SHIFT_JIS').spread(function (res, $) {
+  return util.fetch(resourceURL, 'SHIFT_JIS').then(function (result) {
+    const $ = result[1];
     return $('.article-main [style="height: 600px; overflow: auto;"] table tr:not(:first-child)').map(function () {
-      var $item = $(this);
-      var data = {};
-      var raw = $item.text();
+      const $item = $(this);
+      const data = {};
+      const raw = $item.text();
       try {
         // format data
         data.raw = raw;
@@ -33,7 +36,7 @@ module.exports = function () {
         data.hash = util.createHash(raw);
         return data;
       } catch (err) {
-        err.message += 'on' + raw.replace(/[\f\n\r]/g, '');
+        err.message += ' on ' + raw.replace(/[\f\n\r]/g, '');
         return err;
       }
     }).toArray();

@@ -1,32 +1,34 @@
-var Bluebird = require('bluebird');
+'use strict';
 
-var dbConnection = require('../../db');
-var economics = require('./economics');
-var education = require('./education');
-var law = require('./law');
-var literature = require('./literature');
-var science = require('./science');
+const Bluebird = require('bluebird');
+
+const dbConnection = require('../../db');
+const economics = require('./economics');
+const education = require('./education');
+const law = require('./law');
+const literature = require('./literature');
+const science = require('./science');
 
 // get events
 module.exports = function () {
-  return Bluebird.all([economics(), education(), law(), literature(), science()]).then(function (events) {
+  return Promise.all([economics(), education(), law(), literature(), science()]).then(function (events) {
     // flatten
     events = Array.prototype.concat.apply([], events).filter(function (event) {
       return event !== undefined;
     });
     // find or create
     return Bluebird.using(dbConnection(), function (db) {
-      var Event = db.model('Event');
-      return Bluebird.all(events.map(function (event) {
+      const Event = db.model('Event');
+      return Promise.all(events.map(function (event) {
         if (event instanceof Error) {
           return [event, null];
         }
-        return new Bluebird(function (resolve) {
+        return new Promise(function (resolve) {
           Event.findOrCreate({
             hash: event.hash
-          }, event, function (err, event, created) {
+          }, event, function (err, result, created) {
             if (err) {
-              err.message += ' on ' + event.raw.replace(/[\f\n\r]/g, '');
+              err.message += ' on ' + result.raw.replace(/[\f\n\r]/g, '');
               resolve([err, null]);
             } else {
               resolve([err, created]);
@@ -36,14 +38,14 @@ module.exports = function () {
       }));
     });
   }).then(function (results) {
-    var log = '';
-    var count = {
+    let log = '';
+    const count = {
       created: 0,
       exist: 0
     };
     results.forEach(function (result) {
-      var err = result[0];
-      var created = result[1];
+      const err = result[0];
+      const created = result[1];
       if (err) {
         if (/ValidationError: Validator failed for path `eventDate`/.test(err.toString())) {
           log += 'inf: ' + err.message + '\n';

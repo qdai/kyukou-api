@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 
-var Bluebird = require('bluebird');
+'use strict';
 
-var dbConnection = require('../db');
+const Bluebird = require('bluebird');
 
-var tasklogs = ['task', 'twit_new', 'twit_tomorrow', 'delete'].map(function (name) {
+const dbConnection = require('../db');
+
+const tasklogs = ['task', 'twit_new', 'twit_tomorrow', 'delete'].map(function (name) {
   return {
-    name: name,
+    name,
     log: 'initialized',
     level: 1,
     time: new Date(),
@@ -15,9 +17,9 @@ var tasklogs = ['task', 'twit_new', 'twit_tomorrow', 'delete'].map(function (nam
 });
 
 Bluebird.using(dbConnection(), function (db) {
-  var Tasklog = db.model('Tasklog');
-  return Bluebird.all(tasklogs.map(function (tasklog) {
-    return new Bluebird(function (resolve, reject) {
+  const Tasklog = db.model('Tasklog');
+  return Promise.all(tasklogs.map(function (tasklog) {
+    return new Promise(function (resolve, reject) {
       Tasklog.findOrCreate({
         name: tasklog.name
       }, tasklog, function (err, event, created) {

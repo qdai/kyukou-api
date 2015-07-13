@@ -1,19 +1,21 @@
-var Bluebird = require('bluebird');
-var config = require('config');
-var express = require('express');
-var pwd = require('pwd');
+'use strict';
 
-var admin = config.get('admin');
-var router = express.Router();
-var site = config.get('site');
+const config = require('config');
+const createHttpError = require('http-errors');
+const express = require('express');
+const pwd = require('pwd');
 
-var privateAPI = require('../api').private;
-var sendAPIResult = require('../lib/sendapiresult');
+const admin = config.get('admin');
+const router = express.Router(); // eslint-disable-line new-cap
+const site = config.get('site');
+
+const privateAPI = require('../api').private;
+const sendAPIResult = require('../lib/sendapiresult');
 
 router.get('/', function (req, res) {
   if (req.session.loggedin) {
     res.render('admin', {
-      site: site,
+      site,
       page: {
         title: 'Admin - ' + site.name
       }
@@ -28,7 +30,7 @@ router.get('/login', function (req, res) {
     res.redirect('/admin');
   } else {
     res.render('login', {
-      site: site,
+      site,
       page: {
         title: 'Login - ' + site.name
       }
@@ -37,10 +39,10 @@ router.get('/login', function (req, res) {
 });
 
 router.post('/login', function (req, res) {
-  var name = req.body.name;
-  var pass = req.body.password;
+  const name = req.body.name;
+  const pass = req.body.password;
   if (name === admin.name) {
-    new Bluebird(function (resolve, reject) {
+    new Promise(function (resolve, reject) {
       pwd.hash(pass, admin.salt, function (err, hash) {
         if (err) {
           reject(err);
@@ -66,54 +68,63 @@ router.get('/logout', function (req, res) {
   res.redirect('/');
 });
 
-router.get('/list.json', function (req, res) {
+router.get('/events/list.json', function (req, res) {
   if (req.session.loggedin) {
-    sendAPIResult(privateAPI.list(), res);
+    sendAPIResult(privateAPI.events.list(), res);
   } else {
-    res.status(400).json({
-      error: {
-        message: 'Authentication required'
-      }
-    });
+    throw createHttpError(403);
   }
 });
 
-router.post('/:adminmethod', function (req, res) {
+router.post('/events/add', function (req, res) {
   if (req.session.loggedin) {
-    var hash = req.body.hash;
-    switch (String(req.params.adminmethod)) {
-    case 'add':
-      var event = req.body;
-      sendAPIResult(privateAPI.add(event), res);
-      break;
-    case 'edit':
-      var key = req.body.key;
-      var value = req.body.value;
-      var data = {};
-      data[key] = value;
-      sendAPIResult(privateAPI.edit(hash, data), res);
-      break;
-    case 'delete':
-      sendAPIResult(privateAPI.delete(hash), res);
-      break;
-    default:
-      res.status(400).json({
-        error: {
-          message: 'Unknown method ' + String(req.params.adminmethod)
-        }
-      });
+    const event = req.body;
+    sendAPIResult(privateAPI.events.add(event), res);
+  } else {
+    throw createHttpError(403);
+  }
+});
+
+router.post('/events/edit', function (req, res) {
+  if (req.session.loggedin) {
+    const hash = req.body.hash;
+    const key = req.body.key;
+    const value = req.body.value;
+    const data = {};
+    data[key] = value;
+    sendAPIResult(privateAPI.events.edit(hash, data), res);
+  } else {
+    throw createHttpError(403);
+  }
+});
+
+router.post('/events/delete', function (req, res) {
+  if (req.session.loggedin) {
+    const hash = req.body.hash;
+    sendAPIResult(privateAPI.events.delete(hash), res);
+  } else {
+    throw createHttpError(403);
+  }
+});
+
+router.use(function (err, req, res, next) { // eslint-disable-line no-unused-vars
+  res.status(err.status || 500).json({
+    error: {
+      message: err.message
     }
-  } else {
-    res.status(400).json({
-      error: {
-        message: 'Authentication required'
-      }
-    });
-  }
+  });
 });
 
-router.get('/:adminmethod', function (req, res) {
-  res.redirect('/admin');
+router.get('/events', function () {
+  throw createHttpError(400);
+});
+
+router.get('/events/:method', function (req) {
+  if (['add', 'edit', 'delete'].indexOf(req.params.method) !== -1) {
+    throw createHttpError(405);
+  } else {
+    throw createHttpError(400);
+  }
 });
 
 module.exports = router;

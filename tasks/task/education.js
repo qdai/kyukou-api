@@ -1,14 +1,17 @@
-var util = require('./util');
+'use strict';
 
-var baseURL = 'http://www.education.kyushu-u.ac.jp';
-var resourcePath = '/topics/student_index';
+const util = require('./util');
+
+const baseURL = 'http://www.education.kyushu-u.ac.jp';
+const resourcePath = '/topics/student_index';
 
 module.exports = function () {
-  return util.fetch(baseURL + resourcePath, 'utf-8').spread(function (res, $) {
+  return util.fetch(baseURL + resourcePath, 'utf-8').then(function (result) {
+    const $ = result[1];
     return $('#news dd').map(function () {
-      var $item = $(this);
-      var data = {};
-      var raw = util.normalizeText($item.find('.text').text());
+      const $item = $(this);
+      const data = {};
+      const raw = util.normalizeText($item.find('.text').text());
       try {
         // format data
         data.raw = raw;
@@ -36,10 +39,10 @@ module.exports = function () {
           data.room = raw.match(/教室:(.*)/);
         }
         data.hash = util.createHash(raw);
-        return data;
+        return data; // eslint-disable-line consistent-return
       } catch (err) {
-        err.message += 'on' + raw.replace(/[\f\n\r]/g, '');
-        return err;
+        err.message += ' on ' + raw.replace(/[\f\n\r]/g, '');
+        return err; // eslint-disable-line consistent-return
       }
     }).toArray();
   });

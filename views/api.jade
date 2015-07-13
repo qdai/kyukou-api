@@ -62,7 +62,7 @@ html(lang=site.lang, prefix='og: http://ogp.me/ns#')
                       td=param.field
                         if param.optional
                           span.text-muted  (optional)
-                      td.hljs-variable=param.type
+                      td.hljs-variable!=param.type
                       td!=param.description
                         if param.defaultValue
                           p='Default value: '
@@ -87,7 +87,7 @@ html(lang=site.lang, prefix='og: http://ogp.me/ns#')
                         td=field.field
                           if field.optional
                             span.text-muted  (optional)
-                        td.hljs-variable=field.type
+                        td.hljs-variable!=field.type
                         td!=field.description
               h3 Example
               each example in api.success.examples

@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 
-var debug = require('debug')('kyukou');
-var config = require('config');
-var app = require('../app');
+'use strict';
 
-var serverConfig = config.get('server');
+const debug = require('debug')('kyukou');
+const config = require('config');
+const app = require('../app');
+
+const serverConfig = config.get('server');
 
 app.set('port', serverConfig.port);
 
-var server = app.listen(app.get('port'), function () {
+const server = app.listen(app.get('port'), function () {
   debug('Express server listening on port ' + server.address().port);
 });

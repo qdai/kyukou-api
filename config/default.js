@@ -1,4 +1,9 @@
-var pkg = require('../package.json');
+'use strict';
+
+const jsonfile = require('jsonfile');
+const path = require('path');
+
+const pkg = jsonfile.readFileSync(path.join(__dirname, '../package.json'));
 
 module.exports = {
   server: {
@@ -12,10 +17,10 @@ module.exports = {
   secret: '',
   mongoURI: 'mongodb://localhost/kyukou',
   twitter: {
-    consumer_key: '',
-    consumer_secret: '',
-    access_token: '',
-    access_token_secret: ''
+    consumer_key: '', // eslint-disable-line camelcase
+    consumer_secret: '', // eslint-disable-line camelcase
+    access_token: '', // eslint-disable-line camelcase
+    access_token_secret: '' // eslint-disable-line camelcase
   },
   site: {
     name: '',

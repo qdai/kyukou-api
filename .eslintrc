@@ -1,4 +1,10 @@
 {
+  "ecmaFeatures": {
+    "blockBindings": true,
+    "classes": true,
+    "objectLiteralShorthandMethods": true,
+    "objectLiteralShorthandProperties": true
+  },
   "env": {
     "node": true
   },

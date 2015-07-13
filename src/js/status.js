@@ -1,3 +1,4 @@
+/* eslint-disable no-var, strict */
 /* global angular, SITE_URL */
 
 var logApp = angular.module('statusApp', ['ui.bootstrap']);

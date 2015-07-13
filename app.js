@@ -1,45 +1,30 @@
-var bodyParser = require('body-parser');
-var config = require('config');
-var cookieParser = require('cookie-parser');
-var express = require('express');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var mongoose = require('mongoose');
-var path = require('path');
-var session = require('express-session');
+'use strict';
 
-var MongoStore = require('connect-mongo')(session);
-var mongoURI = config.get('mongoURI');
+const bodyParser = require('body-parser');
+const compression = require('compression');
+const config = require('config');
+const connectMongo = require('connect-mongo');
+const cookieParser = require('cookie-parser');
+const createHttpError = require('http-errors');
+const express = require('express');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const path = require('path');
+const session = require('express-session');
 
-// db setting
-require('./db/event');
-require('./db/tasklog');
-mongoose.connect(mongoURI);
-mongoose.connection.once('open', function () {
-  console.log('Mongoose connected');
-});
-mongoose.connection.on('error', function (err) {
-  console.log('Mongoose connect failed');
-  console.log(err);
-  process.exit(1);
-});
-process.on('SIGINT', function () {
-  mongoose.connection.close(function () {
-    console.log('Mongoose disconnected');
-    process.exit(0);
-  });
-});
+const MongoStore = connectMongo(session);
+const mongoURI = config.get('mongoURI');
 
 // routes
-var routes = require('./routes/index');
-var apiStatus = require('./routes/status');
-var rss = require('./routes/rss');
-var calendar = require('./routes/calendar');
-var api = require('./routes/api');
-var api0 = require('./routes/api0');
-var admin = require('./routes/admin');
+const routes = require('./routes/index');
+const apiStatus = require('./routes/status');
+const rss = require('./routes/rss');
+const calendar = require('./routes/calendar');
+const api = require('./routes/api');
+const api0 = require('./routes/api0');
+const admin = require('./routes/admin');
 
-var app = express();
+const app = express();
 
 // cron job
 require('./cron');
@@ -49,6 +34,7 @@ app.set('x-powered-by', false);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+app.use(compression());
 app.use(favicon(path.join(__dirname, 'public/favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -88,9 +74,7 @@ app.use('/admin', admin);
 
 /// catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+  next(createHttpError(404));
 });
 
 /// error handlers
@@ -98,27 +82,15 @@ app.use(function (req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-/* jshint -W098 */
-  app.use(function (err, req, res, next) {
-/* jshint +W098 */
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
+  app.use(function (err, req, res, next) { // eslint-disable-line no-unused-vars
+    res.status(err.status || 500).type('text/plain').send(err.stack);
   });
 }
 
 // production error handler
 // no stacktraces leaked to user
-/* jshint -W098 */
-app.use(function (err, req, res, next) {
-/* jshint +W098 */
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+app.use(function (err, req, res, next) { // eslint-disable-line no-unused-vars
+  res.status(err.status || 500).type('text/plain').send(err.message);
 });
 
 module.exports = app;

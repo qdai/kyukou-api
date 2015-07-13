@@ -1,18 +1,21 @@
-var util = require('./util');
+'use strict';
 
-var baseURL = 'http://www.sci.kyushu-u.ac.jp';
-var resourceURL = baseURL + '/home/cancel/cancel.php';
-var linkURL = baseURL + '/index.php?type=0&sel1=11&sel2=0';
+const util = require('./util');
+
+const baseURL = 'http://www.sci.kyushu-u.ac.jp';
+const resourceURL = baseURL + '/home/cancel/cancel.php';
+const linkURL = baseURL + '/index.php?type=0&sel1=11&sel2=0';
 
 module.exports = function () {
-  return util.fetch(resourceURL, 'SHIFT_JIS').spread(function (res, $) {
-    var items = $('table table table td.j12 table[width="100%"] tr td').text();
+  return util.fetch(resourceURL, 'SHIFT_JIS').then(function (result) {
+    const $ = result[1];
+    const items = $('table table table td.j12 table[width="100%"] tr td').text();
     if (!items) {
       return [];
     } else {
       return util.normalizeText(items).replace(/^\[\[/, '').split('[[ ').map(function (item) {
-        var data = {};
-        var raw = '[[ ' + item.trim();
+        const data = {};
+        const raw = '[[ ' + item.trim();
         try {
           data.raw = raw;
           data.about = raw.match(/\[\[\s(\S*)\s\]\]/)[1];
@@ -34,7 +37,7 @@ module.exports = function () {
           data.hash = util.createHash(raw);
           return data;
         } catch (err) {
-          err.message += 'on' + raw.replace(/[\f\n\r]/g, '');
+          err.message += ' on ' + raw.replace(/[\f\n\r]/g, '');
           return err;
         }
       });

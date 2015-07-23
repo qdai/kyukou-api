@@ -1,14 +1,3 @@
 *.*~
 *~
-config/development.*
 node_modules/
-bower_components/
-/public/
-api/doc.json
-src/static/lib/
-
-old/
-src/test/
-task.log
-twit_new.log
-twit_tomorrow.log

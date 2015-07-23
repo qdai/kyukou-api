@@ -2,10 +2,10 @@
 
 'use strict';
 
-const Bluebird = require('bluebird');
+const config = require('config');
+const mongoose = require('mongoose');
 
-const dbConnection = require('../db');
-
+const mongoURI = config.get('mongoURI');
 const tasklogs = ['task', 'twit_new', 'twit_tomorrow', 'delete'].map(function (name) {
   return {
     name,
@@ -16,11 +16,19 @@ const tasklogs = ['task', 'twit_new', 'twit_tomorrow', 'delete'].map(function (n
   };
 });
 
-Bluebird.using(dbConnection(), function (db) {
-  const Tasklog = db.model('Tasklog');
+require('../db/tasklog');
+const db = mongoose.createConnection(mongoURI);
+const dbClose = function () {
+  db.close();
+};
+db.on('error', function (err) {
+  throw err;
+});
+db.once('open', function () {
+  const mTasklog = db.model('Tasklog');
   return Promise.all(tasklogs.map(function (tasklog) {
     return new Promise(function (resolve, reject) {
-      Tasklog.findOrCreate({
+      mTasklog.findOrCreate({
         name: tasklog.name
       }, tasklog, function (err, event, created) {
         if (err) {
@@ -30,9 +38,9 @@ Bluebird.using(dbConnection(), function (db) {
         }
       });
     });
-  }));
-}).then(function () {
-  console.log('msg: db init success');
-}).catch(function (err) {
-  console.log('err: ' + err.stack);
+  })).then(function () {
+    console.log('msg: db init success');
+  }).catch(function (err) {
+    console.log('err: ' + err.stack);
+  }).then(dbClose, dbClose);
 });

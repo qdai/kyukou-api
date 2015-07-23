@@ -1,7 +1,5 @@
 'use strict';
 
-const Bluebird = require('bluebird');
-const config = require('config');
 const mongoose = require('mongoose');
 
 // load models
@@ -9,16 +7,18 @@ require('./event');
 require('./tasklog');
 
 module.exports = function (uri) {
-  uri = uri || config.get('mongoURI');
-  return new Bluebird(function (resolve, reject) {
-    const conn = mongoose.createConnection(uri);
-    conn.once('open', function () {
-      resolve(conn);
+  mongoose.connect(uri);
+  mongoose.connection.once('open', function () {
+    console.log('Mongoose connected');
+  });
+  mongoose.connection.on('error', function (err) {
+    console.log('Mongoose connect failed');
+    throw err;
+  });
+  process.on('SIGINT', function () {
+    mongoose.connection.close(function () {
+      console.log('Mongoose disconnected');
+      process.exit(0); // eslint-disable-line no-process-exit
     });
-    conn.on('error', function (err) {
-      reject(err);
-    });
-  }).disposer(function (conn) {
-    conn.close();
   });
 };

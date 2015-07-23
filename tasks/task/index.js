@@ -1,8 +1,8 @@
 'use strict';
 
-const Bluebird = require('bluebird');
+const mongoose = require('mongoose');
 
-const dbConnection = require('../../db');
+const mEvent = mongoose.model('Event');
 const economics = require('./economics');
 const education = require('./education');
 const law = require('./law');
@@ -17,26 +17,23 @@ module.exports = function () {
       return event !== undefined;
     });
     // find or create
-    return Bluebird.using(dbConnection(), function (db) {
-      const Event = db.model('Event');
-      return Promise.all(events.map(function (event) {
-        if (event instanceof Error) {
-          return [event, null];
-        }
-        return new Promise(function (resolve) {
-          Event.findOrCreate({
-            hash: event.hash
-          }, event, function (err, result, created) {
-            if (err) {
-              err.message += ' on ' + result.raw.replace(/[\f\n\r]/g, '');
-              resolve([err, null]);
-            } else {
-              resolve([err, created]);
-            }
-          });
+    return Promise.all(events.map(function (event) {
+      if (event instanceof Error) {
+        return [event, null];
+      }
+      return new Promise(function (resolve) {
+        mEvent.findOrCreate({
+          hash: event.hash
+        }, event, function (err, result, created) {
+          if (err) {
+            err.message += ' on ' + result.raw.replace(/[\f\n\r]/g, '');
+            resolve([err, null]);
+          } else {
+            resolve([err, created]);
+          }
         });
-      }));
-    });
+      });
+    }));
   }).then(function (results) {
     let log = '';
     const count = {

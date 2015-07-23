@@ -1,13 +1,13 @@
 'use strict';
 
-const Bluebird = require('bluebird');
+const mongoose = require('mongoose');
 
-const dbConnection = require('../../db');
+const mTaskLog = mongoose.model('Tasklog');
 const taskList = require('../../tasks');
-const runTask = function (name) {
+const saveTaskResult = function (name, task) {
   const time = new Date();
   const hrtime = process.hrtime();
-  return taskList[name]().catch(function (err) {
+  return task.catch(function (err) {
     return 'err: ' + err.stack;
   }).then(function (log) {
     const diff = process.hrtime(hrtime);
@@ -25,28 +25,26 @@ const runTask = function (name) {
     } else if (/inf: /.test(tasklog.log)) {
       tasklog.level = 2;
     }
-    return Bluebird.using(dbConnection(), function (db) {
-      return db.model('Tasklog').findOneAndUpdate({
-        name: tasklog.name
-      }, tasklog, {
-        new: true
-      }).exec();
-    });
+    return Promise.resolve(mTaskLog.findOneAndUpdate({
+      name: tasklog.name
+    }, tasklog, {
+      new: true
+    }).exec());
   });
 };
 
 const tasks = {
   task () {
-    return runTask('task');
+    return saveTaskResult('task', taskList.task());
   },
-  twitNew () {
-    return runTask('twit_new');
+  twitNew (config) {
+    return saveTaskResult('twit_new', taskList.twit_new(config));
   },
-  twitTomorrow () {
-    return runTask('twit_tomorrow');
+  twitTomorrow (config) {
+    return saveTaskResult('twit_tomorrow', taskList.twit_tomorrow(config));
   },
   delete () {
-    return runTask('delete');
+    return saveTaskResult('delete', taskList.delete());
   }
 };
 

@@ -29,7 +29,7 @@
     "api"
   ],
   "license": "MIT",
-  "main": "./api",
+  "main": "./lib",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Qdai/kyukou-api.git"

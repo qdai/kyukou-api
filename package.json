@@ -19,7 +19,7 @@
     "gulp-eslint": "^1.0.0"
   },
   "engines": {
-    "iojs": "2.3.3"
+    "node": "4.0.0"
   },
   "homepage": "https://kyukou-kyudai.herokuapp.com/api/1",
   "keywords": [

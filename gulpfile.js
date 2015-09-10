@@ -1,5 +1,6 @@
 'use strict';
 
+const coveralls = require('gulp-coveralls');
 const del = require('del');
 const eslint = require('gulp-eslint');
 const gulp = require('gulp');
@@ -32,3 +33,10 @@ gulp.task('test', callback => {
 
 gulp.task('lint', ['lint:js']);
 gulp.task('default', ['lint', 'test']);
+
+gulp.task('coveralls', ['test'], () => {
+  return gulp.src('./coverage/lcov.info')
+    .pipe(coveralls());
+});
+
+gulp.task('ci', ['default', 'coveralls']);

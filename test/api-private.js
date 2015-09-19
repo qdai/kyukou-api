@@ -211,8 +211,9 @@ describe('Private API', () => {
   });
 
   describe('.tasks', () => {
-    describe('.about(task)', () => {
-      it('expected to be fulfilled with tasklog and save result in db', () => {
+    describe('.task', () => {
+      it('expected to be fulfilled with tasklog and save result in db', function () {
+        this.timeout(10000);
         const promise = privateAPI.tasks.task().then(tasklog => {
           return publicAPI.logs.about('task').then(savedTasklog => {
             return expect(savedTasklog).to.deep.equal(tasklog);
@@ -222,7 +223,7 @@ describe('Private API', () => {
       });
     });
 
-    describe('.about(twit_new)', () => {
+    describe('.twitNew', () => {
       it('expected to be fulfilled with tasklog and save result in db', () => {
         const promise = privateAPI.tasks.twitNew(config.twitter).then(tasklog => {
           return publicAPI.logs.about('twit_new').then(savedTasklog => {
@@ -233,7 +234,7 @@ describe('Private API', () => {
       });
     });
 
-    describe('.about(twit_tomorrow)', () => {
+    describe('.twitTomorrow', () => {
       it('expected to be fulfilled with tasklog and save result in db', () => {
         const promise = privateAPI.tasks.twitTomorrow(config.twitter).then(tasklog => {
           return publicAPI.logs.about('twit_tomorrow').then(savedTasklog => {
@@ -244,7 +245,7 @@ describe('Private API', () => {
       });
     });
 
-    describe('.about(delete)', () => {
+    describe('.delete', () => {
       it('expected to be fulfilled with tasklog and save result in db', () => {
         const promise = privateAPI.tasks.delete().then(tasklog => {
           return publicAPI.logs.about('delete').then(savedTasklog => {

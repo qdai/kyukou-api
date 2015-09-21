@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = {
+  localhost: 'http://localhost:8000',
   mongoURI: 'mongodb://localhost/kyukouapitest',
   twitter: {
     consumer_key: '*', // eslint-disable-line camelcase

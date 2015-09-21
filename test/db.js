@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 
 chai.use(chaiAsPromised);
+mongoose.Promise = Promise;
 
 const expect = chai.expect;
 

@@ -10,7 +10,12 @@ chai.use(chaiAsPromised);
 
 const expect = chai.expect;
 
-const config = require('./fixtures/config');
+const config = {
+  consumer_key: '*', // eslint-disable-line camelcase
+  consumer_secret: '*', // eslint-disable-line camelcase
+  access_token: '*', // eslint-disable-line camelcase
+  access_token_secret: '*' // eslint-disable-line camelcase
+};
 const db = require('./fixtures/db');
 
 const privateAPI = require('../lib/api/private');
@@ -225,7 +230,7 @@ describe('Private API', () => {
 
     describe('.twitNew', () => {
       it('expected to be fulfilled with tasklog and save result in db', () => {
-        const promise = privateAPI.tasks.twitNew(config.twitter).then(tasklog => {
+        const promise = privateAPI.tasks.twitNew(config).then(tasklog => {
           return publicAPI.logs.about('twit_new').then(savedTasklog => {
             return expect(savedTasklog).to.deep.equal(tasklog);
           });
@@ -236,7 +241,7 @@ describe('Private API', () => {
 
     describe('.twitTomorrow', () => {
       it('expected to be fulfilled with tasklog and save result in db', () => {
-        const promise = privateAPI.tasks.twitTomorrow(config.twitter).then(tasklog => {
+        const promise = privateAPI.tasks.twitTomorrow(config).then(tasklog => {
           return publicAPI.logs.about('twit_tomorrow').then(savedTasklog => {
             return expect(savedTasklog).to.deep.equal(tasklog);
           });

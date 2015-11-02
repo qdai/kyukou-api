@@ -18,15 +18,7 @@ const dbInsert = (model, data) => {
 };
 
 const dbClear = model => {
-  return new Promise((resolve, reject) => {
-    mongoose.model(model).find({}).remove(err => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
+  return mongoose.model(model).find({}).remove();
 };
 
 const testDb = {

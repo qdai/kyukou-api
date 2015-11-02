@@ -32,17 +32,7 @@ describe('Tasks', () => {
   describe('/delete', () => {
     it('expected to remove expired events', () => {
       const data = require('./fixtures/events/delete');
-      const promise = Promise.all(data.map(d => {
-        return new Promise((resolve, reject) => {
-          mongoose.model('Event').collection.insert(d, err => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve();
-            }
-          });
-        });
-      })).then(() => taskDelete()).then(msg => {
+      const promise = mongoose.model('Event').collection.insertMany(data).then(() => taskDelete()).then(msg => {
         expect(msg).to.deep.equal('msg: 2 event(s) deleted');
         return mongoose.model('Event').find({}).lean().exec();
       });

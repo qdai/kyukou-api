@@ -7,6 +7,10 @@ const gulp = require('gulp');
 const istanbul = require('gulp-istanbul');
 const mocha = require('gulp-mocha');
 
+gulp.task('clean', () => {
+  return del('./coverage');
+});
+
 gulp.task('lint:js', () => {
   return gulp.src(['./**/*.js', '!./coverage/**', '!./node_modules/**'])
     .pipe(eslint())
@@ -14,17 +18,15 @@ gulp.task('lint:js', () => {
     .pipe(eslint.failAfterError());
 });
 
-gulp.task('test', callback => {
-  const destPath = './coverage';
-  del.sync(destPath);
-  gulp.src('./lib/**/*.js')
+gulp.task('test', ['clean'], callback => {
+  return gulp.src('./lib/**/*.js')
     .pipe(istanbul())
     .pipe(istanbul.hookRequire())
     .on('finish', () => {
       gulp.src('./test/*.js')
         .pipe(mocha())
         .pipe(istanbul.writeReports({
-          dir: destPath,
+          dir: './coverage',
           reporters: ['lcov']
         }))
         .on('end', callback);

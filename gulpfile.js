@@ -19,7 +19,7 @@ gulp.task('lint:js', () => {
 });
 
 gulp.task('test', ['clean'], callback => {
-  return gulp.src('./lib/**/*.js')
+  gulp.src('./lib/**/*.js')
     .pipe(istanbul())
     .pipe(istanbul.hookRequire())
     .on('finish', () => {

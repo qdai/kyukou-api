@@ -1,6 +1,11 @@
 # Kyukou Kyudai API
 
-[![GitHub release](https://img.shields.io/github/release/qdai/kyukou-api.svg?style=flat-square)](https://github.com/qdai/kyukou-api/releases/latest) [![Dependency Status](https://img.shields.io/david/qdai/kyukou-api.svg?style=flat-square)](https://david-dm.org/qdai/kyukou-api) [![devDependency Status](https://img.shields.io/david/dev/qdai/kyukou-api.svg?style=flat-square)](https://david-dm.org/qdai/kyukou-api#info=devDependencies)
+[![GitHub version](https://badge.fury.io/gh/qdai%2Fkyukou-api.svg)](https://github.com/qdai/kyukou-api/releases/latest)
+
+[![Build Status](https://travis-ci.org/qdai/kyukou-api.svg)](https://travis-ci.org/qdai/kyukou-api)
+[![Coverage Status](https://coveralls.io/repos/qdai/kyukou-api/badge.svg)](https://coveralls.io/github/qdai/kyukou-api)
+[![Dependency Status](https://david-dm.org/qdai/kyukou-api.svg)](https://david-dm.org/qdai/kyukou-api)
+[![devDependency Status](https://david-dm.org/qdai/kyukou-api/dev-status.svg)](https://david-dm.org/qdai/kyukou-api#info=devDependencies)
 
 API for [kyukou](https://github.com/qdai/kyukou).
 

@@ -10,10 +10,12 @@ chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 const config = {
-  consumer_key: '*', // eslint-disable-line camelcase
-  consumer_secret: '*', // eslint-disable-line camelcase
-  access_token: '*', // eslint-disable-line camelcase
-  access_token_secret: '*' // eslint-disable-line camelcase
+  twitter: {
+    consumer_key: '*', // eslint-disable-line camelcase
+    consumer_secret: '*', // eslint-disable-line camelcase
+    access_token: '*', // eslint-disable-line camelcase
+    access_token_secret: '*' // eslint-disable-line camelcase
+  }
 };
 const db = require('./fixtures/db');
 

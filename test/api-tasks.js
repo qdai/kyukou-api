@@ -10,6 +10,7 @@ chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 const config = {
+  scrapers: [Promise.resolve([])],
   twitter: {
     consumer_key: '*', // eslint-disable-line camelcase
     consumer_secret: '*', // eslint-disable-line camelcase
@@ -31,6 +32,44 @@ describe('Tasks API', () => {
   after(() => db.clear().then(() => db.close()));
 
   describe('.scrap', () => {
+    it('expected to be fulfilled with tasklog and save result in db', () => {
+      const promise = apiTasks.scrap().then(tasklog => {
+        return apiLogs.about('scrap').then(savedTasklog => {
+          return expect(savedTasklog).to.deep.equal(tasklog);
+        });
+      });
+      return expect(promise).to.fulfilled;
+    });
+
+    describe('log.level', () => {
+      it('expected to be 2 when information', () => {
+        const expiredData = require('./fixtures/scraps/expired');
+        const apiTasksLocal = new ApiTasks({ scrapers: [Promise.resolve(expiredData)] });
+        const promise = apiTasksLocal.scrap().then(log => {
+          return log.level;
+        });
+        return expect(promise).to.become(2);
+      });
+
+      it('expected to be 3 when warning', () => {
+        const data = require('./fixtures/scraps/invalid-eventdate');
+        const apiTasksLocal = new ApiTasks({ scrapers: [Promise.resolve(data)] });
+        const promise = apiTasksLocal.scrap().then(log => {
+          return log.level;
+        });
+        return expect(promise).to.become(3);
+      });
+
+      it('expected to be 4 when error', () => {
+        const data = require('./fixtures/scraps/invalid-date');
+        const apiTasksLocal = new ApiTasks({ scrapers: [Promise.resolve(data)] });
+        const promise = apiTasksLocal.scrap().then(log => {
+          return log.level;
+        });
+        return expect(promise).to.become(4);
+      });
+    });
+
     it('expected to be fulfilled with tasklog and save result in db', () => {
       const promise = apiTasks.scrap().then(tasklog => {
         return apiLogs.about('scrap').then(savedTasklog => {

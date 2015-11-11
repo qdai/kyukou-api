@@ -38,13 +38,51 @@ describe('Tasks', () => {
   });
 
   describe('/scrap', () => {
-    it('expected to save events', () => {
-      const promise = taskScrap([Promise.resolve([])]).then(result => {
-        expect(result).to.deep.equal('msg: 0 event(s) created\nmsg: 0 event(s) already exist');
+    it('expected to scrap events and save', () => {
+      const data = require('./fixtures/scraps/index');
+      const promise = taskScrap([Promise.resolve(data)]).then(() => {
         return mongoose.model('Event').find({}, '-_id -__v').lean().exec();
       });
-      const expected = [];
-      return expect(promise).to.become(expected);
+      return expect(promise).to.become(data);
+    });
+
+    it('expected not to save expired event', () => {
+      const data = require('./fixtures/scraps/index');
+      const expiredData = require('./fixtures/scraps/expired');
+      const promise = taskScrap([Promise.resolve(data), Promise.resolve(expiredData)]).then(log => {
+        expect(log).to.includes('inf: ');
+        return mongoose.model('Event').find({}, '-_id -__v').lean().exec();
+      });
+      return expect(promise).to.become(data);
+    });
+
+    it('expected not to save invalid-date event', () => {
+      const data = require('./fixtures/scraps/index');
+      const invalidDateData = require('./fixtures/scraps/invalid-date');
+      const promise = taskScrap([Promise.resolve(data), Promise.resolve(invalidDateData)]).then(log => {
+        expect(log).to.includes('err: ');
+        return mongoose.model('Event').find({}, '-_id -__v').lean().exec();
+      });
+      return expect(promise).to.become(data);
+    });
+
+    it('expected not to save Error', () => {
+      const data = require('./fixtures/scraps/index');
+      const invalidDateError = require('./fixtures/scraps/invalid-eventdate');
+      const promise = taskScrap([Promise.resolve(data), Promise.resolve(invalidDateError)]).then(log => {
+        expect(log).to.includes('wrn: ');
+        return mongoose.model('Event').find({}, '-_id -__v').lean().exec();
+      });
+      return expect(promise).to.become(data);
+    });
+
+    it('expected to do noting when the event already exist', () => {
+      const data = require('./fixtures/scraps/index');
+      const promise = taskScrap([Promise.resolve(data)]).then(() => taskScrap([Promise.resolve(data)])).then(log => {
+        expect(log).to.deep.equal('msg: 0 event(s) created\nmsg: 1 event(s) already exist');
+        return mongoose.model('Event').find({}, '-_id -__v').lean().exec();
+      });
+      return expect(promise).to.become(data);
     });
   });
 

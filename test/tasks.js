@@ -5,8 +5,6 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const mongoose = require('mongoose');
-const rewire = require('rewire');
-const url = require('url');
 
 chai.use(chaiAsPromised);
 mongoose.Promise = Promise;
@@ -15,9 +13,8 @@ const expect = chai.expect;
 
 const config = require('./fixtures/config');
 const db = require('./fixtures/db');
-const server = require('./fixtures/server');
 
-const departments = ['economics', 'education', 'law', 'literature', 'science'];
+const taskScrap = require('../lib/tasks/scrap');
 const taskDelete = require('../lib/tasks/delete');
 const taskTwitNew = require('../lib/tasks/twit_new');
 const taskTwitTomorrow = require('../lib/tasks/twit_tomorrow');
@@ -40,25 +37,14 @@ describe('Tasks', () => {
     });
   });
 
-  describe('/task', () => {
-    before(done => server.listen(url.parse(config.localhost).port, done));
-
-    after(done => server.close(done));
-
-    departments.forEach(department => {
-      describe('/' + department, () => {
-        it('expected to build events about ' + department, () => {
-          const getDepartment = rewire('../lib/tasks/task/' + department);
-          getDepartment.__set__({ // eslint-disable-line no-underscore-dangle
-            'config.baseURL': config.localhost,
-            'config.resourcePath': '/' + department + '.html',
-            'config.resourceURL': config.localhost + '/' + department + '.html'
-          });
-          const promise = getDepartment();
-          const expected = require('./fixtures/task/' + department);
-          return expect(promise).to.become(expected);
-        });
+  describe('/scrap', () => {
+    it('expected to save events', () => {
+      const promise = taskScrap([Promise.resolve([])]).then(result => {
+        expect(result).to.deep.equal('msg: 0 event(s) created\nmsg: 0 event(s) already exist');
+        return mongoose.model('Event').find({}, '-_id -__v').lean().exec();
       });
+      const expected = [];
+      return expect(promise).to.become(expected);
     });
   });
 

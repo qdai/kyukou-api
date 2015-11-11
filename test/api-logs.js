@@ -28,7 +28,7 @@ describe('Logs API', () => {
     });
 
     it('expected to be fulfilled with specified tasklog', () => {
-      const aboutList = ['task', 'twit_new', 'twit_tomorrow', 'delete'];
+      const aboutList = ['scrap', 'twit_new', 'twit_tomorrow', 'delete'];
       const promise = Promise.all(aboutList.map(about => apiLogs.about(about).then(tasklog => tasklog.name)));
       return expect(promise).to.become(aboutList);
     });

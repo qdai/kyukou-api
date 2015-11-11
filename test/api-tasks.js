@@ -30,11 +30,10 @@ describe('Tasks API', () => {
 
   after(() => db.clear().then(() => db.close()));
 
-  describe('.task', () => {
-    it('expected to be fulfilled with tasklog and save result in db', function () {
-      this.timeout(10000);
-      const promise = apiTasks.task().then(tasklog => {
-        return apiLogs.about('task').then(savedTasklog => {
+  describe('.scrap', () => {
+    it('expected to be fulfilled with tasklog and save result in db', () => {
+      const promise = apiTasks.scrap().then(tasklog => {
+        return apiLogs.about('scrap').then(savedTasklog => {
           return expect(savedTasklog).to.deep.equal(tasklog);
         });
       });

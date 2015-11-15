@@ -1,4 +1,4 @@
-/* global describe, it, before, after */
+/* global describe, it */
 
 'use strict';
 
@@ -7,8 +7,8 @@ const rewire = require('rewire');
 
 const expect = chai.expect;
 
-const event = rewire('../lib/db/event');
-const eventAsString = event.__get__('asString');
+const dbEvent = rewire('../lib/db/event');
+const eventAsString = dbEvent.__get__('asString'); // eslint-disable-line no-underscore-dangle
 
 describe('Event Schema', () => {
   describe('.asString', () => {

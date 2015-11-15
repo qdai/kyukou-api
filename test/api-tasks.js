@@ -10,7 +10,7 @@ chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 const config = {
-  scrapers: [Promise.resolve([])],
+  scrapers: [() => Promise.resolve([])],
   twitter: {
     consumer_key: '*', // eslint-disable-line camelcase
     consumer_secret: '*', // eslint-disable-line camelcase
@@ -44,7 +44,7 @@ describe('Tasks API', () => {
     describe('log.level', () => {
       it('expected to be 2 when information', () => {
         const expiredData = require('./fixtures/scraps/expired');
-        const apiTasksLocal = new ApiTasks({ scrapers: [Promise.resolve(expiredData)] });
+        const apiTasksLocal = new ApiTasks({ scrapers: [() => Promise.resolve(expiredData)] });
         const promise = apiTasksLocal.scrap().then(log => {
           return log.level;
         });
@@ -53,7 +53,7 @@ describe('Tasks API', () => {
 
       it('expected to be 3 when warning', () => {
         const data = require('./fixtures/scraps/invalid-eventdate');
-        const apiTasksLocal = new ApiTasks({ scrapers: [Promise.resolve(data)] });
+        const apiTasksLocal = new ApiTasks({ scrapers: [() => Promise.resolve(data)] });
         const promise = apiTasksLocal.scrap().then(log => {
           return log.level;
         });
@@ -62,7 +62,7 @@ describe('Tasks API', () => {
 
       it('expected to be 4 when error', () => {
         const data = require('./fixtures/scraps/invalid-date');
-        const apiTasksLocal = new ApiTasks({ scrapers: [Promise.resolve(data)] });
+        const apiTasksLocal = new ApiTasks({ scrapers: [() => Promise.resolve(data)] });
         const promise = apiTasksLocal.scrap().then(log => {
           return log.level;
         });

@@ -12,7 +12,6 @@ moment.locale('ja');
 const expect = chai.expect;
 
 const createHash = require('../lib/utils/createhash');
-const getAsString = require('../lib/utils/getasstring');
 const isValidHash = require('../lib/utils/isvalidhash');
 
 describe('Utils', () => {
@@ -32,41 +31,6 @@ describe('Utils', () => {
       data.forEach(d => {
         expect(createHash(d[0])).to.deep.equal(d[1]);
       });
-    });
-  });
-
-  describe('/getAsString', () => {
-    const eventDate = moment();
-    const baseData = {
-      about: 'about',
-      eventDate: eventDate.toDate(),
-      department: 'department',
-      period: 'period',
-      subject: 'subject',
-      campus: 'campus',
-      teacher: 'event.teacher',
-      room: 'room',
-      note: 'note'
-    };
-
-    it('expected create sentence from event object', () => {
-      const data = Object.assign({}, baseData);
-      const subject = `「${data.subject}（${data.campus}）」（${data.teacher}教員）`;
-      const base = `【${data.about}】${eventDate.format('M月D日（dd）')}\n${data.department}${data.period}時限${subject}\n教室：${data.room}\n備考：${data.note}\n`;
-      expect(getAsString(data).asNewTweet()).to.deep.equal(`新規：${base}`);
-      expect(getAsString(data).asTomorrowTweet()).to.deep.equal(`明日：${base}`);
-    });
-
-    it('expected create sentence from event object (minimum)', () => {
-      const data = Object.assign({}, baseData);
-      delete data.campus;
-      delete data.teacher;
-      delete data.room;
-      delete data.note;
-      const subject = `「${data.subject}」`;
-      const base = `【${data.about}】${eventDate.format('M月D日（dd）')}\n${data.department}${data.period}時限${subject}\n`;
-      expect(getAsString(data).asNewTweet()).to.deep.equal(`新規：${base}`);
-      expect(getAsString(data).asTomorrowTweet()).to.deep.equal(`明日：${base}`);
     });
   });
 

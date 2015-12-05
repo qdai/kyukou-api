@@ -5,8 +5,6 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const mongoose = require('mongoose');
-const rewire = require('rewire');
-const url = require('url');
 
 chai.use(chaiAsPromised);
 mongoose.Promise = Promise;
@@ -15,9 +13,8 @@ const expect = chai.expect;
 
 const config = require('./fixtures/config');
 const db = require('./fixtures/db');
-const server = require('./fixtures/server');
 
-const departments = ['economics', 'education', 'law', 'literature', 'science'];
+const taskScrap = require('../lib/tasks/scrap');
 const taskDelete = require('../lib/tasks/delete');
 const taskTwitNew = require('../lib/tasks/twit_new');
 const taskTwitTomorrow = require('../lib/tasks/twit_tomorrow');
@@ -40,25 +37,52 @@ describe('Tasks', () => {
     });
   });
 
-  describe('/task', () => {
-    before(done => server.listen(url.parse(config.localhost).port, done));
-
-    after(done => server.close(done));
-
-    departments.forEach(department => {
-      describe('/' + department, () => {
-        it('expected to build events about ' + department, () => {
-          const getDepartment = rewire('../lib/tasks/task/' + department);
-          getDepartment.__set__({ // eslint-disable-line no-underscore-dangle
-            'config.baseURL': config.localhost,
-            'config.resourcePath': '/' + department + '.html',
-            'config.resourceURL': config.localhost + '/' + department + '.html'
-          });
-          const promise = getDepartment();
-          const expected = require('./fixtures/task/' + department);
-          return expect(promise).to.become(expected);
-        });
+  describe('/scrap', () => {
+    it('expected to scrap events and save', () => {
+      const data = require('./fixtures/scraps/index');
+      const promise = taskScrap([() => Promise.resolve(data)]).then(() => {
+        return mongoose.model('Event').find({}, '-_id -__v').lean().exec();
       });
+      return expect(promise).to.become(data);
+    });
+
+    it('expected not to save expired event', () => {
+      const data = require('./fixtures/scraps/index');
+      const expiredData = require('./fixtures/scraps/expired');
+      const promise = taskScrap([() => Promise.resolve(data), () => Promise.resolve(expiredData)]).then(log => {
+        expect(log).to.includes('inf: ');
+        return mongoose.model('Event').find({}, '-_id -__v').lean().exec();
+      });
+      return expect(promise).to.become(data);
+    });
+
+    it('expected not to save invalid-date event', () => {
+      const data = require('./fixtures/scraps/index');
+      const invalidDateData = require('./fixtures/scraps/invalid-date');
+      const promise = taskScrap([() => Promise.resolve(data), () => Promise.resolve(invalidDateData)]).then(log => {
+        expect(log).to.includes('err: ');
+        return mongoose.model('Event').find({}, '-_id -__v').lean().exec();
+      });
+      return expect(promise).to.become(data);
+    });
+
+    it('expected not to save Error', () => {
+      const data = require('./fixtures/scraps/index');
+      const invalidDateError = require('./fixtures/scraps/invalid-eventdate');
+      const promise = taskScrap([() => Promise.resolve(data), () => Promise.resolve(invalidDateError)]).then(log => {
+        expect(log).to.includes('wrn: ');
+        return mongoose.model('Event').find({}, '-_id -__v').lean().exec();
+      });
+      return expect(promise).to.become(data);
+    });
+
+    it('expected to do noting when the event already exist', () => {
+      const data = require('./fixtures/scraps/index');
+      const promise = taskScrap([() => Promise.resolve(data)]).then(() => taskScrap([() => Promise.resolve(data)])).then(log => {
+        expect(log).to.deep.equal('msg: 0 event(s) created\nmsg: 1 event(s) already exist');
+        return mongoose.model('Event').find({}, '-_id -__v').lean().exec();
+      });
+      return expect(promise).to.become(data);
     });
   });
 

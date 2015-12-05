@@ -16,11 +16,8 @@ const ApiEvents = require('../lib/api/events');
 
 const apiEvents = new ApiEvents();
 
-const getEventsList = () => {
-  return apiEvents.list().then(events => {
-    return events;
-  });
-};
+const toPlainObject = events => events.map(event => event.toObject());
+const getEventsList = () => apiEvents.list().then(toPlainObject);
 
 describe('Events API', () => {
   before(() => db.open());
@@ -33,7 +30,7 @@ describe('Events API', () => {
     it('expected to be fulfilled with all scheduled events which are sorted by eventDate', () => {
       const data = require('./fixtures/events/eventdate');
       const promise = db.insertEvent(arrayShuffle(data)).then(() => {
-        return apiEvents.list();
+        return apiEvents.list().then(toPlainObject);
       });
       return expect(promise).to.become(data);
     });
@@ -41,7 +38,7 @@ describe('Events API', () => {
     it('expected to be fulfilled with all scheduled events which are sorted by period', () => {
       const data = require('./fixtures/events/period');
       const promise = db.insertEvent(arrayShuffle(data)).then(() => {
-        return apiEvents.list();
+        return apiEvents.list().then(toPlainObject);
       });
       return expect(promise).to.become(data);
     });
@@ -51,7 +48,7 @@ describe('Events API', () => {
       const departments = ['edu', 'lit', 'law'];
       const departmentsJa = ['教育学部', '文学部', '法学部'];
       const promise = db.insertEvent(data).then(() => {
-        return apiEvents.list(departments);
+        return apiEvents.list(departments).then(toPlainObject);
       }).then(events => events.sort((a, b) => a.department > b.department ? 1 : -1));
       return expect(promise).to.become(data.filter(d => departmentsJa.indexOf(d.department) !== -1));
     });
@@ -61,7 +58,7 @@ describe('Events API', () => {
       const departments = ['sci', 'econ', 'econ'];
       const departmentsJa = ['理学部', '経済学部'];
       const promise = db.insertEvent(data).then(() => {
-        return apiEvents.list(departments.join(','));
+        return apiEvents.list(departments.join(',')).then(toPlainObject);
       }).then(events => events.sort((a, b) => a.department > b.department ? 1 : -1));
       return expect(promise).to.become(data.filter(d => departmentsJa.indexOf(d.department) !== -1));
     });
@@ -70,7 +67,7 @@ describe('Events API', () => {
       const data = require('./fixtures/events/eventdate');
       const startIndex = 2;
       const promise = db.insertEvent(data).then(() => {
-        return apiEvents.list(null, startIndex);
+        return apiEvents.list(null, startIndex).then(toPlainObject);
       });
       return expect(promise).to.become(data.slice(startIndex));
     });
@@ -79,7 +76,7 @@ describe('Events API', () => {
       const data = require('./fixtures/events/eventdate');
       const count = 2;
       const promise = db.insertEvent(data).then(() => {
-        return apiEvents.list(null, null, count);
+        return apiEvents.list(null, null, count).then(toPlainObject);
       });
       return expect(promise).to.become(data.slice(0, count));
     });
@@ -93,7 +90,7 @@ describe('Events API', () => {
       const mm = eventDate.getMonth() + 1;
       const dd = eventDate.getDate();
       const promise = db.insertEvent(data).then(() => {
-        return apiEvents.yyyymmdd(yyyy, mm, dd);
+        return apiEvents.yyyymmdd(yyyy, mm, dd).then(toPlainObject);
       });
       return expect(promise).to.become(data.filter(d => {
         return d.eventDate.getFullYear() === yyyy
@@ -103,7 +100,7 @@ describe('Events API', () => {
     });
 
     it('expected to be rejected when the day is invalid', () => {
-      const promise = apiEvents.yyyymmdd('yyyy', 'mm', 'dd');
+      const promise = apiEvents.yyyymmdd('yyyy', 'mm', 'dd').then(toPlainObject);
       return expect(promise).to.be.rejectedWith(Error);
     });
 
@@ -115,7 +112,7 @@ describe('Events API', () => {
       const dd = eventDate.getDate();
       const count = 2;
       const promise = db.insertEvent(data).then(() => {
-        return apiEvents.yyyymmdd(yyyy, mm, dd, count);
+        return apiEvents.yyyymmdd(yyyy, mm, dd, count).then(toPlainObject);
       });
       return expect(promise).to.become(data.filter(d => {
         return d.eventDate.getFullYear() === yyyy
@@ -127,12 +124,12 @@ describe('Events API', () => {
 
   describe('.search', () => {
     it('expected to be rejected when query is not specified', () => {
-      const promise = apiEvents.search();
+      const promise = apiEvents.search().then(toPlainObject);
       return expect(promise).to.be.rejectedWith(Error);
     });
 
     it('expected to be rejected when query is too long', () => {
-      const promise = apiEvents.search('long string'.repeat(12));
+      const promise = apiEvents.search('long string'.repeat(12)).then(toPlainObject);
       return expect(promise).to.be.rejectedWith(Error);
     });
 
@@ -140,7 +137,7 @@ describe('Events API', () => {
       const data = require('./fixtures/events/department');
       const q = '教育学部';
       const promise = db.insertEvent(data).then(() => {
-        return apiEvents.search(q);
+        return apiEvents.search(q).then(toPlainObject);
       });
       return expect(promise).to.become(data.filter(d => d.department === q));
     });
@@ -150,7 +147,7 @@ describe('Events API', () => {
       const q = 'test';
       const count = 2;
       const promise = db.insertEvent(arrayShuffle(data)).then(() => {
-        return apiEvents.search(q, count);
+        return apiEvents.search(q, count).then(toPlainObject);
       });
       return expect(promise).to.become(data.slice(0, count));
     });

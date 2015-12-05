@@ -12,11 +12,7 @@ moment.locale('ja');
 const expect = chai.expect;
 
 const createHash = require('../lib/utils/createhash');
-const fetch = require('../lib/utils/fetch');
-const getAsString = require('../lib/utils/getasstring');
-const isValidDate = require('../lib/utils/isvaliddate');
 const isValidHash = require('../lib/utils/isvalidhash');
-const normalizeText = require('../lib/utils/normalizetext');
 
 describe('Utils', () => {
   describe('/createHash', () => {
@@ -38,63 +34,6 @@ describe('Utils', () => {
     });
   });
 
-  describe('/fetch', () => {
-    it('expected to return parsed web page', () => {
-      const promise = fetch('https://travis-ci.org/qdai/kyukou-api').then($ => {
-        return $().cheerio;
-      });
-      return expect(promise).to.become('[cheerio object]');
-    });
-  });
-
-  describe('/getAsString', () => {
-    const eventDate = moment();
-    const baseData = {
-      about: 'about',
-      eventDate: eventDate.toDate(),
-      department: 'department',
-      period: 'period',
-      subject: 'subject',
-      campus: 'campus',
-      teacher: 'event.teacher',
-      room: 'room',
-      note: 'note'
-    };
-
-    it('expected create sentence from event object', () => {
-      const data = Object.assign({}, baseData);
-      const subject = `「${data.subject}（${data.campus}）」（${data.teacher}教員）`;
-      const base = `【${data.about}】${eventDate.format('M月D日（dd）')}\n${data.department}${data.period}時限${subject}\n教室：${data.room}\n備考：${data.note}\n`;
-      expect(getAsString(data).asNewTweet()).to.deep.equal(`新規：${base}`);
-      expect(getAsString(data).asTomorrowTweet()).to.deep.equal(`明日：${base}`);
-    });
-
-    it('expected create sentence from event object (minimum)', () => {
-      const data = Object.assign({}, baseData);
-      delete data.campus;
-      delete data.teacher;
-      delete data.room;
-      delete data.note;
-      const subject = `「${data.subject}」`;
-      const base = `【${data.about}】${eventDate.format('M月D日（dd）')}\n${data.department}${data.period}時限${subject}\n`;
-      expect(getAsString(data).asNewTweet()).to.deep.equal(`新規：${base}`);
-      expect(getAsString(data).asTomorrowTweet()).to.deep.equal(`明日：${base}`);
-    });
-  });
-
-  describe('/isValidDate', () => {
-    it('expected to return true when day is valid', () => {
-      const baseDate = moment();
-      const days = moment.weekdaysMin();
-      for (let i = 0; i < 7; i++) {
-        const date = moment(baseDate).add(i, 'days');
-        for (let j = 0; j < 7; j++) {
-          expect(isValidDate(date.toDate(), days[j])).to.be.equal(j === date.day());
-        }
-      }
-    });
-  });
-
   describe('/isValidHash', () => {
     it('expected to return false when hash length is not 64', () => {
       expect(isValidHash('a'.repeat(63))).to.be.false;
@@ -109,23 +48,6 @@ describe('Utils', () => {
       expect(isValidHash(base + 'h')).to.be.false;
       expect(isValidHash(base + 'A')).to.be.false;
       expect(isValidHash(base + 'B')).to.be.false;
-    });
-  });
-
-  describe('/normalizeText', () => {
-    it('expected to trim leading space and trailing space', () => {
-      expect(normalizeText('  abc  ')).to.deep.equal('abc');
-      expect(normalizeText('　　abc　　')).to.deep.equal('abc');
-    });
-
-    it('expected to replace ideographic space with space', () => {
-      expect(normalizeText('a　b　c')).to.deep.equal('a b c');
-    });
-
-    it('expected to replace fullwidth char with halfwidth char', () => {
-      const fullwidth = '！＂＃＄％＆＇（）＊＋，－．／０１２３４５６７８９：；＜＝＞？＠ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ［＼］＾＿｀ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ｛｜｝～';
-      const halfwidth = '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~';
-      expect(normalizeText(fullwidth)).to.deep.equal(halfwidth);
     });
   });
 });

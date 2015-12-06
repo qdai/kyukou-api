@@ -27,7 +27,7 @@
     "rewire": "^2.5.1"
   },
   "engines": {
-    "node": "5.0.0"
+    "node": "~5.1.1"
   },
   "homepage": "https://kyukou-kyudai.herokuapp.com/api/1",
   "keywords": [

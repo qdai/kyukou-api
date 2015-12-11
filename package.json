@@ -23,8 +23,7 @@
     "gulp-eslint": "^1.1.1",
     "gulp-istanbul": "^0.10.3",
     "gulp-mocha": "^2.2.0",
-    "jsdoc": "^3.4.0",
-    "rewire": "^2.5.1"
+    "jsdoc": "^3.4.0"
   },
   "engines": {
     "node": "~5.1.1"

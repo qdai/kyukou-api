@@ -3,12 +3,10 @@
 'use strict';
 
 const chai = require('chai');
-const rewire = require('rewire');
 
 const expect = chai.expect;
 
-const dbEvent = rewire('../lib/db/event');
-const eventAsString = dbEvent.__get__('asString'); // eslint-disable-line no-underscore-dangle
+const eventAsString = require('../lib/utils/eventasstring');
 
 describe('Event Schema', () => {
   describe('.asString', () => {

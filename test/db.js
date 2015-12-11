@@ -12,17 +12,13 @@ mongoose.Promise = Promise;
 
 const expect = chai.expect;
 
-const db = require('../lib/db');
+const db = require('../lib/utils/db');
+const mEvent = require('../lib/models/event');
 
 const config = require('./fixtures/config');
 const testDb = require('./fixtures/db');
 
 describe('db', () => {
-  it('expected to have schema for model "Event" and "Tasklog"', () => {
-    expect(mongoose.model('Event')).to.not.throw();
-    expect(mongoose.model('Tasklog')).to.not.throw();
-  });
-
   describe('.open', () => {
     afterEach(() => db.close());
 
@@ -46,7 +42,7 @@ describe('db', () => {
   });
 
   describe('/event eventDate validator', () => {
-    const eventDateValidator = mongoose.model('Event').schema.paths.eventDate.validators[1].validator;
+    const eventDateValidator = mEvent.schema.paths.eventDate.validators[1].validator;
     it('expected to return false when the event expired', () => {
       expect(eventDateValidator(moment().subtract(1, 'day').toDate())).to.be.false;
       expect(eventDateValidator(moment().subtract(18.1, 'hours').toDate())).to.be.false;
@@ -64,11 +60,11 @@ describe('db', () => {
 
     it('expected to create new one when the event not found', () => {
       const data = require('./fixtures/events/index');
-      const promise = mongoose.model('Event').findOrCreate({
+      const promise = mEvent.findOrCreate({
         hash: data.hash
       }, data).then(result => {
         expect(result[1]).to.be.true;
-        return mongoose.model('Event').find({
+        return mEvent.find({
           hash: data.hash
         }, '-_id -__v').lean().exec();
       });
@@ -78,12 +74,12 @@ describe('db', () => {
     it('expected to return a event when the event already exist', () => {
       const data = require('./fixtures/events/index');
       const promise = testDb.insertEvent(data).then(() => {
-        return mongoose.model('Event').findOrCreate({
+        return mEvent.findOrCreate({
           hash: data.hash
         }, data);
       }).then(result => {
         expect(result[1]).to.be.false;
-        return mongoose.model('Event').find({
+        return mEvent.find({
           hash: data.hash
         }, '-_id -__v').lean().exec();
       });

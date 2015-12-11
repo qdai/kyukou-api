@@ -4,8 +4,8 @@ const mongoose = require('mongoose');
 
 const config = require('./config');
 const db = require('../../lib/utils/db');
-const mEvent = require('../../lib/models/event');
-const mTasklog = require('../../lib/models/log');
+const Event = require('../../lib/models/event');
+const Log = require('../../lib/models/log');
 
 mongoose.Promise = Promise;
 
@@ -30,16 +30,16 @@ const testDb = {
     return db.close();
   },
   insertEvent (data) {
-    return dbInsert(mEvent, data);
+    return dbInsert(Event, data);
   },
   insertTasklog (data) {
-    return dbInsert(mTasklog, data);
+    return dbInsert(Log, data);
   },
   clearEvent () {
-    return dbClear(mEvent);
+    return dbClear(Event);
   },
   clearTasklog () {
-    return dbClear(mTasklog);
+    return dbClear(Log);
   },
   clear () {
     return Promise.all([this.clearEvent(), this.clearTasklog()]);

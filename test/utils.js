@@ -12,7 +12,7 @@ const expect = chai.expect;
 const db = require('../lib/utils/db');
 const eventAsString = require('../lib/utils/eventasstring');
 const Hash = require('../lib/utils/hash');
-const mEvent = require('../lib/models/event');
+const Event = require('../lib/models/event');
 
 const config = require('./fixtures/config');
 const testDb = require('./fixtures/db');
@@ -103,11 +103,11 @@ describe('Utils', () => {
 
     it('expected to create new one when the event not found', () => {
       const data = require('./fixtures/events/index');
-      const promise = mEvent.findOrCreate({
+      const promise = Event.findOrCreate({
         hash: data.hash
       }, data).then(result => {
         expect(result[1]).to.be.true;
-        return mEvent.find({
+        return Event.find({
           hash: data.hash
         }, '-_id -__v').lean().exec();
       });
@@ -117,12 +117,12 @@ describe('Utils', () => {
     it('expected to return a event when the event already exist', () => {
       const data = require('./fixtures/events/index');
       const promise = testDb.insertEvent(data).then(() => {
-        return mEvent.findOrCreate({
+        return Event.findOrCreate({
           hash: data.hash
         }, data);
       }).then(result => {
         expect(result[1]).to.be.false;
-        return mEvent.find({
+        return Event.find({
           hash: data.hash
         }, '-_id -__v').lean().exec();
       });

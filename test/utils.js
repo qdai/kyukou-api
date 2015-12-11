@@ -2,16 +2,134 @@
 
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
-const moment = require('moment');
+const mongoose = require('mongoose');
 
 chai.use(chaiAsPromised);
-moment.locale('ja');
+mongoose.Promise = Promise;
 
 const expect = chai.expect;
 
+const db = require('../lib/utils/db');
+const eventAsString = require('../lib/utils/eventasstring');
 const Hash = require('../lib/utils/hash');
+const mEvent = require('../lib/models/event');
+
+const config = require('./fixtures/config');
+const testDb = require('./fixtures/db');
 
 describe('Utils', () => {
+  describe('/db', () => {
+    describe('.open', () => {
+      afterEach(() => db.close());
+
+      it('expected to open database connection', () => {
+        const promise = db.open(config.mongoURI).then(() => {
+          return mongoose.connection.readyState;
+        });
+        return expect(promise).to.become(1);
+      });
+    });
+
+    describe('.close', () => {
+      beforeEach(() => db.open(config.mongoURI));
+
+      it('expected to close database connection', () => {
+        const promise = db.close().then(() => {
+          return mongoose.connection.readyState;
+        });
+        return expect(promise).to.become(0);
+      });
+    });
+  });
+
+  describe('/eventasstring', () => {
+    it('expected to return event as string', () => {
+      const event = {
+        about: 'about',
+        eventDate: new Date('2015-01-01'),
+        period: 'period',
+        department: 'department',
+        subject: 'subject',
+        teacher: 'teacher',
+        campus: 'campus',
+        room: 'room',
+        note: 'note'
+      };
+      expect(eventAsString.call(event, 'title')).to.deep.equal('【about】period時限「subject（campus）」（teacher教員）');
+      expect(eventAsString.call(event, 'summary')).to.deep.equal('【about】1月1日（木）period時限department「subject（campus）」（teacher教員）');
+      expect(eventAsString.call(event, 'note')).to.deep.equal('教室：room\n備考：note');
+      expect(eventAsString.call(event)).to.deep.equal('【about】1月1日（木）\ndepartmentperiod時限「subject（campus）」（teacher教員）\n教室：room\n備考：note');
+    });
+
+    it('expected to return event as string', () => {
+      const event = {
+        about: 'about',
+        eventDate: new Date('2015-01-01'),
+        period: 'period',
+        department: 'department',
+        subject: 'subject'
+      };
+      expect(eventAsString.call(event, 'title')).to.deep.equal('【about】period時限「subject」');
+      expect(eventAsString.call(event, 'summary')).to.deep.equal('【about】1月1日（木）period時限department「subject」');
+      expect(eventAsString.call(event, 'note')).to.deep.equal('');
+      expect(eventAsString.call(event)).to.deep.equal('【about】1月1日（木）\ndepartmentperiod時限「subject」');
+    });
+
+    it('expected to return event as string', () => {
+      const event = {
+        about: 'about',
+        eventDate: new Date('2015-01-01'),
+        period: 'period',
+        department: 'department',
+        subject: 'subject',
+        teacher: 'teacher',
+        campus: 'campus',
+        room: 'room',
+        note: 'note'
+      };
+      expect(eventAsString.call(event, 'title')).to.deep.equal('【about】period時限「subject（campus）」（teacher教員）');
+      expect(eventAsString.call(event, 'summary')).to.deep.equal('【about】1月1日（木）period時限department「subject（campus）」（teacher教員）');
+      expect(eventAsString.call(event, 'note', '<br />')).to.deep.equal('教室：room<br />備考：note');
+      expect(eventAsString.call(event, null, '<br />')).to.deep.equal('【about】1月1日（木）<br />departmentperiod時限「subject（campus）」（teacher教員）<br />教室：room<br />備考：note');
+    });
+  });
+
+  describe('/findorcreate', () => {
+    before(() => testDb.open());
+
+    afterEach(() => testDb.clearEvent());
+
+    after(() => testDb.clear().then(() => testDb.close()));
+
+    it('expected to create new one when the event not found', () => {
+      const data = require('./fixtures/events/index');
+      const promise = mEvent.findOrCreate({
+        hash: data.hash
+      }, data).then(result => {
+        expect(result[1]).to.be.true;
+        return mEvent.find({
+          hash: data.hash
+        }, '-_id -__v').lean().exec();
+      });
+      return expect(promise).to.become([data]);
+    });
+
+    it('expected to return a event when the event already exist', () => {
+      const data = require('./fixtures/events/index');
+      const promise = testDb.insertEvent(data).then(() => {
+        return mEvent.findOrCreate({
+          hash: data.hash
+        }, data);
+      }).then(result => {
+        expect(result[1]).to.be.false;
+        return mEvent.find({
+          hash: data.hash
+        }, '-_id -__v').lean().exec();
+      });
+      return expect(promise).to.become([data]);
+    });
+  });
+
   describe('/hash', () => {
     describe('.create', () => {
       const data = [

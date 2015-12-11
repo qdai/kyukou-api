@@ -12,10 +12,10 @@ const expect = chai.expect;
 const config = {
   scrapers: [() => Promise.resolve([])],
   twitter: {
-    consumer_key: '*', // eslint-disable-line camelcase
-    consumer_secret: '*', // eslint-disable-line camelcase
-    access_token: '*', // eslint-disable-line camelcase
-    access_token_secret: '*' // eslint-disable-line camelcase
+    consumer_key: '*',
+    consumer_secret: '*',
+    access_token: '*',
+    access_token_secret: '*'
   }
 };
 const db = require('./fixtures/db');

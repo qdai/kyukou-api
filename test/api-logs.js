@@ -10,6 +10,7 @@ const expect = chai.expect;
 const db = require('./fixtures/db');
 
 const ApiLogs = require('../lib/api/logs');
+const logNames = require('../lib/utils/lognames');
 
 const apiLogs = new ApiLogs();
 
@@ -26,9 +27,8 @@ describe('Logs API', () => {
     });
 
     it('expected to be fulfilled with specified tasklog', () => {
-      const aboutList = ['scrap', 'twit_new', 'twit_tomorrow', 'delete'];
-      const promise = Promise.all(aboutList.map(about => apiLogs.about(about).then(tasklog => tasklog.name)));
-      return expect(promise).to.become(aboutList);
+      const promise = Promise.all(logNames.map(about => apiLogs.about(about).then(tasklog => tasklog.name)));
+      return expect(promise).to.become(logNames);
     });
   });
 });

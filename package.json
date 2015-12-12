@@ -16,14 +16,12 @@
     "array-shuffle": "^1.0.0",
     "chai": "^3.4.1",
     "chai-as-promised": "^5.1.0",
-    "del": "^2.1.0",
+    "eslint": "^1.10.3",
     "eslint-config-eslint": "^1.0.1",
-    "gulp": "^3.9.0",
-    "gulp-coveralls": "^0.1.4",
-    "gulp-eslint": "^1.1.1",
-    "gulp-istanbul": "^0.10.3",
-    "gulp-mocha": "^2.2.0",
-    "jsdoc": "^3.4.0"
+    "istanbul": "^0.4.1",
+    "jsdoc": "^3.4.0",
+    "mocha": "^2.3.4",
+    "rimraf": "^2.4.4"
   },
   "engines": {
     "node": "~5.1.1"
@@ -40,6 +38,9 @@
     "url": "git+https://github.com/qdai/kyukou-api.git"
   },
   "scripts": {
-    "test": "gulp test"
+    "clean": "rimraf coverage doc",
+    "doc": "jsdoc lib README.md -r -d doc",
+    "lint": "eslint lib test",
+    "test": "istanbul cover --root lib --report lcov --dir coverage node_modules/mocha/bin/_mocha -- test/*.js"
   }
 }

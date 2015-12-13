@@ -1,5 +1,3 @@
-/* global describe, it, before, after, afterEach */
-
 'use strict';
 
 const arrayShuffle = require('array-shuffle');

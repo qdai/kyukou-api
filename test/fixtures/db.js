@@ -3,12 +3,13 @@
 const mongoose = require('mongoose');
 
 const config = require('./config');
-const db = require('../../lib/db');
+const db = require('../../lib/utils/db');
+const Event = require('../../lib/models/event');
+const Log = require('../../lib/models/log');
 
 mongoose.Promise = Promise;
 
-const dbInsert = (model, data) => {
-  const Model = mongoose.model(model);
+const dbInsert = (Model, data) => {
   if (!Array.isArray(data)) {
     data = [data];
   }
@@ -17,8 +18,8 @@ const dbInsert = (model, data) => {
   }));
 };
 
-const dbClear = model => {
-  return mongoose.model(model).find({}).remove();
+const dbClear = Model => {
+  return Model.find({}).remove();
 };
 
 const testDb = {
@@ -29,16 +30,16 @@ const testDb = {
     return db.close();
   },
   insertEvent (data) {
-    return dbInsert('Event', data);
+    return dbInsert(Event, data);
   },
   insertTasklog (data) {
-    return dbInsert('Tasklog', data);
+    return dbInsert(Log, data);
   },
   clearEvent () {
-    return dbClear('Event');
+    return dbClear(Event);
   },
   clearTasklog () {
-    return dbClear('Tasklog');
+    return dbClear(Log);
   },
   clear () {
     return Promise.all([this.clearEvent(), this.clearTasklog()]);

@@ -9,10 +9,12 @@ mongoose.Promise = Promise;
 
 const expect = chai.expect;
 
+const Event = require('../lib/models/event');
+const Hash = require('../lib/utils/hash');
+const Log = require('../lib/models/log');
 const db = require('../lib/utils/db');
 const eventAsString = require('../lib/utils/eventasstring');
-const Hash = require('../lib/utils/hash');
-const Event = require('../lib/models/event');
+const runTask = require('../lib/utils/runtask');
 
 const config = require('./fixtures/config');
 const testDb = require('./fixtures/db');
@@ -165,6 +167,20 @@ describe('Utils', () => {
         expect(Hash.isValid(base + 'A')).to.be.false;
         expect(Hash.isValid(base + 'B')).to.be.false;
       });
+    });
+  });
+
+  describe('/runtask', () => {
+    it('expected to become a valid log', () => {
+      return expect(runTask(() => Promise.resolve('msg: test')).then(log => {
+        return new Log(log).validate();
+      })).to.become.undefined;
+    });
+
+    it('expected to be fulfilled when fn is rejected', () => {
+      return expect(runTask(() => Promise.reject('err: test')).then(log => {
+        return new Log(log).validate();
+      })).to.become.undefined;
     });
   });
 });

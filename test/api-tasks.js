@@ -155,11 +155,11 @@ describe('Tasks API', () => {
   describe('.twitNew', () => {
     it('expected to post tweet and update db', () => {
       const data = require('./fixtures/events/new');
-      const promise = db.insertEvent(data).then(() => api.twitNew()).then(result => {
-        expect(result).to.deep.equal('msg: 1 event(s) posted');
+      const promise = db.insertEvent(data).then(() => api.twitNew()).then(log => {
+        expect(log.log).to.deep.equal('msg: 1 event(s) posted');
         return api.twitNew();
-      }).then(result => {
-        expect(result).to.deep.equal('msg: 0 event(s) posted');
+      }).then(log => {
+        expect(log.log).to.deep.equal('msg: 0 event(s) posted');
         return Event.find({}, '-_id -__v').lean().exec();
       });
       return expect(promise).to.become(data.map(d => {
@@ -181,11 +181,11 @@ describe('Tasks API', () => {
   describe('.twitTomorrow', () => {
     it('expected to post tweet and update db', () => {
       const data = require('./fixtures/events/tomorrow');
-      const promise = db.insertEvent(data).then(() => api.twitTomorrow()).then(result => {
-        expect(result).to.deep.equal('msg: 1 event(s) posted');
+      const promise = db.insertEvent(data).then(() => api.twitTomorrow()).then(log => {
+        expect(log.log).to.deep.equal('msg: 1 event(s) posted');
         return api.twitTomorrow();
-      }).then(result => {
-        expect(result).to.deep.equal('msg: 0 event(s) posted');
+      }).then(log => {
+        expect(log.log).to.deep.equal('msg: 0 event(s) posted');
         return Event.find({}, '-_id -__v').lean().exec();
       });
       return expect(promise).to.become(data.map(d => {

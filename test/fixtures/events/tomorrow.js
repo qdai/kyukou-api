@@ -10,7 +10,7 @@ const tweetTomorrowList = [
 ];
 
 module.exports = tweetTomorrowList.map(flag => {
-  const text = 'new';
+  const text = 'tomorrow';
   return {
     raw: text,
     about: text,
@@ -23,7 +23,7 @@ module.exports = tweetTomorrowList.map(flag => {
     teacher: text,
     campus: text,
     room: text,
-    note: text,
+    note: (text + ' ').repeat(10),
     hash: text,
     tweet: {
       new: false,

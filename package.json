@@ -19,7 +19,7 @@
     "chai": "^3.4.1",
     "chai-as-promised": "^5.1.0",
     "eslint": "^1.10.3",
-    "eslint-config-eslint": "^1.0.1",
+    "eslint-config-eslint": "^2.0.0",
     "istanbul": "^0.4.1",
     "jsdoc": "^3.4.0",
     "mocha": "^2.3.4",

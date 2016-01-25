@@ -161,11 +161,11 @@ describe('Utils', () => {
 
       it('expected to return false when hash includes invalid char', () => {
         const base = '0123456789abcdef'.repeat(4).slice(0, -1);
-        expect(Hash.isValid(base + 'f')).to.be.true;
-        expect(Hash.isValid(base + 'g')).to.be.false;
-        expect(Hash.isValid(base + 'h')).to.be.false;
-        expect(Hash.isValid(base + 'A')).to.be.false;
-        expect(Hash.isValid(base + 'B')).to.be.false;
+        expect(Hash.isValid(`${base}f`)).to.be.true;
+        expect(Hash.isValid(`${base}g`)).to.be.false;
+        expect(Hash.isValid(`${base}h`)).to.be.false;
+        expect(Hash.isValid(`${base}A`)).to.be.false;
+        expect(Hash.isValid(`${base}B`)).to.be.false;
       });
     });
   });

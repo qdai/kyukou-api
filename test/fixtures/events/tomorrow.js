@@ -23,7 +23,7 @@ module.exports = tweetTomorrowList.map(flag => {
     teacher: text,
     campus: text,
     room: text,
-    note: (text + ' ').repeat(10),
+    note: `${text} `.repeat(10),
     hash: text,
     tweet: {
       new: false,

@@ -1,0 +1,7 @@
+{
+  "extends": "egy186",
+  "rules": {
+    "arrow-body-style": 0,
+    "no-param-reassign": 0
+  }
+}

@@ -11,7 +11,7 @@
     "moment": "^2.10.6",
     "mongoose": "^4.2.9",
     "truncate": "^2.0.0",
-    "twit": "^2.1.1",
+    "twit": "^2.1.7",
     "twitter-text": "^1.13.2"
   },
   "devDependencies": {

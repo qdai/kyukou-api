@@ -23,7 +23,7 @@ module.exports = tweetNewList.map(flag => {
     teacher: text,
     campus: text,
     room: text,
-    note: text,
+    note: moment().format(),
     hash: text,
     tweet: {
       new: flag,

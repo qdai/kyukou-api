@@ -26,8 +26,11 @@
     "rimraf": "^2.4.4"
   },
   "engines": {
-    "node": "~5.1.1"
+    "node": "^5.5.0"
   },
+  "files": [
+    "lib"
+  ],
   "homepage": "https://kyukou-kyudai.herokuapp.com/api/1",
   "keywords": [
     "api",

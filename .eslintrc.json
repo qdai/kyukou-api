@@ -1,5 +1,8 @@
 {
-  "extends": "egy186",
+  "extends": [
+    "egy186",
+    "egy186/node"
+  ],
   "rules": {
     "arrow-body-style": 0,
     "no-param-reassign": 0

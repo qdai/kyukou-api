@@ -18,7 +18,7 @@
     "array-shuffle": "^1.0.0",
     "chai": "^3.4.1",
     "chai-as-promised": "^5.1.0",
-    "eslint": "^1.10.3",
+    "eslint": "^2.0.0",
     "eslint-config-egy186": "github:egy186/eslint-config-egy186#v0.1.1",
     "istanbul": "^0.4.1",
     "jsdoc": "^3.4.0",

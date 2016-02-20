@@ -47,7 +47,9 @@ describe('Events API', () => {
       const departmentsJa = ['教育学部', '文学部', '法学部'];
       const promise = db.insertEvent(data).then(() => {
         return apiEvents.list(departments).then(toPlainObject);
-      }).then(events => events.sort((a, b) => a.department > b.department ? 1 : -1));
+      }).then(events => events.sort((a, b) => {
+        return a.department > b.department ? 1 : -1;
+      }));
       return expect(promise).to.become(data.filter(d => departmentsJa.indexOf(d.department) !== -1));
     });
 
@@ -57,7 +59,9 @@ describe('Events API', () => {
       const departmentsJa = ['理学部', '経済学部'];
       const promise = db.insertEvent(data).then(() => {
         return apiEvents.list(departments.join(',')).then(toPlainObject);
-      }).then(events => events.sort((a, b) => a.department > b.department ? 1 : -1));
+      }).then(events => events.sort((a, b) => {
+        return a.department > b.department ? 1 : -1;
+      }));
       return expect(promise).to.become(data.filter(d => departmentsJa.indexOf(d.department) !== -1));
     });
 

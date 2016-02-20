@@ -10,7 +10,7 @@ const db = require('./fixtures/db');
 const Api = require('../lib');
 
 describe('Api', () => {
-  let api;
+  let api = null;
 
   before(() => {
     api = new Api(config);

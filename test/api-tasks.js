@@ -95,10 +95,10 @@ describe('Tasks API', () => {
       return expect(promise).to.become(data);
     });
 
-    it('expected to be fulfilled with tasklog and save result in db', () => {
-      const promise = api.scrap().then(tasklog => {
-        return apiLogs.about('scrap').then(savedTasklog => {
-          return expect(savedTasklog).to.deep.equal(tasklog);
+    it('expected to be fulfilled with log and save result in db', () => {
+      const promise = api.scrap().then(log => {
+        return apiLogs.get('scrap').then(savedLog => {
+          return expect(savedLog).to.deep.equal(log);
         });
       });
       return expect(promise).to.fulfilled;
@@ -142,10 +142,10 @@ describe('Tasks API', () => {
       });
     });
 
-    it('expected to be fulfilled with tasklog and save result in db', () => {
-      const promise = api.scrap().then(tasklog => {
-        return apiLogs.about('scrap').then(savedTasklog => {
-          return expect(savedTasklog).to.deep.equal(tasklog);
+    it('expected to be fulfilled with log and save result in db', () => {
+      const promise = api.scrap().then(log => {
+        return apiLogs.get('scrap').then(savedLog => {
+          return expect(savedLog).to.deep.equal(log);
         });
       });
       return expect(promise).to.fulfilled;
@@ -168,10 +168,10 @@ describe('Tasks API', () => {
       }));
     });
 
-    it('expected to be fulfilled with tasklog and save result in db', () => {
-      const promise = api.twitNew().then(tasklog => {
-        return apiLogs.about('twit_new').then(savedTasklog => {
-          return expect(savedTasklog).to.deep.equal(tasklog);
+    it('expected to be fulfilled with log and save result in db', () => {
+      const promise = api.twitNew().then(log => {
+        return apiLogs.get('twit_new').then(savedLog => {
+          return expect(savedLog).to.deep.equal(log);
         });
       });
       return expect(promise).to.fulfilled;
@@ -194,10 +194,10 @@ describe('Tasks API', () => {
       }));
     });
 
-    it('expected to be fulfilled with tasklog and save result in db', () => {
-      const promise = api.twitTomorrow().then(tasklog => {
-        return apiLogs.about('twit_tomorrow').then(savedTasklog => {
-          return expect(savedTasklog).to.deep.equal(tasklog);
+    it('expected to be fulfilled with log and save result in db', () => {
+      const promise = api.twitTomorrow().then(log => {
+        return apiLogs.get('twit_tomorrow').then(savedLog => {
+          return expect(savedLog).to.deep.equal(log);
         });
       });
       return expect(promise).to.fulfilled;
@@ -214,10 +214,10 @@ describe('Tasks API', () => {
       return expect(promise).to.become(data.slice(2));
     });
 
-    it('expected to be fulfilled with tasklog and save result in db', () => {
-      const promise = api.delete().then(tasklog => {
-        return apiLogs.about('delete').then(savedTasklog => {
-          return expect(savedTasklog).to.deep.equal(tasklog);
+    it('expected to be fulfilled with log and save result in db', () => {
+      const promise = api.delete().then(log => {
+        return apiLogs.get('delete').then(savedLog => {
+          return expect(savedLog).to.deep.equal(log);
         });
       });
       return expect(promise).to.fulfilled;

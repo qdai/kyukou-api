@@ -32,17 +32,17 @@ const testDb = {
   insertEvent (data) {
     return dbInsert(Event, data);
   },
-  insertTasklog (data) {
+  insertLog (data) {
     return dbInsert(Log, data);
   },
   clearEvent () {
     return dbClear(Event);
   },
-  clearTasklog () {
+  clearLog () {
     return dbClear(Log);
   },
   clear () {
-    return Promise.all([this.clearEvent(), this.clearTasklog()]);
+    return Promise.all([this.clearEvent(), this.clearLog()]);
   }
 };
 

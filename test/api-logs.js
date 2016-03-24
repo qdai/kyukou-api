@@ -19,15 +19,22 @@ describe('Logs API', () => {
 
   after(() => db.clear().then(() => db.close()));
 
-  describe('.about', () => {
-    it('expected to be rejected when arg is invalid', () => {
-      const about = 'invalid';
-      const promise = apiLogs.about(about);
+  describe('.values', () => {
+    it('is expected to be fulfilled with array of log', () => {
+      const promise = apiLogs.values().then(logs => logs.map(log => log.name));
+      return expect(promise).to.become(logNames);
+    });
+  });
+
+  describe('.get', () => {
+    it('is expected to be rejected when arg is invalid', () => {
+      const name = 'invalid';
+      const promise = apiLogs.get(name);
       return expect(promise).to.be.rejectedWith(Error);
     });
 
-    it('expected to be fulfilled with specified tasklog', () => {
-      const promise = Promise.all(logNames.map(about => apiLogs.about(about).then(tasklog => tasklog.name)));
+    it('is expected to be fulfilled with specified log', () => {
+      const promise = Promise.all(logNames.map(name => apiLogs.get(name).then(log => log.name)));
       return expect(promise).to.become(logNames);
     });
   });

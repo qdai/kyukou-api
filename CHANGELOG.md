@@ -1,5 +1,15 @@
 # API Change Log
 
+## Version 2.0.1 (2016-04-09)
+
+- Bug Fixes
+  - [[`efdd4f4ae6`](https://github.com/qdai/kyukou-api/commit/efdd4f4ae6)] Avoid status duplicate in test case.
+  - [[`291c66c7a6`](https://github.com/qdai/kyukou-api/commit/291c66c7a6)] Add `files` field to package.json.
+- Dependency Updates
+  - [[`1bbef46ba3`](https://github.com/qdai/kyukou-api/commit/1bbef46ba3)] Use eslint-config-egy186.
+  - [[`58cd208534`](https://github.com/qdai/kyukou-api/commit/58cd208534)] Update eslint to version 2.2.0.
+  - [[`0a1e35ad05`](https://github.com/qdai/kyukou-api/commit/0a1e35ad05)] Update moment to version 2.12.0.
+
 ## Version 2.0.0 (2015-12-18)
 
 - Breaking Changes

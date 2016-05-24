@@ -22,7 +22,7 @@
     "eslint-config-egy186": "github:egy186/eslint-config-egy186#v0.3.0",
     "istanbul": "^0.4.1",
     "jsdoc": "^3.4.0",
-    "mocha": "^2.5.0",
+    "mocha": "^2.5.1",
     "rimraf": "^2.4.4"
   },
   "engines": {

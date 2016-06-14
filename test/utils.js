@@ -58,10 +58,10 @@ describe('Utils', () => {
         note: 'note'
       };
       const eventAsString = asString.bind(event);
-      expect(eventAsString('title')).to.deep.equal('【about】period時限「subject（campus）」（teacher教員）');
-      expect(eventAsString('summary')).to.deep.equal('【about】1月1日（木）period時限department「subject（campus）」（teacher教員）');
+      expect(eventAsString('title')).to.deep.equal('【about】period時限「subject（campus）」（教員：teacher）');
+      expect(eventAsString('summary')).to.deep.equal('【about】1月1日（木）period時限department「subject（campus）」（教員：teacher）');
       expect(eventAsString('note')).to.deep.equal('教室：room\n備考：note');
-      expect(eventAsString()).to.deep.equal('【about】1月1日（木）\ndepartmentperiod時限「subject（campus）」（teacher教員）\n教室：room\n備考：note');
+      expect(eventAsString()).to.deep.equal('【about】1月1日（木）\ndepartmentperiod時限「subject（campus）」（教員：teacher）\n教室：room\n備考：note');
     });
 
     it('expected to return event as string', () => {
@@ -92,10 +92,10 @@ describe('Utils', () => {
         note: 'note'
       };
       const eventAsString = asString.bind(event);
-      expect(eventAsString('title')).to.deep.equal('【about】period時限「subject（campus）」（teacher教員）');
-      expect(eventAsString('summary')).to.deep.equal('【about】1月1日（木）period時限department「subject（campus）」（teacher教員）');
+      expect(eventAsString('title')).to.deep.equal('【about】period時限「subject（campus）」（教員：teacher）');
+      expect(eventAsString('summary')).to.deep.equal('【about】1月1日（木）period時限department「subject（campus）」（教員：teacher）');
       expect(eventAsString('note', '<br />')).to.deep.equal('教室：room<br />備考：note');
-      expect(eventAsString(null, '<br />')).to.deep.equal('【about】1月1日（木）<br />departmentperiod時限「subject（campus）」（teacher教員）<br />教室：room<br />備考：note');
+      expect(eventAsString(null, '<br />')).to.deep.equal('【about】1月1日（木）<br />departmentperiod時限「subject（campus）」（教員：teacher）<br />教室：room<br />備考：note');
     });
   });
 

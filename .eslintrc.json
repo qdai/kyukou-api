@@ -1,10 +1,11 @@
 {
   "extends": [
-    "egy186",
-    "egy186/node"
+    "@egy186/eslint-config",
+    "@egy186/eslint-config/node"
   ],
   "rules": {
     "arrow-body-style": 0,
-    "no-param-reassign": 0
+    "no-param-reassign": 0,
+    "object-curly-newline": 0
   }
 }

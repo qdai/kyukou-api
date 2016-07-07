@@ -1,5 +1,7 @@
 'use strict';
 
+/* eslint max-lines: 0 */
+
 const arrayShuffle = require('array-shuffle');
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');

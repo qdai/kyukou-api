@@ -7,19 +7,19 @@ const text = 'expired data';
 
 module.exports = [
   {
-    raw: text,
     about: text,
-    link: text,
-    eventDate: moment(baseDate).subtract(1, 'days').toDate(),
-    pubDate: baseDate.toDate(),
-    period: '1',
+    campus: text,
     department: text,
+    eventDate: moment(baseDate).subtract(1, 'days').toDate(),
+    hash: text,
+    link: text,
+    note: text,
+    period: '1',
+    pubDate: baseDate.toDate(),
+    raw: text,
+    room: text,
     subject: text,
     teacher: text,
-    campus: text,
-    room: text,
-    note: text,
-    hash: text,
     tweet: {
       new: false,
       tomorrow: false

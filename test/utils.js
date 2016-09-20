@@ -48,14 +48,14 @@ describe('Utils', () => {
     it('expected to return event as string', () => {
       const event = {
         about: 'about',
-        eventDate: new Date('2015-01-01'),
-        period: 'period',
-        department: 'department',
-        subject: 'subject',
-        teacher: 'teacher',
         campus: 'campus',
+        department: 'department',
+        eventDate: new Date('2015-01-01'),
+        note: 'note',
+        period: 'period',
         room: 'room',
-        note: 'note'
+        subject: 'subject',
+        teacher: 'teacher'
       };
       const eventAsString = asString.bind(event);
       expect(eventAsString('title')).to.deep.equal('【about】period時限「subject（campus）」（教員：teacher）');
@@ -67,9 +67,9 @@ describe('Utils', () => {
     it('expected to return event as string', () => {
       const event = {
         about: 'about',
+        department: 'department',
         eventDate: new Date('2015-01-01'),
         period: 'period',
-        department: 'department',
         subject: 'subject'
       };
       const eventAsString = asString.bind(event);
@@ -82,14 +82,14 @@ describe('Utils', () => {
     it('expected to return event as string', () => {
       const event = {
         about: 'about',
-        eventDate: new Date('2015-01-01'),
-        period: 'period',
-        department: 'department',
-        subject: 'subject',
-        teacher: 'teacher',
         campus: 'campus',
+        department: 'department',
+        eventDate: new Date('2015-01-01'),
+        note: 'note',
+        period: 'period',
         room: 'room',
-        note: 'note'
+        subject: 'subject',
+        teacher: 'teacher'
       };
       const eventAsString = asString.bind(event);
       expect(eventAsString('title')).to.deep.equal('【about】period時限「subject（campus）」（教員：teacher）');

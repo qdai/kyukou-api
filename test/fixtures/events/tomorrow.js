@@ -12,19 +12,19 @@ const tweetTomorrowList = [
 module.exports = tweetTomorrowList.map(flag => {
   const text = 'tomorrow';
   return {
-    raw: text,
     about: text,
-    link: text,
-    eventDate: baseDate.toDate(),
-    pubDate: baseDate.toDate(),
-    period: '1',
+    campus: text,
     department: text,
+    eventDate: baseDate.toDate(),
+    hash: text,
+    link: text,
+    note: moment().format() + ` ${text}`.repeat(10),
+    period: '1',
+    pubDate: baseDate.toDate(),
+    raw: text,
+    room: text,
     subject: text,
     teacher: text,
-    campus: text,
-    room: text,
-    note: moment().format() + ` ${text}`.repeat(10),
-    hash: text,
     tweet: {
       new: false,
       tomorrow: flag

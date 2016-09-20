@@ -23,8 +23,14 @@ const dbClear = Model => {
 };
 
 const testDb = {
-  open () {
-    return db.open(config.mongoURI);
+  clear () {
+    return Promise.all([this.clearEvent(), this.clearTasklog()]);
+  },
+  clearEvent () {
+    return dbClear(Event);
+  },
+  clearTasklog () {
+    return dbClear(Log);
   },
   close () {
     return db.close();
@@ -35,14 +41,8 @@ const testDb = {
   insertTasklog (data) {
     return dbInsert(Log, data);
   },
-  clearEvent () {
-    return dbClear(Event);
-  },
-  clearTasklog () {
-    return dbClear(Log);
-  },
-  clear () {
-    return Promise.all([this.clearEvent(), this.clearTasklog()]);
+  open () {
+    return db.open(config.mongoURI);
   }
 };
 

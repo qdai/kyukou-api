@@ -6,17 +6,17 @@ const baseDate = moment().add(1, 'days').startOf('day');
 const text = 'test data 2';
 
 module.exports = {
-  raw: 'a',
   about: text,
-  link: text,
-  eventDate: baseDate.toDate(),
-  period: '1',
+  campus: text,
   department: text,
+  eventDate: baseDate.toDate(),
+  link: text,
+  note: text,
+  period: '1',
+  raw: 'a',
+  room: text,
   subject: text,
   teacher: text,
-  campus: text,
-  room: text,
-  note: text,
   'tweet.new': true,
   'tweet.tomorrow': true
 };

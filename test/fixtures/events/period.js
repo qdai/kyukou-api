@@ -23,19 +23,19 @@ const periodList = [
 module.exports = periodList.map(period => {
   const text = 'test data: period';
   return {
-    raw: text,
     about: text,
-    link: text,
-    eventDate: baseDate.toDate(),
-    pubDate: baseDate.toDate(),
-    period,
+    campus: text,
     department: text,
+    eventDate: baseDate.toDate(),
+    hash: text,
+    link: text,
+    note: text,
+    period,
+    pubDate: baseDate.toDate(),
+    raw: text,
+    room: text,
     subject: text,
     teacher: text,
-    campus: text,
-    room: text,
-    note: text,
-    hash: text,
     tweet: {
       new: false,
       tomorrow: false

@@ -7,18 +7,18 @@ const text = 'test data';
 
 module.exports = [
   {
-    raw: text,
     about: text,
-    link: text,
-    eventDate: 'invalid date',
-    pubDate: baseDate.toDate(),
-    period: '1',
+    campus: text,
     department: text,
+    eventDate: 'invalid date',
+    link: text,
+    note: text,
+    period: '1',
+    pubDate: baseDate.toDate(),
+    raw: text,
+    room: text,
     subject: text,
     teacher: text,
-    campus: text,
-    room: text,
-    note: text,
     tweet: {
       new: false,
       tomorrow: false

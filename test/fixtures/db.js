@@ -10,10 +10,8 @@ const Log = require('../../lib/models/log');
 mongoose.Promise = Promise;
 
 const dbInsert = (Model, data) => {
-  if (!Array.isArray(data)) {
-    data = [data];
-  }
-  return Promise.all(data.map(d => {
+  const dataArray = Array.isArray(data) ? data : [data];
+  return Promise.all(dataArray.map(d => {
     return new Model(d).save();
   }));
 };

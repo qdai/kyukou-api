@@ -1,11 +1,10 @@
 'use strict';
 
-const mongoose = require('mongoose');
-
-const config = require('./config');
-const db = require('../../lib/utils/db');
 const Event = require('../../lib/models/event');
 const Log = require('../../lib/models/log');
+const config = require('./config');
+const db = require('../../lib/utils/db');
+const mongoose = require('mongoose');
 
 mongoose.Promise = Promise;
 

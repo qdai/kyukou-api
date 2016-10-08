@@ -19,7 +19,7 @@
     "@egy186/eslint-config": "^0.14.0",
     "array-shuffle": "^1.0.0",
     "chai": "^3.4.1",
-    "chai-as-promised": "^5.1.0",
+    "chai-as-promised": "^6.0.0",
     "eslint": "^3.5.0",
     "istanbul": "^0.4.1",
     "jsdoc": "^3.4.0",

@@ -108,13 +108,11 @@ describe('Utils', () => {
 
     it('expected to create new one when the event not found', () => {
       const data = require('./fixtures/events/index');
-      const promise = Event.findOrCreate({
-        hash: data.hash
-      }, data).then(result => {
+      const promise = Event.findOrCreate({ hash: data.hash }, data).then(result => {
         expect(result[1]).to.be.true;
-        return Event.find({
-          hash: data.hash
-        }, '-_id -__v').lean().exec();
+
+        const condition = { hash: data.hash };
+        return Event.find(condition, '-_id -__v').lean().exec();
       });
       return expect(promise).to.become([data]);
     });
@@ -122,14 +120,13 @@ describe('Utils', () => {
     it('expected to return a event when the event already exist', () => {
       const data = require('./fixtures/events/index');
       const promise = testDb.insertEvent(data).then(() => {
-        return Event.findOrCreate({
-          hash: data.hash
-        }, data);
+        const condition = { hash: data.hash };
+        return Event.findOrCreate(condition, data);
       }).then(result => {
         expect(result[1]).to.be.false;
-        return Event.find({
-          hash: data.hash
-        }, '-_id -__v').lean().exec();
+
+        const condition = { hash: data.hash };
+        return Event.find(condition, '-_id -__v').lean().exec();
       });
       return expect(promise).to.become([data]);
     });

@@ -4,7 +4,6 @@
     "@egy186/eslint-config/node"
   ],
   "rules": {
-    "arrow-body-style": 0,
     "class-methods-use-this": 0
   }
 }

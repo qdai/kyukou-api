@@ -3,6 +3,7 @@
     "mocha": true
   },
   "rules": {
+    "arrow-body-style": 0,
     "global-require": 0,
     "no-unused-expressions": 0
   }

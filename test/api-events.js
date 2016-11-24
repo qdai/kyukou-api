@@ -227,18 +227,14 @@ describe('Events API', () => {
 
     it('expected to be rejected when key is invalid', () => {
       const promise = db.insertEvent(data).then(() => {
-        return apiEvents.edit(data.hash, {
-          invalidKey: 'value'
-        });
+        return apiEvents.edit(data.hash, { invalidKey: 'value' });
       });
       return expect(promise).to.be.rejectedWith(Error);
     });
 
     it('expected not to modify event when key is invalid', () => {
       const promise = db.insertEvent(data).then(() => {
-        return apiEvents.edit(data.hash, {
-          invalidKey: 'value'
-        });
+        return apiEvents.edit(data.hash, { invalidKey: 'value' });
       }).catch(e => {
         return e;
       }).then(getEventsList);

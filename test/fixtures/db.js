@@ -1,19 +1,16 @@
 'use strict';
 
-const mongoose = require('mongoose');
-
-const config = require('./config');
-const db = require('../../lib/utils/db');
 const Event = require('../../lib/models/event');
 const Log = require('../../lib/models/log');
+const config = require('./config');
+const db = require('../../lib/utils/db');
+const mongoose = require('mongoose');
 
 mongoose.Promise = Promise;
 
 const dbInsert = (Model, data) => {
-  if (!Array.isArray(data)) {
-    data = [data];
-  }
-  return Promise.all(data.map(d => {
+  const dataArray = Array.isArray(data) ? data : [data];
+  return Promise.all(dataArray.map(d => {
     return new Model(d).save();
   }));
 };

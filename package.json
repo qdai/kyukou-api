@@ -16,7 +16,7 @@
     "twitter-text": "^1.13.2"
   },
   "devDependencies": {
-    "@egy186/eslint-config": "^0.17.0",
+    "@egy186/eslint-config": "^0.21.0",
     "array-shuffle": "^1.0.0",
     "chai": "^3.4.1",
     "chai-as-promised": "^6.0.0",

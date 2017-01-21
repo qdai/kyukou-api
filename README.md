@@ -6,6 +6,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/qdai/kyukou-api/badge.svg)](https://coveralls.io/github/qdai/kyukou-api)
 [![dependencies Status](https://david-dm.org/qdai/kyukou-api/status.svg)](https://david-dm.org/qdai/kyukou-api)
 [![devDependencies Status](https://david-dm.org/qdai/kyukou-api/dev-status.svg)](https://david-dm.org/qdai/kyukou-api?type=dev)
+[![Greenkeeper badge](https://badges.greenkeeper.io/qdai/kyukou-api.svg)](https://greenkeeper.io/)
 
 API for [kyukou](https://github.com/qdai/kyukou).
 

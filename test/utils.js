@@ -180,7 +180,7 @@ describe('Utils', () => {
     });
 
     it('expected to be fulfilled when fn is rejected', () => {
-      return expect(runTask(() => Promise.reject('err: test')).then(log => {
+      return expect(runTask(() => Promise.reject(new Error('test'))).then(log => {
         log.name = logNames[0];
         return new Log(log).validate();
       })).to.become(undefined);

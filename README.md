@@ -1,5 +1,7 @@
 # Kyukou Kyudai API
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/qdai/kyukou-api.svg)](https://greenkeeper.io/)
+
 [![GitHub release](https://img.shields.io/github/release/qdai/kyukou-api.svg)](https://github.com/qdai/kyukou-api/releases/latest)
 
 [![Build Status](https://travis-ci.org/qdai/kyukou-api.svg)](https://travis-ci.org/qdai/kyukou-api)

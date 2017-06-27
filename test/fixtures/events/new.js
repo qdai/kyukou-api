@@ -4,10 +4,7 @@ const moment = require('moment');
 
 const baseDate = moment().add(1, 'day').startOf('day');
 
-const tweetNewList = [
-  true,
-  false
-];
+const tweetNewList = [true, false];
 
 module.exports = tweetNewList.map(flag => {
   const text = 'new';

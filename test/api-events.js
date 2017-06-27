@@ -45,8 +45,16 @@ describe('Events API', () => {
 
     it('expected to be fulfilled with specified department\'s events', () => {
       const data = require('./fixtures/events/department');
-      const departments = ['edu', 'lit', 'law'];
-      const departmentsJa = ['教育学部', '文学部', '法学部'];
+      const departments = [
+        'edu',
+        'lit',
+        'law'
+      ];
+      const departmentsJa = [
+        '教育学部',
+        '文学部',
+        '法学部'
+      ];
       const promise = db.insertEvent(data).then(() => {
         return apiEvents.list(departments).then(toPlainObject);
       }).then(events => events.sort((a, b) => {
@@ -57,7 +65,11 @@ describe('Events API', () => {
 
     it('expected to be fulfilled with specified department\'s events', () => {
       const data = require('./fixtures/events/department');
-      const departments = ['sci', 'econ', 'econ'];
+      const departments = [
+        'sci',
+        'econ',
+        'econ'
+      ];
       const departmentsJa = ['理学部', '経済学部'];
       const promise = db.insertEvent(data).then(() => {
         return apiEvents.list(departments.join(',')).then(toPlainObject);

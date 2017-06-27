@@ -16,11 +16,11 @@
     "twitter-text": "^1.13.2"
   },
   "devDependencies": {
-    "@egy186/eslint-config": "~0.24.0",
+    "@egy186/eslint-config": "~0.25.0",
     "array-shuffle": "^1.0.0",
     "chai": "^3.4.1",
     "chai-as-promised": "^6.0.0",
-    "eslint": "~3.19.0",
+    "eslint": "~4.1.0",
     "istanbul": "^0.4.1",
     "jsdoc": "^3.4.0",
     "mocha": "^3.0.2",

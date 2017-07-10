@@ -20,7 +20,7 @@
     "array-shuffle": "^1.0.0",
     "chai": "^4.0.2",
     "chai-as-promised": "^7.0.0",
-    "eslint": "~4.1.0",
+    "eslint": "~4.2.0",
     "istanbul": "^0.4.1",
     "jsdoc": "^3.4.0",
     "mocha": "^3.0.2",

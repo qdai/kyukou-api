@@ -5,7 +5,7 @@ const chaiAsPromised = require('chai-as-promised');
 
 chai.use(chaiAsPromised);
 
-const expect = chai.expect;
+const { expect } = chai;
 
 const db = require('./fixtures/db');
 

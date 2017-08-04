@@ -5,7 +5,7 @@ const moment = require('moment');
 
 moment.locale('ja');
 
-const expect = chai.expect;
+const { expect } = chai;
 
 const Event = require('../lib/models/event');
 

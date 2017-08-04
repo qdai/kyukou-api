@@ -8,7 +8,7 @@ const chaiAsPromised = require('chai-as-promised');
 
 chai.use(chaiAsPromised);
 
-const expect = chai.expect;
+const { expect } = chai;
 
 const db = require('./fixtures/db');
 
@@ -101,7 +101,7 @@ describe('Events API', () => {
   describe('.yyyymmdd', () => {
     it('expected to be fulfilled with specified days events which are sorted by period', () => {
       const data = require('./fixtures/events/eventdate');
-      const eventDate = data[0].eventDate;
+      const [{ eventDate }] = data;
       const yyyy = eventDate.getFullYear();
       const mm = eventDate.getMonth() + 1;
       const dd = eventDate.getDate();
@@ -122,7 +122,7 @@ describe('Events API', () => {
 
     it('expected to be fulfilled with specified count events', () => {
       const data = require('./fixtures/events/eventdate');
-      const eventDate = data[0].eventDate;
+      const [{ eventDate }] = data;
       const yyyy = eventDate.getFullYear();
       const mm = eventDate.getMonth() + 1;
       const dd = eventDate.getDate();

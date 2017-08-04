@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 chai.use(chaiAsPromised);
 mongoose.Promise = Promise;
 
-const expect = chai.expect;
+const { expect } = chai;
 
 const Event = require('../lib/models/event');
 const Hash = require('../lib/utils/hash');
@@ -174,14 +174,14 @@ describe('Utils', () => {
   describe('/runtask', () => {
     it('expected to become a valid log', () => {
       return expect(runTask(() => Promise.resolve('msg: test')).then(log => {
-        log.name = logNames[0];
+        [log.name] = logNames;
         return new Log(log).validate();
       })).to.become(undefined);
     });
 
     it('expected to be fulfilled when fn is rejected', () => {
       return expect(runTask(() => Promise.reject(new Error('test'))).then(log => {
-        log.name = logNames[0];
+        [log.name] = logNames;
         return new Log(log).validate();
       })).to.become(undefined);
     });

@@ -1,5 +1,21 @@
 # API Change Log
 
+## Version 2.1.0 (2017-08-04)
+
+- Features
+  - [[`3606bfe130`](https://github.com/qdai/kyukou-api/commit/3606bfe130)] Support graduate school.
+- Bug Fixes
+  - [[`22683e2274`](https://github.com/qdai/kyukou-api/commit/22683e2274)] Test node v7 in ci (#25).
+  - [[`930d192108`](https://github.com/qdai/kyukou-api/commit/930d192108)] Enable useMongoClient option (#44).
+  - [[`9a13274b5f`](https://github.com/qdai/kyukou-api/commit/9a13274b5f)] Test in latest node.
+- Dependency Updates
+  - [[`308f8e28ee`](https://github.com/qdai/kyukou-api/commit/308f8e28ee)] Update dependencies to enable Greenkeeper (#26).
+  - [[`1d6e4e808f`](https://github.com/qdai/kyukou-api/commit/1d6e4e808f)] Update mongoose to version 4.10.0 (#36).
+  - [[`fc5363e524`](https://github.com/qdai/kyukou-api/commit/fc5363e524)] Update eslint to the latest version (#39).
+  - [[`3e502beb4e`](https://github.com/qdai/kyukou-api/commit/3e502beb4e)] Update chai to the latest version (#37).
+  - [[`b696a0350e`](https://github.com/qdai/kyukou-api/commit/b696a0350e)] Chore(package): update @egy186/eslint-config to version 0.26.0 (#42).
+  - [[`866202c5ce`](https://github.com/qdai/kyukou-api/commit/866202c5ce)] Chore(package): update eslint to version 4.3.0 (#43).
+
 ## Version 2.0.2 (2016-11-14)
 
 - Bug Fixes

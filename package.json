@@ -23,7 +23,7 @@
     "eslint": "~4.8.0",
     "istanbul": "^0.4.1",
     "jsdoc": "^3.4.0",
-    "mocha": "^3.0.2",
+    "mocha": "^4.0.0",
     "rimraf": "^2.4.4"
   },
   "engines": {

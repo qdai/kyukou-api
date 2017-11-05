@@ -1,5 +1,16 @@
 # API Change Log
 
+## Version 2.1.1 (2017-11-05)
+
+- Bug Fixes
+  - [[`44b5ab3f91`](https://github.com/qdai/kyukou-api/commit/44b5ab3f91)] Fix log.level (#56).
+- Dependency Updates
+  - [[`ee275c9fcc`](https://github.com/qdai/kyukou-api/commit/ee275c9fcc)] Chore(package): update @egy186/eslint-config to version 0.27.0 (#45).
+  - [[`30d68f257a`](https://github.com/qdai/kyukou-api/commit/30d68f257a)] Chore(package): update @egy186/eslint-config to version 0.28.0 (#49).
+  - [[`824b2e01d3`](https://github.com/qdai/kyukou-api/commit/824b2e01d3)] Chore(package): update mocha to version 4.0.0 (#52).
+  - [[`c5084e2a39`](https://github.com/qdai/kyukou-api/commit/c5084e2a39)] Chore(package): update @egy186/eslint-config to version 0.29.0 (#54).
+  - [[`52bddb5689`](https://github.com/qdai/kyukou-api/commit/52bddb5689)] Chore(package): update eslint to version 4.10.0 (#55).
+
 ## Version 2.1.0 (2017-08-04)
 
 - Features

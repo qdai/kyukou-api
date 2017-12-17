@@ -15,7 +15,7 @@ module.exports = tweetTomorrowList.map(flag => {
     eventDate: baseDate.toDate(),
     hash: text,
     link: text,
-    note: moment().format() + ` ${text}`.repeat(10),
+    note: `${moment().format()} ${text}\n`.repeat(5),
     period: '1',
     pubDate: baseDate.toDate(),
     raw: text,

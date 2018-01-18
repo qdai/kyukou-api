@@ -5,7 +5,6 @@ const chaiAsPromised = require('chai-as-promised');
 const mongoose = require('mongoose');
 
 chai.use(chaiAsPromised);
-mongoose.Promise = Promise;
 
 const { expect } = chai;
 
@@ -176,14 +175,14 @@ describe('Utils', () => {
       return expect(runTask(() => Promise.resolve('msg: test')).then(log => {
         [log.name] = logNames;
         return new Log(log).validate();
-      })).to.become(undefined);
+      })).to.be.fulfilled;
     });
 
     it('expected to be fulfilled when fn is rejected', () => {
       return expect(runTask(() => Promise.reject(new Error('test'))).then(log => {
         [log.name] = logNames;
         return new Log(log).validate();
-      })).to.become(undefined);
+      })).to.be.fulfilled;
     });
   });
 });

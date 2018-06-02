@@ -17,7 +17,10 @@ const apiLogs = new ApiLogs();
 describe('Logs API', () => {
   before(() => db.open());
 
-  after(() => db.clear().then(() => db.close()));
+  after(async () => {
+    await db.clear();
+    await db.close();
+  });
 
   describe('.about', () => {
     it('expected to be rejected when arg is invalid', () => {
@@ -26,9 +29,11 @@ describe('Logs API', () => {
       return expect(promise).to.be.rejectedWith(Error);
     });
 
-    it('expected to be fulfilled with specified tasklog', () => {
-      const promise = Promise.all(logNames.map(about => apiLogs.about(about).then(tasklog => tasklog.name)));
-      return expect(promise).to.become(logNames);
+    logNames.forEach(about => {
+      it(`expected to be fulfilled with tasklog about ${about}`, async () => {
+        const { name } = await apiLogs.about(about);
+        expect(name).to.deep.equal(about);
+      });
     });
   });
 });

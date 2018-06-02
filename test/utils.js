@@ -121,6 +121,8 @@ describe('Utils', () => {
       await testDb.insertEvent(data);
       const condition = { hash: data.hash };
       const [event, created] = await Event.findOrCreate(condition, data);
+      delete event.__v; // eslint-disable-line no-underscore-dangle
+      delete event._id; // eslint-disable-line no-underscore-dangle
       expect(event).to.deep.equal(data);
       expect(created).to.be.false;
     });

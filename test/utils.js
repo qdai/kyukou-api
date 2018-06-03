@@ -24,22 +24,20 @@ describe('Utils', () => {
     describe('.open', () => {
       afterEach(() => db.close());
 
-      it('expected to open database connection', () => {
-        const promise = db.open(config.mongoURI).then(() => {
-          return mongoose.connection.readyState;
-        });
-        return expect(promise).to.become(1);
+      it('expected to open database connection', async () => {
+        expect(mongoose.connection.readyState).to.deep.equal(0);
+        await db.open(config.mongoURI);
+        expect(mongoose.connection.readyState).to.deep.equal(1);
       });
     });
 
     describe('.close', () => {
       beforeEach(() => db.open(config.mongoURI));
 
-      it('expected to close database connection', () => {
-        const promise = db.close().then(() => {
-          return mongoose.connection.readyState;
-        });
-        return expect(promise).to.become(0);
+      it('expected to close database connection', async () => {
+        expect(mongoose.connection.readyState).to.deep.equal(1);
+        await db.close();
+        expect(mongoose.connection.readyState).to.deep.equal(0);
       });
     });
   });
@@ -104,31 +102,29 @@ describe('Utils', () => {
 
     afterEach(() => testDb.clearEvent());
 
-    after(() => testDb.clear().then(() => testDb.close()));
-
-    it('expected to create new one when the event not found', () => {
-      const data = require('./fixtures/events/index');
-      const promise = Event.findOrCreate({ hash: data.hash }, data).then(result => {
-        expect(result[1]).to.be.true;
-
-        const condition = { hash: data.hash };
-        return Event.find(condition, '-_id -__v').lean().exec();
-      });
-      return expect(promise).to.become([data]);
+    after(async () => {
+      await testDb.clear();
+      await testDb.close();
     });
 
-    it('expected to return a event when the event already exist', () => {
+    it('expected to create new one when the event not found', async () => {
       const data = require('./fixtures/events/index');
-      const promise = testDb.insertEvent(data).then(() => {
-        const condition = { hash: data.hash };
-        return Event.findOrCreate(condition, data);
-      }).then(result => {
-        expect(result[1]).to.be.false;
+      const [, created] = await Event.findOrCreate({ hash: data.hash }, data);
+      expect(created).to.be.true;
+      const condition = { hash: data.hash };
+      const events = await Event.find(condition, '-_id -__v').lean().exec();
+      expect(events).to.deep.equal([data]);
+    });
 
-        const condition = { hash: data.hash };
-        return Event.find(condition, '-_id -__v').lean().exec();
-      });
-      return expect(promise).to.become([data]);
+    it('expected to return a event when the event already exist', async () => {
+      const data = require('./fixtures/events/index');
+      await testDb.insertEvent(data);
+      const condition = { hash: data.hash };
+      const [event, created] = await Event.findOrCreate(condition, data);
+      delete event.__v; // eslint-disable-line no-underscore-dangle
+      delete event._id; // eslint-disable-line no-underscore-dangle
+      expect(event).to.deep.equal(data);
+      expect(created).to.be.false;
     });
   });
 
@@ -171,18 +167,16 @@ describe('Utils', () => {
   });
 
   describe('/runtask', () => {
-    it('expected to become a valid log', () => {
-      return expect(runTask(() => Promise.resolve('msg: test')).then(log => {
-        [log.name] = logNames;
-        return new Log(log).validate();
-      })).to.be.fulfilled;
+    it('expected to become a valid log', async () => {
+      const log = await runTask(() => Promise.resolve('msg: test'));
+      [log.name] = logNames;
+      return expect(new Log(log).validate()).to.be.fulfilled;
     });
 
-    it('expected to be fulfilled when fn is rejected', () => {
-      return expect(runTask(() => Promise.reject(new Error('test'))).then(log => {
-        [log.name] = logNames;
-        return new Log(log).validate();
-      })).to.be.fulfilled;
+    it('expected to be fulfilled when fn is rejected', async () => {
+      const log = await runTask(() => Promise.reject(new Error('test')));
+      [log.name] = logNames;
+      return expect(new Log(log).validate()).to.be.fulfilled;
     });
   });
 });

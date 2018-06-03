@@ -16,7 +16,10 @@ describe('Api', () => {
     api = new Api(config);
   });
 
-  after(() => db.clear().then(() => db.close()));
+  after(async () => {
+    await db.clear();
+    await db.close();
+  });
 
   it('expected to have Events, Logs and Tasks', () => {
     expect(api.events).to.be.an('object');

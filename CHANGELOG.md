@@ -1,5 +1,9 @@
 # API Change Log
 
+### Note
+
+[Please refer to the releases page as of version 3.0.0](https://github.com/qdai/kyukou-api/releases).
+
 ## Version 2.1.1 (2017-11-05)
 
 - Bug Fixes

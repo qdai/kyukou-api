@@ -7,14 +7,10 @@ const db = require('../../lib/utils/db');
 
 const dbInsert = (Model, data) => {
   const dataArray = Array.isArray(data) ? data : [data];
-  return Promise.all(dataArray.map(d => {
-    return new Model(d).save();
-  }));
+  return Promise.all(dataArray.map(d => new Model(d).save()));
 };
 
-const dbClear = Model => {
-  return Model.find({}).remove();
-};
+const dbClear = Model => Model.find({}).remove();
 
 const testDb = {
   clear () {

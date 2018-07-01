@@ -63,7 +63,8 @@ describe('Events API', () => {
       const events = (await apiEvents.list(departments))
         .map(toPlainObject)
         .sort((a, b) => {
-          return a.department > b.department ? 1 : -1;
+          const diff = a.department > b.department;
+          return diff ? 1 : -1;
         });
       expect(events).to.deep.equal(data.filter(d => departmentsJa.indexOf(d.department) !== -1));
     });
@@ -80,7 +81,8 @@ describe('Events API', () => {
       const events = (await apiEvents.list(departments.join(',')))
         .map(toPlainObject)
         .sort((a, b) => {
-          return a.department > b.department ? 1 : -1;
+          const diff = a.department > b.department;
+          return diff ? 1 : -1;
         });
       expect(events).to.deep.equal(data.filter(d => departmentsJa.indexOf(d.department) !== -1));
     });
@@ -111,11 +113,9 @@ describe('Events API', () => {
       const dd = eventDate.getDate();
       await db.insertEvent(data);
       const events = (await apiEvents.yyyymmdd(yyyy, mm, dd)).map(toPlainObject);
-      expect(events).to.deep.equal(data.filter(d => {
-        return d.eventDate.getFullYear() === yyyy
-          && d.eventDate.getMonth() + 1 === mm
-          && d.eventDate.getDate() === dd;
-      }));
+      expect(events).to.deep.equal(data.filter(d => d.eventDate.getFullYear() === yyyy
+        && d.eventDate.getMonth() + 1 === mm
+        && d.eventDate.getDate() === dd));
     });
 
     it('expected to be rejected when the day is invalid', () => {
@@ -132,11 +132,9 @@ describe('Events API', () => {
       const count = 2;
       await db.insertEvent(data);
       const events = (await apiEvents.yyyymmdd(yyyy, mm, dd, count)).map(toPlainObject);
-      expect(events).to.deep.equal(data.filter(d => {
-        return d.eventDate.getFullYear() === yyyy
-          && d.eventDate.getMonth() + 1 === mm
-          && d.eventDate.getDate() === dd;
-      }).slice(0, count));
+      expect(events).to.deep.equal(data.filter(d => d.eventDate.getFullYear() === yyyy
+        && d.eventDate.getMonth() + 1 === mm
+        && d.eventDate.getDate() === dd).slice(0, count));
     });
   });
 

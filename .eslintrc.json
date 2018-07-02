@@ -1,11 +1,23 @@
 {
   "extends": [
     "@egy186/eslint-config",
+    "@egy186/eslint-config/es2018",
     "@egy186/eslint-config/node"
   ],
-  "parserOptions": {
-    "ecmaVersion": 2017
-  },
+  "overrides": [
+    {
+      "files": [
+        "test/**/*.js"
+      ],
+      "env": {
+        "mocha": true
+      },
+      "rules": {
+        "global-require": "off",
+        "no-unused-expressions": "off"
+      }
+    }
+  ],
   "rules": {
     "class-methods-use-this": "off"
   }

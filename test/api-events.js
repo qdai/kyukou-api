@@ -73,10 +73,10 @@ describe('Events API', () => {
       const data = require('./fixtures/events/department');
       const departments = [
         'sci',
-        'econ',
-        'econ'
+        'edu',
+        'edu'
       ];
-      const departmentsJa = ['理学部', '経済学部'];
+      const departmentsJa = ['理学部', '教育学部'];
       await db.insertEvent(data);
       const events = (await apiEvents.list(departments.join(',')))
         .map(toPlainObject)

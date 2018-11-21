@@ -8,8 +8,7 @@ const departmentList = [
   '教育学部',
   '文学部',
   '法学部',
-  '理学部',
-  '経済学部'
+  '理学部'
 ];
 
 module.exports = departmentList.map(department => {

@@ -7,22 +7,22 @@
     "url": "https://github.com/qdai/kyukou-api/issues"
   },
   "dependencies": {
-    "http-errors": "^1.3.1",
-    "lodash": "^4.17.10",
-    "moment": "^2.20.1",
-    "mongoose": "^5.2.1",
-    "truncate": "^2.0.0",
-    "twit": "^2.2.4",
+    "http-errors": "^1.7.1",
+    "lodash": "^4.17.11",
+    "moment": "^2.23.0",
+    "mongoose": "^5.4.0",
+    "truncate": "^2.0.1",
+    "twit": "^2.2.11",
     "twitter-text": "^3.0.0"
   },
   "devDependencies": {
     "@egy186/eslint-config": "~0.34.0",
     "array-shuffle": "^1.0.0",
-    "chai": "^4.0.2",
+    "chai": "^4.2.0",
     "chai-as-promised": "^7.0.0",
     "eslint": "~5.10.0",
     "jsdoc": "^3.4.0",
-    "mocha": "^5.0.0",
+    "mocha": "^5.2.0",
     "nyc": "^13.0.1",
     "rimraf": "^2.4.4"
   },

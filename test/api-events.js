@@ -238,13 +238,13 @@ describe('Events API', () => {
 
     it('expected to be rejected when hash doesn\'t found', async () => {
       await db.insertEvent(data);
-      const promise = apiEvents.edit(data.hash.replace(/1/g, 'a'), editData);
+      const promise = apiEvents.edit(data.hash.replace(/1/gu, 'a'), editData);
       return expect(promise).to.be.rejectedWith(Error);
     });
 
     it('expected not to modify event when hash doesn\'t found', async () => {
       await db.insertEvent(data);
-      await apiEvents.edit(data.hash.replace(/1/g, 'a'), editData).catch(e => e);
+      await apiEvents.edit(data.hash.replace(/1/gu, 'a'), editData).catch(e => e);
       expect(await getEventsList()).to.deep.equal([data]);
     });
   });
@@ -272,13 +272,13 @@ describe('Events API', () => {
 
     it('expected to be rejected when hash doesn\'t found', async () => {
       await db.insertEvent(data);
-      const promise = apiEvents.delete(data.hash.replace(/1/g, 'a'));
+      const promise = apiEvents.delete(data.hash.replace(/1/gu, 'a'));
       return expect(promise).to.be.rejectedWith(Error);
     });
 
     it('expected not to delete event when hash doesn\'t found', async () => {
       await db.insertEvent(data);
-      await apiEvents.delete(data.hash.replace(/1/g, 'a')).catch(e => e);
+      await apiEvents.delete(data.hash.replace(/1/gu, 'a')).catch(e => e);
       expect(await getEventsList()).to.deep.equal([data]);
     });
   });

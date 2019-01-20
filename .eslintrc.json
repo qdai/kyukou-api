@@ -19,6 +19,7 @@
     }
   ],
   "rules": {
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "jsdoc/no-undefined-types": "off"
   }
 }

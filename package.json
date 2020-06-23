@@ -10,7 +10,7 @@
     "http-errors": "^1.7.3",
     "lodash": "^4.17.15",
     "moment": "~2.27.0",
-    "mongoose": "^5.9.0",
+    "mongoose": "^5.9.20",
     "truncate": "^2.1.0",
     "twit": "^2.2.11",
     "twitter-text": "^3.1.0"

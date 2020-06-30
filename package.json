@@ -7,7 +7,7 @@
     "url": "https://github.com/qdai/kyukou-api/issues"
   },
   "dependencies": {
-    "http-errors": "^1.7.3",
+    "http-errors": "^1.8.0",
     "lodash": "^4.17.15",
     "moment": "~2.27.0",
     "mongoose": "^5.9.0",

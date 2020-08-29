@@ -10,7 +10,7 @@ const dbInsert = (Model, data) => {
   return Promise.all(dataArray.map(d => new Model(d).save()));
 };
 
-const dbClear = Model => Model.find({}).remove();
+const dbClear = Model => Model.find({}).deleteMany();
 
 const testDb = {
   clear () {

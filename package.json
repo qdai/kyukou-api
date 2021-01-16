@@ -21,7 +21,7 @@
     "chai": "^4.2.0",
     "chai-as-promised": "^7.0.0",
     "eslint": "~7.17.0",
-    "eslint-plugin-jsdoc": "^30.7.13",
+    "eslint-plugin-jsdoc": "^31.0.5",
     "eslint-plugin-node": "^11.1.0",
     "jsdoc": "^3.6.3",
     "mocha": "^8.2.0",

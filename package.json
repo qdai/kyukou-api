@@ -18,7 +18,7 @@
   "devDependencies": {
     "@egy186/eslint-config": "~0.56.0",
     "array-shuffle": "^2.0.0",
-    "chai": "^4.3.0",
+    "chai": "^4.3.4",
     "chai-as-promised": "^7.0.0",
     "eslint": "~7.17.0",
     "eslint-plugin-jsdoc": "^30.7.13",

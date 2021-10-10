@@ -37,6 +37,8 @@ jobs:
       run: |
         npm ci
         npm test
+      env:
+        TEST_CONFIG_TWITTER: ${{ secrets.TEST_CONFIG_TWITTER }}
 
     - name: Coveralls
       uses: coverallsapp/github-action@master

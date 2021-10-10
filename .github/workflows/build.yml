@@ -1,0 +1,44 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Lint
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16
+    - run: npm ci
+    - run: npm run lint
+    - run: npm run doc
+
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16
+
+    - name: MongoDB
+      uses: supercharge/mongodb-github-action@1.6.0
+      with:
+        mongodb-version: 4.4
+
+    - name: Test
+      run: |
+        npm ci
+        npm test
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}

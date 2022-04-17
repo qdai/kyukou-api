@@ -17,13 +17,11 @@
   },
   "devDependencies": {
     "@egy186/eslint-config": "~0.72.0",
+    "@types/jest": "^27.4.1",
     "array-shuffle": "^2.0.0",
-    "chai": "^4.3.0",
-    "chai-as-promised": "^7.0.0",
     "eslint": "~8.13.0",
     "eslint-plugin-node": "^11.1.0",
-    "mocha": "^9.2.2",
-    "nyc": "^15.1.0",
+    "jest": "^27.5.1",
     "rimraf": "^3.0.2"
   },
   "engines": {
@@ -44,8 +42,8 @@
     "url": "git+https://github.com/qdai/kyukou-api.git"
   },
   "scripts": {
-    "clean": "rimraf coverage doc",
-    "lint": "eslint lib test",
-    "test": "nyc --reporter lcov --reporter text-summary --report-dir coverage mocha test/*.js"
+    "clean": "rimraf coverage",
+    "lint": "eslint .",
+    "test": "jest --coverage"
   }
 }

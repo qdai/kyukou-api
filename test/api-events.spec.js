@@ -3,12 +3,7 @@
 /* eslint max-lines: 0 */
 
 const arrayShuffle = require('array-shuffle');
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
-
-chai.use(chaiAsPromised);
-
-const { expect } = chai;
+const { sortBy } = require('lodash');
 
 const db = require('./fixtures/db');
 
@@ -21,11 +16,14 @@ const getEventsList = async () => {
   const events = (await apiEvents.list()).map(toPlainObject);
   return events;
 };
+const pickByEventDate = (yyyy, mm, dd) => ({ eventDate }) => eventDate.getFullYear() === yyyy
+  && eventDate.getMonth() + 1 === mm
+  && eventDate.getDate() === dd;
 
-describe('Events API', () => {
-  before(() => db.open());
+describe('events API', () => {
+  beforeAll(() => db.open());
 
-  after(async () => {
+  afterAll(async () => {
     await db.clear();
     await db.close();
   });
@@ -34,20 +32,23 @@ describe('Events API', () => {
 
   describe('.list', () => {
     it('expected to be fulfilled with all scheduled events which are sorted by eventDate', async () => {
+      expect.assertions(1);
       const data = require('./fixtures/events/eventdate');
       await db.insertEvent(arrayShuffle(data));
       const events = (await apiEvents.list()).map(toPlainObject);
-      expect(events).to.deep.equal(data);
+      expect(events).toStrictEqual(data);
     });
 
     it('expected to be fulfilled with all scheduled events which are sorted by period', async () => {
+      expect.assertions(1);
       const data = require('./fixtures/events/period');
       await db.insertEvent(arrayShuffle(data));
       const events = (await apiEvents.list()).map(toPlainObject);
-      expect(events).to.deep.equal(data);
+      expect(events).toStrictEqual(data);
     });
 
-    it('expected to be fulfilled with specified department\'s events', async () => {
+    it('expected to be fulfilled with specified department\'s events 1', async () => {
+      expect.assertions(1);
       const data = require('./fixtures/events/department');
       const departments = [
         'edu',
@@ -60,16 +61,12 @@ describe('Events API', () => {
         '法学部'
       ];
       await db.insertEvent(data);
-      const events = (await apiEvents.list(departments))
-        .map(toPlainObject)
-        .sort((a, b) => {
-          const diff = a.department > b.department;
-          return diff ? 1 : -1;
-        });
-      expect(events).to.deep.equal(data.filter(d => departmentsJa.indexOf(d.department) !== -1));
+      const events = sortBy((await apiEvents.list(departments)).map(toPlainObject), 'department');
+      expect(events).toStrictEqual(data.filter(d => departmentsJa.indexOf(d.department) !== -1));
     });
 
-    it('expected to be fulfilled with specified department\'s events', async () => {
+    it('expected to be fulfilled with specified department\'s events 2', async () => {
+      expect.assertions(1);
       const data = require('./fixtures/events/department');
       const departments = [
         'sci',
@@ -78,34 +75,34 @@ describe('Events API', () => {
       ];
       const departmentsJa = ['理学部', '教育学部'];
       await db.insertEvent(data);
-      const events = (await apiEvents.list(departments.join(',')))
-        .map(toPlainObject)
-        .sort((a, b) => {
-          const diff = a.department > b.department;
-          return diff ? 1 : -1;
-        });
-      expect(events).to.deep.equal(data.filter(d => departmentsJa.indexOf(d.department) !== -1));
+      const events = sortBy((await apiEvents.list(departments)).map(toPlainObject), 'department');
+      expect(events).toStrictEqual(data.filter(d => departmentsJa.indexOf(d.department) !== -1));
     });
 
     it('expected to be fulfilled with events which are start with startIndex', async () => {
+      expect.assertions(1);
       const data = require('./fixtures/events/eventdate');
       const startIndex = 2;
       await db.insertEvent(data);
+      // @ts-expect-error
       const events = (await apiEvents.list(null, startIndex)).map(toPlainObject);
-      expect(events).to.deep.equal(data.slice(startIndex));
+      expect(events).toStrictEqual(data.slice(startIndex));
     });
 
     it('expected to be fulfilled with specified count events', async () => {
+      expect.assertions(1);
       const data = require('./fixtures/events/eventdate');
       const count = 2;
       await db.insertEvent(data);
+      // @ts-expect-error
       const events = (await apiEvents.list(null, null, count)).map(toPlainObject);
-      expect(events).to.deep.equal(data.slice(0, count));
+      expect(events).toStrictEqual(data.slice(0, count));
     });
   });
 
   describe('.yyyymmdd', () => {
     it('expected to be fulfilled with specified days events which are sorted by period', async () => {
+      expect.assertions(1);
       const data = require('./fixtures/events/eventdate');
       const [{ eventDate }] = data;
       const yyyy = eventDate.getFullYear();
@@ -113,17 +110,18 @@ describe('Events API', () => {
       const dd = eventDate.getDate();
       await db.insertEvent(data);
       const events = (await apiEvents.yyyymmdd(yyyy, mm, dd)).map(toPlainObject);
-      expect(events).to.deep.equal(data.filter(d => d.eventDate.getFullYear() === yyyy
-        && d.eventDate.getMonth() + 1 === mm
-        && d.eventDate.getDate() === dd));
+      expect(events).toStrictEqual(data.filter(pickByEventDate(yyyy, mm, dd)));
     });
 
-    it('expected to be rejected when the day is invalid', () => {
+    it('expected to be rejected when the day is invalid', async () => {
+      expect.assertions(1);
+      // @ts-expect-error
       const promise = apiEvents.yyyymmdd('yyyy', 'mm', 'dd');
-      return expect(promise).to.be.rejectedWith(Error);
+      await expect(promise).rejects.toThrow(Error);
     });
 
     it('expected to be fulfilled with specified count events', async () => {
+      expect.assertions(1);
       const data = require('./fixtures/events/eventdate');
       const [{ eventDate }] = data;
       const yyyy = eventDate.getFullYear();
@@ -132,38 +130,41 @@ describe('Events API', () => {
       const count = 2;
       await db.insertEvent(data);
       const events = (await apiEvents.yyyymmdd(yyyy, mm, dd, count)).map(toPlainObject);
-      expect(events).to.deep.equal(data.filter(d => d.eventDate.getFullYear() === yyyy
-        && d.eventDate.getMonth() + 1 === mm
-        && d.eventDate.getDate() === dd).slice(0, count));
+      expect(events).toStrictEqual(data.filter(pickByEventDate(yyyy, mm, dd)).slice(0, count));
     });
   });
 
   describe('.search', () => {
-    it('expected to be rejected when query is not specified', () => {
+    it('expected to be rejected when query is not specified', async () => {
+      expect.assertions(1);
+      // @ts-expect-error
       const promise = apiEvents.search();
-      return expect(promise).to.be.rejectedWith(Error);
+      await expect(promise).rejects.toThrow(Error);
     });
 
-    it('expected to be rejected when query is too long', () => {
+    it('expected to be rejected when query is too long', async () => {
+      expect.assertions(1);
       const promise = apiEvents.search('long string'.repeat(12));
-      return expect(promise).to.be.rejectedWith(Error);
+      await expect(promise).rejects.toThrow(Error);
     });
 
     it('expected to be fulfilled with matched events', async () => {
+      expect.assertions(1);
       const data = require('./fixtures/events/department');
       const q = '教育学部';
       await db.insertEvent(data);
       const events = (await apiEvents.search(q)).map(toPlainObject);
-      expect(events).to.deep.equal(data.filter(d => d.department === q));
+      expect(events).toStrictEqual(data.filter(d => d.department === q));
     });
 
     it('expected to be fulfilled with specified count events', async () => {
+      expect.assertions(1);
       const data = require('./fixtures/events/period');
       const q = 'test';
       const count = 2;
       await db.insertEvent(arrayShuffle(data));
       const events = (await apiEvents.search(q, count)).map(toPlainObject);
-      expect(events).to.deep.equal(data.slice(0, count));
+      expect(events).toStrictEqual(data.slice(0, count));
     });
   });
 
@@ -172,30 +173,35 @@ describe('Events API', () => {
     const invalidDateData = require('./fixtures/events/invalid-date');
 
     it('expected to add new event', async () => {
+      expect.assertions(1);
       await apiEvents.add(data);
-      expect(await getEventsList()).to.deep.equal([data]);
+      await expect(getEventsList()).resolves.toStrictEqual([data]);
     });
 
     it('expected to be rejected when the event already exist', async () => {
+      expect.assertions(1);
       await db.insertEvent(data);
       const promise = apiEvents.add(data);
-      return expect(promise).to.be.rejectedWith(Error);
+      await expect(promise).rejects.toThrow(Error);
     });
 
     it('expected not to modify event when the event already exist', async () => {
+      expect.assertions(1);
       await db.insertEvent(data);
       await apiEvents.add(data).catch(e => e);
-      expect(await getEventsList()).to.deep.equal([data]);
+      await expect(getEventsList()).resolves.toStrictEqual([data]);
     });
 
-    it('expected to be rejected when eventDate is invalid', () => {
+    it('expected to be rejected when eventDate is invalid', async () => {
+      expect.assertions(1);
       const promise = apiEvents.add(invalidDateData);
-      return expect(promise).to.be.rejectedWith(Error);
+      await expect(promise).rejects.toThrow(Error);
     });
 
     it('expected not to add event when eventDate is invalid', async () => {
+      expect.assertions(1);
       await apiEvents.add(invalidDateData).catch(e => e);
-      expect(await getEventsList()).to.deep.equal([]);
+      await expect(getEventsList()).resolves.toStrictEqual([]);
     });
   });
 
@@ -207,45 +213,52 @@ describe('Events API', () => {
     modifiedData.pubDate = data.pubDate;
 
     it('expected to modify specified event', async () => {
+      expect.assertions(1);
       await db.insertEvent(data);
       await apiEvents.edit(data.hash, editData);
-      expect(await getEventsList()).to.deep.equal([modifiedData]);
+      await expect(getEventsList()).resolves.toStrictEqual([modifiedData]);
     });
 
     it('expected to be rejected when hash is invalid', async () => {
+      expect.assertions(1);
       await db.insertEvent(data);
       const promise = apiEvents.edit('invalid hash', editData);
-      return expect(promise).to.be.rejectedWith(Error);
+      await expect(promise).rejects.toThrow(Error);
     });
 
     it('expected not to modify event when hash is invalid', async () => {
+      expect.assertions(1);
       await db.insertEvent(data);
       await apiEvents.edit('invalid hash', editData).catch(e => e);
-      expect(await getEventsList()).to.deep.equal([data]);
+      await expect(getEventsList()).resolves.toStrictEqual([data]);
     });
 
     it('expected to be rejected when key is invalid', async () => {
+      expect.assertions(1);
       await db.insertEvent(data);
       const promise = apiEvents.edit(data.hash, { invalidKey: 'value' });
-      return expect(promise).to.be.rejectedWith(Error);
+      await expect(promise).rejects.toThrow(Error);
     });
 
     it('expected not to modify event when key is invalid', async () => {
+      expect.assertions(1);
       await db.insertEvent(data);
       await apiEvents.edit(data.hash, { invalidKey: 'value' }).catch(e => e);
-      expect(await getEventsList()).to.deep.equal([data]);
+      await expect(getEventsList()).resolves.toStrictEqual([data]);
     });
 
     it('expected to be rejected when hash doesn\'t found', async () => {
+      expect.assertions(1);
       await db.insertEvent(data);
       const promise = apiEvents.edit(data.hash.replace(/1/gu, 'a'), editData);
-      return expect(promise).to.be.rejectedWith(Error);
+      await expect(promise).rejects.toThrow(Error);
     });
 
     it('expected not to modify event when hash doesn\'t found', async () => {
+      expect.assertions(1);
       await db.insertEvent(data);
       await apiEvents.edit(data.hash.replace(/1/gu, 'a'), editData).catch(e => e);
-      expect(await getEventsList()).to.deep.equal([data]);
+      await expect(getEventsList()).resolves.toStrictEqual([data]);
     });
   });
 
@@ -253,33 +266,38 @@ describe('Events API', () => {
     const data = require('./fixtures/events/index');
 
     it('expected to delete specified event', async () => {
+      expect.assertions(1);
       await db.insertEvent(data);
       await apiEvents.delete(data.hash);
-      expect(await getEventsList()).to.deep.equal([]);
+      await expect(getEventsList()).resolves.toStrictEqual([]);
     });
 
     it('expected to be rejected when hash is invalid', async () => {
+      expect.assertions(1);
       await db.insertEvent(data);
       const promise = apiEvents.delete('invalid hash');
-      return expect(promise).to.be.rejectedWith(Error);
+      await expect(promise).rejects.toThrow(Error);
     });
 
     it('expected not to delete event when hash is invalid', async () => {
+      expect.assertions(1);
       await db.insertEvent(data);
       await apiEvents.delete('invalid hash').catch(e => e);
-      expect(await getEventsList()).to.deep.equal([data]);
+      await expect(getEventsList()).resolves.toStrictEqual([data]);
     });
 
     it('expected to be rejected when hash doesn\'t found', async () => {
+      expect.assertions(1);
       await db.insertEvent(data);
       const promise = apiEvents.delete(data.hash.replace(/1/gu, 'a'));
-      return expect(promise).to.be.rejectedWith(Error);
+      await expect(promise).rejects.toThrow(Error);
     });
 
     it('expected not to delete event when hash doesn\'t found', async () => {
+      expect.assertions(1);
       await db.insertEvent(data);
       await apiEvents.delete(data.hash.replace(/1/gu, 'a')).catch(e => e);
-      expect(await getEventsList()).to.deep.equal([data]);
+      await expect(getEventsList()).resolves.toStrictEqual([data]);
     });
   });
 });

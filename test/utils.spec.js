@@ -1,12 +1,6 @@
 'use strict';
 
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
 const mongoose = require('mongoose');
-
-chai.use(chaiAsPromised);
-
-const { expect } = chai;
 
 const Event = require('../lib/models/event');
 const Hash = require('../lib/utils/hash');
@@ -19,15 +13,16 @@ const logNames = require('../lib/utils/lognames');
 const config = require('./fixtures/config');
 const testDb = require('./fixtures/db');
 
-describe('Utils', () => {
+describe('utils', () => {
   describe('/db', () => {
     describe('.open', () => {
       afterEach(() => db.close());
 
       it('expected to open database connection', async () => {
-        expect(mongoose.connection.readyState).to.deep.equal(0);
+        expect.assertions(2);
+        expect(mongoose.connection.readyState).toBe(0);
         await db.open(config.mongoURI);
-        expect(mongoose.connection.readyState).to.deep.equal(1);
+        expect(mongoose.connection.readyState).toBe(1);
       });
     });
 
@@ -35,15 +30,16 @@ describe('Utils', () => {
       beforeEach(() => db.open(config.mongoURI));
 
       it('expected to close database connection', async () => {
-        expect(mongoose.connection.readyState).to.deep.equal(1);
+        expect.assertions(2);
+        expect(mongoose.connection.readyState).toBe(1);
         await db.close();
-        expect(mongoose.connection.readyState).to.deep.equal(0);
+        expect(mongoose.connection.readyState).toBe(0);
       });
     });
   });
 
   describe('/eventasstring', () => {
-    it('expected to return event as string', () => {
+    it('expected to return event as string 1', () => {
       const event = {
         about: 'about',
         campus: 'campus',
@@ -56,13 +52,13 @@ describe('Utils', () => {
         teacher: 'teacher'
       };
       const eventAsString = asString.bind(event);
-      expect(eventAsString('title')).to.deep.equal('【about】period時限「subject（campus）」（教員：teacher）');
-      expect(eventAsString('summary')).to.deep.equal('【about】1月1日（木）period時限department「subject（campus）」（教員：teacher）');
-      expect(eventAsString('note')).to.deep.equal('教室：room\n備考：note');
-      expect(eventAsString()).to.deep.equal('【about】1月1日（木）\ndepartmentperiod時限「subject（campus）」（教員：teacher）\n教室：room\n備考：note');
+      expect(eventAsString('title')).toBe('【about】period時限「subject（campus）」（教員：teacher）');
+      expect(eventAsString('summary')).toBe('【about】1月1日（木）period時限department「subject（campus）」（教員：teacher）');
+      expect(eventAsString('note')).toBe('教室：room\n備考：note');
+      expect(eventAsString()).toBe('【about】1月1日（木）\ndepartmentperiod時限「subject（campus）」（教員：teacher）\n教室：room\n備考：note');
     });
 
-    it('expected to return event as string', () => {
+    it('expected to return event as string 2', () => {
       const event = {
         about: 'about',
         department: 'department',
@@ -71,10 +67,10 @@ describe('Utils', () => {
         subject: 'subject'
       };
       const eventAsString = asString.bind(event);
-      expect(eventAsString('title')).to.deep.equal('【about】period時限「subject」');
-      expect(eventAsString('summary')).to.deep.equal('【about】1月1日（木）period時限department「subject」');
-      expect(eventAsString('note')).to.deep.equal('');
-      expect(eventAsString()).to.deep.equal('【about】1月1日（木）\ndepartmentperiod時限「subject」');
+      expect(eventAsString('title')).toBe('【about】period時限「subject」');
+      expect(eventAsString('summary')).toBe('【about】1月1日（木）period時限department「subject」');
+      expect(eventAsString('note')).toBe('');
+      expect(eventAsString()).toBe('【about】1月1日（木）\ndepartmentperiod時限「subject」');
     });
 
     it('expected to return event as string', () => {
@@ -90,41 +86,43 @@ describe('Utils', () => {
         teacher: 'teacher'
       };
       const eventAsString = asString.bind(event);
-      expect(eventAsString('title')).to.deep.equal('【about】period時限「subject（campus）」（教員：teacher）');
-      expect(eventAsString('summary')).to.deep.equal('【about】1月1日（木）period時限department「subject（campus）」（教員：teacher）');
-      expect(eventAsString('note', '<br />')).to.deep.equal('教室：room<br />備考：note');
-      expect(eventAsString(null, '<br />')).to.deep.equal('【about】1月1日（木）<br />departmentperiod時限「subject（campus）」（教員：teacher）<br />教室：room<br />備考：note');
+      expect(eventAsString('title')).toBe('【about】period時限「subject（campus）」（教員：teacher）');
+      expect(eventAsString('summary')).toBe('【about】1月1日（木）period時限department「subject（campus）」（教員：teacher）');
+      expect(eventAsString('note', '<br />')).toBe('教室：room<br />備考：note');
+      expect(eventAsString(null, '<br />')).toBe('【about】1月1日（木）<br />departmentperiod時限「subject（campus）」（教員：teacher）<br />教室：room<br />備考：note');
     });
   });
 
   describe('/findorcreate', () => {
-    before(() => testDb.open());
+    beforeAll(() => testDb.open());
 
     afterEach(() => testDb.clearEvent());
 
-    after(async () => {
+    afterAll(async () => {
       await testDb.clear();
       await testDb.close();
     });
 
     it('expected to create new one when the event not found', async () => {
+      expect.assertions(2);
       const data = require('./fixtures/events/index');
       const [, created] = await Event.findOrCreate({ hash: data.hash }, data);
-      expect(created).to.be.true;
+      expect(created).toBe(true);
       const condition = { hash: data.hash };
       const events = await Event.find(condition, '-_id -__v').lean().exec();
-      expect(events).to.deep.equal([data]);
+      expect(events).toStrictEqual([data]);
     });
 
     it('expected to return a event when the event already exist', async () => {
+      expect.assertions(2);
       const data = require('./fixtures/events/index');
       await testDb.insertEvent(data);
       const condition = { hash: data.hash };
       const [event, created] = await Event.findOrCreate(condition, data);
       delete event.__v; // eslint-disable-line no-underscore-dangle
       delete event._id; // eslint-disable-line no-underscore-dangle
-      expect(event).to.deep.equal(data);
-      expect(created).to.be.false;
+      expect(event).toStrictEqual(data);
+      expect(created).toBe(false);
     });
   });
 
@@ -143,40 +141,42 @@ describe('Utils', () => {
 
       it('expected to create hash from string', () => {
         data.forEach(d => {
-          expect(Hash.create(d[0])).to.deep.equal(d[1]);
+          expect(Hash.create(d[0])).toStrictEqual(d[1]);
         });
       });
     });
 
     describe('.isValid', () => {
       it('expected to return false when hash length is not 64', () => {
-        expect(Hash.isValid('a'.repeat(63))).to.be.false;
-        expect(Hash.isValid('a'.repeat(64))).to.be.true;
-        expect(Hash.isValid('a'.repeat(65))).to.be.false;
+        expect(Hash.isValid('a'.repeat(63))).toBe(false);
+        expect(Hash.isValid('a'.repeat(64))).toBe(true);
+        expect(Hash.isValid('a'.repeat(65))).toBe(false);
       });
 
       it('expected to return false when hash includes invalid char', () => {
         const base = '0123456789abcdef'.repeat(4).slice(0, -1);
-        expect(Hash.isValid(`${base}f`)).to.be.true;
-        expect(Hash.isValid(`${base}g`)).to.be.false;
-        expect(Hash.isValid(`${base}h`)).to.be.false;
-        expect(Hash.isValid(`${base}A`)).to.be.false;
-        expect(Hash.isValid(`${base}B`)).to.be.false;
+        expect(Hash.isValid(`${base}f`)).toBe(true);
+        expect(Hash.isValid(`${base}g`)).toBe(false);
+        expect(Hash.isValid(`${base}h`)).toBe(false);
+        expect(Hash.isValid(`${base}A`)).toBe(false);
+        expect(Hash.isValid(`${base}B`)).toBe(false);
       });
     });
   });
 
   describe('/runtask', () => {
     it('expected to become a valid log', async () => {
+      expect.assertions(1);
       const log = await runTask(() => Promise.resolve('msg: test'));
       [log.name] = logNames;
-      return expect(new Log(log).validate()).to.be.fulfilled;
+      await expect(new Log(log).validate()).resolves.toBeUndefined();
     });
 
     it('expected to be fulfilled when fn is rejected', async () => {
+      expect.assertions(1);
       const log = await runTask(() => Promise.reject(new Error('test')));
       [log.name] = logNames;
-      return expect(new Log(log).validate()).to.be.fulfilled;
+      await expect(new Log(log).validate()).resolves.toBeUndefined();
     });
   });
 });

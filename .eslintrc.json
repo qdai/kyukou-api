@@ -5,14 +5,13 @@
   ],
   "overrides": [
     {
-      "files": [
-        "test/**/*.js"
+      "extends": [
+        "@egy186/eslint-config/jest"
       ],
-      "env": {
-        "mocha": true
-      },
+      "files": [
+        "test/**/*.spec.js"
+      ],
       "rules": {
-        "no-unused-expressions": "off",
         "node/global-require": "off"
       }
     }

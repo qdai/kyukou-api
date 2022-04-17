@@ -6,14 +6,14 @@ const baseDate = moment().add(1, 'days').startOf('day');
 
 const eventDateList = [
   baseDate,
-  baseDate,
+  moment(baseDate).add(2, 'years'),
   baseDate,
   moment(baseDate).add(1, 'days'),
-  moment(baseDate).add(2, 'days'),
   moment(baseDate).add(1, 'month'),
+  baseDate,
   moment(baseDate).add(2, 'month'),
-  moment(baseDate).add(1, 'years'),
-  moment(baseDate).add(2, 'years')
+  moment(baseDate).add(2, 'days'),
+  moment(baseDate).add(1, 'years')
 ];
 
 module.exports = eventDateList.map(eventDate => {

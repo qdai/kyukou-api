@@ -1,8 +1,5 @@
 'use strict';
 
-/* eslint max-lines: 0 */
-
-const arrayShuffle = require('array-shuffle');
 const { sortBy } = require('lodash');
 
 const db = require('./fixtures/db');
@@ -34,17 +31,17 @@ describe('events API', () => {
     it('expected to be fulfilled with all scheduled events which are sorted by eventDate', async () => {
       expect.assertions(1);
       const data = require('./fixtures/events/eventdate');
-      await db.insertEvent(arrayShuffle(data));
+      await db.insertEvent(data);
       const events = (await apiEvents.list()).map(toPlainObject);
-      expect(events).toStrictEqual(data);
+      expect(events).toStrictEqual(sortBy(data, 'eventDate'));
     });
 
     it('expected to be fulfilled with all scheduled events which are sorted by period', async () => {
       expect.assertions(1);
       const data = require('./fixtures/events/period');
-      await db.insertEvent(arrayShuffle(data));
+      await db.insertEvent(data);
       const events = (await apiEvents.list()).map(toPlainObject);
-      expect(events).toStrictEqual(data);
+      expect(events).toStrictEqual(sortBy(data, 'period'));
     });
 
     it('expected to be fulfilled with specified department\'s events 1', async () => {
@@ -86,7 +83,7 @@ describe('events API', () => {
       await db.insertEvent(data);
       // @ts-expect-error
       const events = (await apiEvents.list(null, startIndex)).map(toPlainObject);
-      expect(events).toStrictEqual(data.slice(startIndex));
+      expect(events).toStrictEqual(sortBy(data, 'eventDate').slice(startIndex));
     });
 
     it('expected to be fulfilled with specified count events', async () => {
@@ -96,7 +93,7 @@ describe('events API', () => {
       await db.insertEvent(data);
       // @ts-expect-error
       const events = (await apiEvents.list(null, null, count)).map(toPlainObject);
-      expect(events).toStrictEqual(data.slice(0, count));
+      expect(events).toStrictEqual(sortBy(data, 'eventDate').slice(0, count));
     });
   });
 
@@ -162,9 +159,9 @@ describe('events API', () => {
       const data = require('./fixtures/events/period');
       const q = 'test';
       const count = 2;
-      await db.insertEvent(arrayShuffle(data));
+      await db.insertEvent(data);
       const events = (await apiEvents.search(q, count)).map(toPlainObject);
-      expect(events).toStrictEqual(data.slice(0, count));
+      expect(events).toStrictEqual(sortBy(data, 'period').slice(0, count));
     });
   });
 

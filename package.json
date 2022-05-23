@@ -18,7 +18,7 @@
   "devDependencies": {
     "@egy186/eslint-config": "~0.74.0",
     "@types/jest": "^27.5.0",
-    "eslint": "~8.15.0",
+    "eslint": "~8.16.0",
     "eslint-plugin-node": "^11.1.0",
     "jest": "^28.1.0",
     "rimraf": "^3.0.2"

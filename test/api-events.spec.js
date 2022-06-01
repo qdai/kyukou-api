@@ -20,12 +20,12 @@ const pickByEventDate = (yyyy, mm, dd) => ({ eventDate }) => eventDate.getFullYe
 describe('events API', () => {
   beforeAll(() => db.open());
 
+  afterEach(() => db.clearEvent());
+
   afterAll(async () => {
     await db.clear();
     await db.close();
   });
-
-  afterEach(() => db.clearEvent());
 
   describe('.list', () => {
     it('expected to be fulfilled with all scheduled events which are sorted by eventDate', async () => {

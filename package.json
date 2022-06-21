@@ -17,10 +17,10 @@
   },
   "devDependencies": {
     "@egy186/eslint-config": "~0.76.1",
-    "@types/jest": "^28.1.0",
+    "@types/jest": "^28.1.3",
     "eslint": "~8.18.0",
     "eslint-plugin-node": "^11.1.0",
-    "jest": "^28.1.0",
+    "jest": "^28.1.1",
     "rimraf": "^3.0.2"
   },
   "engines": {

@@ -13,7 +13,7 @@
       ],
       "rules": {
         "jest/no-untyped-mock-factory": "off",
-        "node/global-require": "off"
+        "n/global-require": "off"
       }
     }
   ],

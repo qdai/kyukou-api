@@ -7,7 +7,7 @@ const ApiLogs = require('../lib/api/logs');
 const ApiTasks = require('../lib/api/tasks');
 const Event = require('../lib/models/event');
 
-jest.mock('twitter-api-v2', () => ({ TwitterApi: jest.fn().mockImplementation(() => ({ v1: { tweet: jest.fn().mockResolvedValue({}) } })) }));
+jest.mock('twitter-api-v2', () => ({ TwitterApi: jest.fn().mockImplementation(() => ({ v2: { tweet: jest.fn().mockResolvedValue({}) } })) }));
 
 const apiLogs = new ApiLogs();
 const api = new ApiTasks({

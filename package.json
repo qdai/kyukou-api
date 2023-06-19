@@ -1,7 +1,7 @@
 {
   "name": "kyukou-api",
   "description": "API for kyukou",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "author": "qdai",
   "bugs": {
     "url": "https://github.com/qdai/kyukou-api/issues"

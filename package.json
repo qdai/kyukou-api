@@ -16,7 +16,7 @@
     "twitter-text": "^3.1.0"
   },
   "devDependencies": {
-    "@egy186/eslint-config": "~0.109.0",
+    "@egy186/eslint-config": "~0.110.0",
     "@types/jest": "^29.5.4",
     "eslint": "~8.57.0",
     "eslint-plugin-jest": "^27.9.0",
